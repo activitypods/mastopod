@@ -1,0 +1,32 @@
+{
+  "version": "v1",
+  "packages": {
+    "@semapps/activitypub-components": {
+      "signature": "2ced8c5d81bca2c7bb565d952e85d83b"
+    },
+    "@semapps/auth-provider": {
+      "signature": "3450147b08ce7b2d6d7003e965e9ee11"
+    },
+    "@semapps/date-components": {
+      "signature": "80630bfd71121309e08c50ca63a12fd3"
+    },
+    "@semapps/field-components": {
+      "signature": "999ee82ddec38f81b20aede1bcfac56d"
+    },
+    "@semapps/geo-components": {
+      "signature": "169bcb4156cd5e4414f7afecb36de210"
+    },
+    "@semapps/input-components": {
+      "signature": "3a3d144f706c5148c587885d3ddfd959"
+    },
+    "@semapps/list-components": {
+      "signature": "68623f44b43e61cac88846a9da0ee789"
+    },
+    "@semapps/markdown-components": {
+      "signature": "18ad389d84e08bc5ad0538d3ae65f520"
+    },
+    "@semapps/semantic-data-provider": {
+      "signature": "2efa3f58a5cb9ee463483bf72e3e8b66"
+    }
+  }
+}
