@@ -6,21 +6,39 @@ import PostBlock from "../../common/blocks/PostBlock";
 import FindUserCard from "../../common/cards/FindUserCard";
 import Hero from "./Hero";
 import SubBar from "./SubBar";
-import { useCollection } from "@semapps/activitypub-components";
+import { useCollection, useWebfinger } from "@semapps/activitypub-components";
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Outbox from "./Outbox";
 
 const ActorPage = () => {
-  // const { username } = useParams();
+  const [searchParams] = useSearchParams();
+  const username = searchParams.get("username");
+  const [actorUri, setActorUri] = useState();
+  const webfinger = useWebfinger();
 
-  const { data: actor, isLoading } = useGetOne("Actor", {
-    id: "https://framapiaf.org/users/srosset",
-  });
+  useEffect(() => {
+    (async () => {
+      const actorUri = await webfinger.fetch(username);
+      setActorUri(actorUri);
+    })();
+  }, [webfinger, username, setActorUri]);
 
-  if (isLoading) return null;
+  const { data: actor } = useGetOne(
+    "Actor",
+    {
+      id: actorUri,
+    },
+    { enabled: !!actorUri }
+  );
+
+  if (!actor) return null;
 
   return (
     <>
       <Hero actor={actor} />
       <SubBar actor={actor} />
+      <Outbox actor={actor} />
       {/* <Box marginTop={3}>
         <Container maxWidth="md">
           <Grid container spacing={3}>

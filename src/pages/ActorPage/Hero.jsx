@@ -1,6 +1,9 @@
-import { Box, Container, Avatar, Typography, Hidden } from "@mui/material";
+import { Box, Container, Avatar, Typography } from "@mui/material";
+import { useNotify } from "react-admin";
+import { useOutbox } from "@semapps/activitypub-components";
 import makeStyles from "@mui/styles/makeStyles";
 import { formatUsername } from "../../utils";
+import FollowButton from "../../common/buttons/FollowButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,10 +42,16 @@ const useStyles = makeStyles((theme) => ({
     width: 100,
     height: 100,
   },
+  button: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
 }));
 
 const Hero = ({ actor }) => {
   const classes = useStyles();
+
   return (
     <Box className={classes.root}>
       <Container maxWidth="md">
@@ -60,11 +69,7 @@ const Hero = ({ actor }) => {
               {formatUsername(actor?.id)}
             </Typography>
           )}
-          <Hidden xsDown>
-            <Typography variant="body2" className={classes.note}>
-              {actor?.summary}
-            </Typography>
-          </Hidden>
+          <FollowButton actorUri={actor.id} className={classes.button} />
         </Box>
       </Container>
     </Box>

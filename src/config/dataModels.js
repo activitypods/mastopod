@@ -3,6 +3,10 @@ const dataModels = {
     types: ["as:Note"],
     list: {},
   },
+  Activity: {
+    types: ["as:Activity"],
+    list: {},
+  },
   Actor: {
     types: ["as:Actor"],
     list: {},

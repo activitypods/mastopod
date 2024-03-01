@@ -13,6 +13,17 @@ import InboxPage from "./pages/InboxPage/InboxPage";
 import theme from "./config/theme";
 import i18nProvider from "./config/i18nProvider";
 
+const customPodProviders = import.meta.env.VITE_POD_PROVIDER_DOMAIN_NAME && [
+  {
+    "apods:domainName": import.meta.env.VITE_POD_PROVIDER_DOMAIN_NAME,
+    "apods:area": "Local",
+  },
+];
+
+const LoginPage = (props) => (
+  <PodLoginPage customPodProviders={customPodProviders} {...props} />
+);
+
 export const App = () => (
   <BrowserRouter>
     <Admin
@@ -20,7 +31,7 @@ export const App = () => (
       authProvider={authProvider}
       i18nProvider={i18nProvider}
       layout={Layout}
-      loginPage={PodLoginPage}
+      loginPage={LoginPage}
       theme={theme}
       requireAuth
     >
@@ -29,9 +40,7 @@ export const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route path="/inbox" element={<InboxPage />} />
-        <Route path="actor">
-          <Route path=":username" element={<ActorPage />} />
-        </Route>
+        <Route path="actor" element={<ActorPage />} />
       </CustomRoutes>
       <Resource name="Note" />
       <Resource name="Actor" />
