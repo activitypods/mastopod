@@ -9,7 +9,7 @@ import RelativeDate from "../../RelativeDate";
 import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
 import useActor from "../../../hooks/useActor";
 
-const Activity = ({ activity }) => {
+const Activity = ({ activity, showReplies }) => {
   if (
     activity.type !== ACTIVITY_TYPES.CREATE &&
     activity.type !== ACTIVITY_TYPES.ANNOUNCE
@@ -19,7 +19,11 @@ const Activity = ({ activity }) => {
 
   let boostedActivity;
 
-  if (activity.type === ACTIVITY_TYPES.ANNOUNCE) {
+  if (activity.type === ACTIVITY_TYPES.CREATE) {
+    if (!showReplies && activity.object.inReplyTo) {
+      return null;
+    }
+  } else if (activity.type === ACTIVITY_TYPES.ANNOUNCE) {
     ({ data: boostedActivity } = useGetOne("Activity", {
       id: activity.object,
     }));

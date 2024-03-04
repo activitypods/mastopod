@@ -31,6 +31,7 @@ const useActor = (actorUri) => {
   );
 
   return {
+    ...webId,
     uri: actorUri,
     name:
       profile?.["vcard:given-name"] ||

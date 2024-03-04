@@ -1,11 +1,22 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppBar, Container, Tabs, Tab } from "@mui/material";
 import { useCollection } from "@semapps/activitypub-components";
+import useActorContext from "../../hooks/useActorContext";
 
-const SubBar = ({ actor }) => {
-  const [tab, setTab] = useState(0);
+const SubBar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [tab, setTab] = useState(location.pathname);
+
+  const actor = useActorContext();
   const { totalItems: numFollowers } = useCollection(actor?.followers);
   const { totalItems: numFollowing } = useCollection(actor?.following);
+
+  const onChange = (_, v) => {
+    navigate(v + "?username=" + encodeURIComponent(actor.username));
+    setTab(v);
+  };
 
   return (
     <AppBar
@@ -19,17 +30,24 @@ const SubBar = ({ actor }) => {
       <Container maxWidth="md">
         <Tabs
           value={tab}
-          onChange={(_, v) => setTab(v)}
+          onChange={onChange}
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="Outbox" sx={{ fontWeight: "normal" }} />
+          <Tab label="Posts" sx={{ fontWeight: "normal" }} value="/actor" />
           <Tab
-            label={`Followers (${numFollowers})`}
+            label="Posts & Replies"
+            sx={{ fontWeight: "normal" }}
+            value="/actor/replies"
+          />
+          <Tab
+            label={`Followers ${numFollowers ? `(${numFollowers})` : ""}`}
+            value="/actor/followers"
             sx={{ fontWeight: "normal" }}
           />
           <Tab
-            label={`Following (${numFollowing})`}
+            label={`Following ${numFollowing ? `(${numFollowing})` : ""}`}
+            value="/actor/following"
             sx={{ fontWeight: "normal" }}
           />
         </Tabs>

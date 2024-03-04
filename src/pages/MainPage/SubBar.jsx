@@ -1,23 +1,14 @@
 import { useState } from "react";
 import { AppBar, Container, Tabs, Tab } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SubBar = () => {
-  const [tab, setTab] = useState(0);
+  const location = useLocation();
+  const [tab, setTab] = useState(location.pathname);
   const navigate = useNavigate();
 
   const onChange = (_, v) => {
-    switch (v) {
-      case 0:
-        navigate("/inbox");
-        break;
-      case 1:
-        navigate("/outbox");
-        break;
-      case 2:
-        navigate("/followers");
-        break;
-    }
+    navigate(v);
     setTab(v);
   };
 
@@ -37,10 +28,18 @@ const SubBar = () => {
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="Inbox" sx={{ fontWeight: "normal" }} />
-          <Tab label="Outbox" sx={{ fontWeight: "normal" }} />
-          <Tab label="Followers" sx={{ fontWeight: "normal" }} />
-          <Tab label="Following" sx={{ fontWeight: "normal" }} />
+          <Tab label="Inbox" value="/inbox" sx={{ fontWeight: "normal" }} />
+          <Tab label="Outbox" value="/outbox" sx={{ fontWeight: "normal" }} />
+          <Tab
+            label="Followers"
+            value="/followers"
+            sx={{ fontWeight: "normal" }}
+          />
+          <Tab
+            label="Following"
+            value="/following"
+            sx={{ fontWeight: "normal" }}
+          />
         </Tabs>
       </Container>
     </AppBar>

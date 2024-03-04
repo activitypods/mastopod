@@ -4,6 +4,7 @@ import { useOutbox } from "@semapps/activitypub-components";
 import makeStyles from "@mui/styles/makeStyles";
 import { formatUsername } from "../../utils";
 import FollowButton from "../../common/buttons/FollowButton";
+import useActorContext from "../../hooks/useActorContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,15 +50,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Hero = ({ actor }) => {
+const Hero = () => {
   const classes = useStyles();
+  const actor = useActorContext();
 
   return (
     <Box className={classes.root}>
       <Container maxWidth="md">
         <Box className={classes.container}>
           <Avatar
-            src={actor?.icon?.url}
+            src={actor?.image}
             alt={actor?.name}
             className={classes.avatar}
           />
@@ -66,10 +68,10 @@ const Hero = ({ actor }) => {
           </Typography>
           {actor && (
             <Typography variant="body2" className={classes.username}>
-              {formatUsername(actor?.id)}
+              {actor?.username}
             </Typography>
           )}
-          <FollowButton actorUri={actor.id} className={classes.button} />
+          <FollowButton actorUri={actor.uri} className={classes.button} />
         </Box>
       </Container>
     </Box>

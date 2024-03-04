@@ -10,10 +10,16 @@ import Layout from "./layout/Layout";
 import PodLoginPage from "./pages/PodLoginPage/PodLoginPage";
 import HomePage from "./pages/HomePage";
 import ActorPage from "./pages/ActorPage/ActorPage";
+import { default as ActorPosts } from "./pages/ActorPage/Posts";
+import { default as ActorPostsAndReplies } from "./pages/ActorPage/PostsAndReplies";
+import { default as ActorFollowers } from "./pages/ActorPage/Followers";
+import { default as ActorFollowing } from "./pages/ActorPage/Following";
 import MainPage from "./pages/MainPage/MainPage";
-import InboxPage from "./pages/MainPage/InboxPage";
-import OutboxPage from "./pages/MainPage/OutboxPage";
-import FollowersPage from "./pages/MainPage/FollowersPage";
+import Inbox from "./pages/MainPage/Inbox";
+import Outbox from "./pages/MainPage/Outbox";
+import Followers from "./pages/MainPage/Followers";
+import Following from "./pages/MainPage/Following";
+
 import theme from "./config/theme";
 import i18nProvider from "./config/i18nProvider";
 
@@ -53,11 +59,17 @@ export const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route element={<MainPage />}>
-          <Route path="/inbox" element={<InboxPage />} />
-          <Route path="/outbox" element={<OutboxPage />} />
-          <Route path="/followers" element={<FollowersPage />} />
+          <Route path="inbox" element={<Inbox />} />
+          <Route path="outbox" element={<Outbox />} />
+          <Route path="followers" element={<Followers />} />
+          <Route path="following" element={<Following />} />
         </Route>
-        <Route path="/actor" element={<ActorPage />} />
+        <Route path="/actor" element={<ActorPage />}>
+          <Route index element={<ActorPosts />} />
+          <Route path="replies" element={<ActorPostsAndReplies />} />
+          <Route path="followers" element={<ActorFollowers />} />
+          <Route path="following" element={<ActorFollowing />} />
+        </Route>
       </CustomRoutes>
       <Resource name="Note" />
       <Resource name="Actor" />

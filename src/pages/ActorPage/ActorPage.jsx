@@ -1,15 +1,11 @@
-import { useGetOne } from "react-admin";
-import { Grid } from "@mui/material";
-import { useParams } from "react-router-dom";
-import ProfileCard from "../../common/cards/ProfileCard";
-import PostBlock from "../../common/blocks/PostBlock";
-import FindUserCard from "../../common/cards/FindUserCard";
+import { useEffect, useState } from "react";
+import { Outlet, useSearchParams } from "react-router-dom";
+import { Box, Container, Grid } from "@mui/material";
+import { useWebfinger } from "@semapps/activitypub-components";
 import Hero from "./Hero";
 import SubBar from "./SubBar";
-import { useCollection, useWebfinger } from "@semapps/activitypub-components";
-import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Outbox from "./Outbox";
+import useActor from "../../hooks/useActor";
+import ActorContext from "../../contexts/ActorContext";
 
 const ActorPage = () => {
   const [searchParams] = useSearchParams();
@@ -24,35 +20,25 @@ const ActorPage = () => {
     })();
   }, [webfinger, username, setActorUri]);
 
-  const { data: actor } = useGetOne(
-    "Actor",
-    {
-      id: actorUri,
-    },
-    { enabled: !!actorUri }
-  );
+  const actor = useActor(actorUri);
 
-  if (!actor) return null;
+  if (!actor.name) return null;
 
   return (
-    <>
-      <Hero actor={actor} />
-      <SubBar actor={actor} />
-      <Outbox actor={actor} />
-      {/* <Box marginTop={3}>
+    <ActorContext.Provider value={actor}>
+      <Hero />
+      <SubBar />
+      <Box marginTop={3}>
         <Container maxWidth="md">
           <Grid container spacing={3}>
             <Grid item xs={8}>
-              <PostBlock />
+              <Outlet />
             </Grid>
-            <Grid item xs={4}>
-              <ProfileCard />
-              <FindUserCard />
-            </Grid>
+            <Grid item xs={4}></Grid>
           </Grid>
         </Container>
-      </Box> */}
-    </>
+      </Box>
+    </ActorContext.Provider>
   );
 };
 

@@ -2,7 +2,7 @@ import { useCollection } from "@semapps/activitypub-components";
 import ActivityBlock from "../../common/blocks/ActivityBlock/ActivityBlock";
 import PostBlock from "../../common/blocks/PostBlock";
 
-const InboxPage = () => {
+const Inbox = () => {
   const { items: activities } = useCollection("inbox");
   return (
     <>
@@ -14,4 +14,4 @@ const InboxPage = () => {
   );
 };
 
-export default InboxPage;
+export default Inbox;
