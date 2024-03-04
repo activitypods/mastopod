@@ -71,7 +71,11 @@ const Hero = () => {
               {actor?.username}
             </Typography>
           )}
-          <FollowButton actorUri={actor.uri} className={classes.button} />
+          <FollowButton
+            actorUri={actor.uri}
+            color="secondary"
+            className={classes.button}
+          />
         </Box>
       </Container>
     </Box>

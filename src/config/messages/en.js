@@ -4,7 +4,7 @@ export default {
   app: {
     action: {
       send: "Send",
-      edit_profile: "Editer mon profil",
+      edit_profile: "Edit profile",
     },
     page: {},
     card: {},

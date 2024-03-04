@@ -9,7 +9,7 @@ import RelativeDate from "../../RelativeDate";
 import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
 import useActor from "../../../hooks/useActor";
 
-const Activity = ({ activity, showReplies }) => {
+const ActivityBlock = ({ activity, showReplies }) => {
   if (
     activity.type !== ACTIVITY_TYPES.CREATE &&
     activity.type !== ACTIVITY_TYPES.ANNOUNCE
@@ -85,14 +85,21 @@ const Activity = ({ activity, showReplies }) => {
           </Box>
         )}
 
-        <Typography
-          dangerouslySetInnerHTML={{
-            __html:
-              boostedActivity?.object?.content ||
-              boostedActivity?.content ||
-              activity.object?.content,
-          }}
-        />
+        <Link
+          to={`/activity?uri=${encodeURIComponent(
+            boostedActivity?.id || activity?.id
+          )}`}
+        >
+          <Typography
+            sx={{ color: "black" }}
+            dangerouslySetInnerHTML={{
+              __html:
+                boostedActivity?.object?.content ||
+                boostedActivity?.content ||
+                activity.object?.content,
+            }}
+          />
+        </Link>
 
         {boostedActivity?.attachment && (
           <img
@@ -113,4 +120,4 @@ const Activity = ({ activity, showReplies }) => {
   );
 };
 
-export default Activity;
+export default ActivityBlock;

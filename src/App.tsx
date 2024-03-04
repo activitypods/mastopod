@@ -18,6 +18,7 @@ import MainPage from "./pages/MainPage/MainPage";
 import Inbox from "./pages/MainPage/Inbox";
 import Outbox from "./pages/MainPage/Outbox";
 import Followers from "./pages/MainPage/Followers";
+import ActivityPage from "./pages/ActivityPage/ActivityPage";
 import Following from "./pages/MainPage/Following";
 
 import theme from "./config/theme";
@@ -64,6 +65,7 @@ export const App = () => (
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
         </Route>
+        <Route path="/activity" element={<ActivityPage />} />
         <Route path="/actor" element={<ActorPage />}>
           <Route index element={<ActorPosts />} />
           <Route path="replies" element={<ActorPostsAndReplies />} />

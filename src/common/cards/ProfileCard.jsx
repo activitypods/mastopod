@@ -3,6 +3,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { useCreatePath, useTranslate } from "react-admin";
 import { Link } from "react-router-dom";
 import useActorContext from "../../hooks/useActorContext";
+import FollowButton from "../buttons/FollowButton";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -75,20 +76,36 @@ const ProfileCard = () => {
             {actor?.name}
           </Typography>
         )}
-        <Typography align="center">{actor?.username}</Typography>
-      </Box>
-      <Box className={classes.button} pb={3} pr={3} pl={3}>
-        <Link
-          to={createPath({
-            resource: "Profile",
-            id: actor?.uri,
-            type: "edit",
-          })}
+        <Typography
+          align="center"
+          sx={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            pl: 3,
+            pr: 3,
+          }}
         >
-          <Button variant="contained" color="secondary" type="submit">
-            {translate("app.action.edit_profile")}
-          </Button>
-        </Link>
+          {actor?.username}
+        </Typography>
+      </Box>
+
+      <Box className={classes.button} pb={3} pr={3} pl={3}>
+        {actor.isLoggedUser ? (
+          <Link
+            to={createPath({
+              resource: "Profile",
+              id: actor?.uri,
+              type: "edit",
+            })}
+          >
+            <Button variant="contained" color="secondary" type="submit">
+              {translate("app.action.edit_profile")}
+            </Button>
+          </Link>
+        ) : (
+          <FollowButton color="secondary" actorUri={actor?.uri} />
+        )}
       </Box>
     </Card>
   );

@@ -28,15 +28,19 @@ const SubBar = () => {
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="Inbox" value="/inbox" sx={{ fontWeight: "normal" }} />
-          <Tab label="Outbox" value="/outbox" sx={{ fontWeight: "normal" }} />
+          <Tab label="My Inbox" value="/inbox" sx={{ fontWeight: "normal" }} />
           <Tab
-            label="Followers"
+            label="My Outbox"
+            value="/outbox"
+            sx={{ fontWeight: "normal" }}
+          />
+          <Tab
+            label="My Followers"
             value="/followers"
             sx={{ fontWeight: "normal" }}
           />
           <Tab
-            label="Following"
+            label="My Following"
             value="/following"
             sx={{ fontWeight: "normal" }}
           />

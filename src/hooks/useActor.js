@@ -1,8 +1,10 @@
-import { useGetOne } from "react-admin";
+import { useGetOne, useGetIdentity } from "react-admin";
 import { formatUsername } from "../utils";
 import { useMemo } from "react";
 
 const useActor = (actorUri) => {
+  const { data: identity } = useGetIdentity();
+
   const { data: webId, isLoading: isWebIdLoading } = useGetOne(
     "Actor",
     {
@@ -33,6 +35,7 @@ const useActor = (actorUri) => {
   return {
     ...webId,
     uri: actorUri,
+    isLoggedUser: actorUri === identity?.id,
     name:
       profile?.["vcard:given-name"] ||
       webId?.name ||
