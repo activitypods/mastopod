@@ -1,5 +1,6 @@
 import { Admin, Resource, CustomRoutes } from "react-admin";
 import { BrowserRouter, Route } from "react-router-dom";
+import { QueryClient } from "react-query";
 
 import dataProvider from "./config/dataProvider";
 import authProvider from "./config/authProvider";
@@ -12,6 +13,14 @@ import ActorPage from "./pages/ActorPage/ActorPage";
 import InboxPage from "./pages/InboxPage/InboxPage";
 import theme from "./config/theme";
 import i18nProvider from "./config/i18nProvider";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const customPodProviders = import.meta.env.VITE_POD_PROVIDER_DOMAIN_NAME && [
   {
@@ -30,6 +39,7 @@ export const App = () => (
       dataProvider={dataProvider}
       authProvider={authProvider}
       i18nProvider={i18nProvider}
+      queryClient={queryClient}
       layout={Layout}
       loginPage={LoginPage}
       theme={theme}

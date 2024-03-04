@@ -1,23 +1,15 @@
 import { Box, Avatar, Typography } from "@mui/material";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import { useGetOne } from "react-admin";
+import useActor from "../../../hooks/useActor";
 
 const BoostBanner = ({ activity }) => {
-  const actorUri = activity.actor || activity.attributedTo;
-  const { data: actor } = useGetOne(
-    "Actor",
-    {
-      id: actorUri,
-    },
-    {
-      enabled: !!actorUri,
-    }
-  );
+  const actor = useActor(activity.actor || activity.attributedTo);
 
   return (
     <Box pl={8} pb={1} sx={{ position: "relative" }}>
       <Avatar
-        src={actor?.icon?.url}
+        src={actor?.image}
         alt={actor?.name}
         sx={{
           position: "absolute",

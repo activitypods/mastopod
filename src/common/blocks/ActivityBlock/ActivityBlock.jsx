@@ -1,12 +1,18 @@
 import { Box, Card, Avatar, Typography, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
-import { formatUsername } from "../../../utils";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import LikeButton from "../../buttons/LikeButton";
 import BoostButton from "../../buttons/BoostButton";
 import BoostBanner from "./BoostBanner";
 import ReplyIcon from "@mui/icons-material/Reply";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
+import useActor from "../../../hooks/useActor";
+
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 const Activity = ({ activity }) => {
   if (
@@ -29,17 +35,9 @@ const Activity = ({ activity }) => {
     boostedActivity?.attributedTo ||
     activity.object?.attributedTo;
 
-  const { data: actor } = useGetOne(
-    "Actor",
-    {
-      id: actorUri,
-    },
-    {
-      enabled: !!actorUri,
-    }
-  );
+  const actor = useActor(actorUri);
 
-  if (!actor) {
+  if (actor.isLoading) {
     return (
       <Card elevation={0} sx={{ mb: 3, p: 4 }}>
         <LinearProgress />
@@ -52,7 +50,7 @@ const Activity = ({ activity }) => {
       {boostedActivity && <BoostBanner activity={activity} />}
       <Box pl={8} sx={{ position: "relative" }}>
         <Avatar
-          src={actor?.icon?.url}
+          src={actor?.image}
           alt={actor?.name}
           sx={{
             position: "absolute",
@@ -64,8 +62,19 @@ const Activity = ({ activity }) => {
         />
         <Typography>
           <strong>{actor?.name}</strong>{" "}
-          <em style={{ color: "grey" }}>{formatUsername(actor?.id)}</em>
+          <em style={{ color: "grey" }}>{actor?.username}</em>
         </Typography>
+
+        {activity?.published && (
+          <Box sx={{ position: "absolute", top: 0, right: 0 }}>
+            <Typography
+              sx={{ fontSize: 12, color: "grey" }}
+              title={dayjs(activity?.published).format("LLL")}
+            >
+              {dayjs().from(dayjs(activity?.published), true)}
+            </Typography>
+          </Box>
+        )}
 
         <Typography
           dangerouslySetInnerHTML={{
