@@ -1,5 +1,5 @@
 import { Box, Card, Avatar, Typography, LinearProgress } from "@mui/material";
-import { useGetOne } from "react-admin";
+import { Link, useGetOne } from "react-admin";
 import LikeButton from "../../buttons/LikeButton";
 import BoostButton from "../../buttons/BoostButton";
 import BoostBanner from "./BoostBanner";
@@ -48,31 +48,33 @@ const Activity = ({ activity, showReplies }) => {
     <Card elevation={0} sx={{ mb: 3, p: 2 }}>
       {boostedActivity && <BoostBanner activity={activity} />}
       <Box pl={8} sx={{ position: "relative" }}>
-        <Avatar
-          src={actor?.image}
-          alt={actor?.name}
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: 50,
-            height: 50,
-          }}
-        />
-
-        <Typography
-          sx={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            pr: 8,
-          }}
-        >
-          <strong>{actor?.name}</strong>{" "}
-          <Typography component="span" sx={{ color: "grey" }}>
-            <em>{actor?.username}</em>
+        <Link to={`/actor?username=${encodeURIComponent(actor?.username)}`}>
+          <Avatar
+            src={actor?.image}
+            alt={actor?.name}
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 50,
+              height: 50,
+            }}
+          />
+          <Typography
+            sx={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              color: "black",
+              pr: 8,
+            }}
+          >
+            <strong>{actor?.name}</strong>{" "}
+            <Typography component="span" sx={{ color: "grey" }}>
+              <em>{actor?.username}</em>
+            </Typography>
           </Typography>
-        </Typography>
+        </Link>
 
         {activity?.published && (
           <Box sx={{ position: "absolute", top: 0, right: 0 }}>

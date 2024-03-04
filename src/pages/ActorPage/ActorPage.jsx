@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Outlet, useSearchParams } from "react-router-dom";
 import { Box, Container, Grid } from "@mui/material";
 import { useWebfinger } from "@semapps/activitypub-components";
-import Hero from "./Hero";
-import SubBar from "./SubBar";
 import useActor from "../../hooks/useActor";
 import ActorContext from "../../contexts/ActorContext";
+import ProfileCard from "../../common/cards/ProfileCard";
+import Hero from "./Hero";
+import SubBar from "./SubBar";
 
 const ActorPage = () => {
   const [searchParams] = useSearchParams();
@@ -34,7 +35,9 @@ const ActorPage = () => {
             <Grid item xs={8}>
               <Outlet />
             </Grid>
-            <Grid item xs={4}></Grid>
+            <Grid item xs={4}>
+              <ProfileCard />
+            </Grid>
           </Grid>
         </Container>
       </Box>

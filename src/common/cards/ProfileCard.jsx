@@ -1,13 +1,8 @@
-import { Box, Card, Typography, Avatar, Button } from "@mui/material";
+import { Box, Card, Typography, Avatar, Button, Skeleton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { useGetIdentity, useCreatePath, useTranslate } from "react-admin";
+import { useCreatePath, useTranslate } from "react-admin";
 import { Link } from "react-router-dom";
-
-const formatUsername = (uri) => {
-  const url = new URL(uri);
-  const username = url.pathname.split("/")[1];
-  return `@${username}@${url.host}`;
-};
+import useActorContext from "../../hooks/useActorContext";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -51,9 +46,8 @@ const useStyles = makeStyles((theme) => ({
 const ProfileCard = () => {
   const classes = useStyles();
   const createPath = useCreatePath();
-  const { data: identity } = useGetIdentity();
+  const actor = useActorContext();
   const translate = useTranslate();
-  if (!identity) return null;
   return (
     <Card elevation={0}>
       <Box className={classes.title}>
@@ -62,23 +56,32 @@ const ProfileCard = () => {
           justifyContent="center"
           className={classes.avatarWrapper}
         >
-          <Avatar
-            src={identity.profileData?.["vcard:photo"]}
-            className={classes.avatar}
-          />
+          {actor.isLoading ? (
+            <Skeleton variant="circular" width={150} height={150} />
+          ) : (
+            <Avatar
+              src={actor?.image}
+              alt={actor?.name}
+              className={classes.avatar}
+            />
+          )}
         </Box>
       </Box>
       <Box className={classes.block}>
-        <Typography variant="h3" align="center">
-          {identity.profileData?.["vcard:given-name"]}
-        </Typography>
-        <Typography align="center">{formatUsername(identity.id)}</Typography>
+        {actor.isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <Typography variant="h3" align="center">
+            {actor?.name}
+          </Typography>
+        )}
+        <Typography align="center">{actor?.username}</Typography>
       </Box>
       <Box className={classes.button} pb={3} pr={3} pl={3}>
         <Link
           to={createPath({
             resource: "Profile",
-            id: identity?.webIdData?.url,
+            id: actor?.uri,
             type: "edit",
           })}
         >
