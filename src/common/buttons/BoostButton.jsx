@@ -21,6 +21,7 @@ const LikeButton = ({ activity, ...rest }) => {
         object: activity.id,
         to: [identity.webIdData.followers, activity.actor, PUBLIC_URI],
       });
+      notify("app.notification.post_boosted", { type: "success" });
     } catch (e) {
       notify(e.message, "error");
     }

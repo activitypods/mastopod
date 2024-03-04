@@ -16,6 +16,7 @@ const LikeButton = ({ activity, ...rest }) => {
         object: activity.id,
         to: activity.actor,
       });
+      notify("app.notification.post_liked", { type: "success" });
     } catch (e) {
       notify(e.message, "error");
     }

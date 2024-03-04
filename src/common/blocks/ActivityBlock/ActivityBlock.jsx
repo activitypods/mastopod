@@ -1,18 +1,13 @@
 import { Box, Card, Avatar, Typography, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import localizedFormat from "dayjs/plugin/localizedFormat";
 import LikeButton from "../../buttons/LikeButton";
 import BoostButton from "../../buttons/BoostButton";
 import BoostBanner from "./BoostBanner";
 import ReplyIcon from "@mui/icons-material/Reply";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import RelativeDate from "../../RelativeDate";
 import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
 import useActor from "../../../hooks/useActor";
-
-dayjs.extend(relativeTime);
-dayjs.extend(localizedFormat);
 
 const Activity = ({ activity }) => {
   if (
@@ -28,6 +23,8 @@ const Activity = ({ activity }) => {
     ({ data: boostedActivity } = useGetOne("Activity", {
       id: activity.object,
     }));
+
+    console.log("boostedActivity", boostedActivity);
   }
 
   const actorUri =
@@ -60,19 +57,27 @@ const Activity = ({ activity }) => {
             height: 50,
           }}
         />
-        <Typography>
+
+        <Typography
+          sx={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            pr: 8,
+          }}
+        >
           <strong>{actor?.name}</strong>{" "}
-          <em style={{ color: "grey" }}>{actor?.username}</em>
+          <Typography component="span" sx={{ color: "grey" }}>
+            <em>{actor?.username}</em>
+          </Typography>
         </Typography>
 
         {activity?.published && (
           <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-            <Typography
-              sx={{ fontSize: 12, color: "grey" }}
-              title={dayjs(activity?.published).format("LLL")}
-            >
-              {dayjs().from(dayjs(activity?.published), true)}
-            </Typography>
+            <RelativeDate
+              date={boostedActivity?.published || activity?.published}
+              sx={{ fontSize: 13, color: "grey" }}
+            />
           </Box>
         )}
 
@@ -84,6 +89,13 @@ const Activity = ({ activity }) => {
               activity.object?.content,
           }}
         />
+
+        {boostedActivity?.attachment && (
+          <img
+            src={boostedActivity?.attachment.url}
+            style={{ width: "100%" }}
+          />
+        )}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyIcon sx={{ color: "grey" }} />
