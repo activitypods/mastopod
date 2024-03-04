@@ -1,8 +1,26 @@
 import { useState } from "react";
 import { AppBar, Container, Tabs, Tab } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const SubBar = () => {
   const [tab, setTab] = useState(0);
+  const navigate = useNavigate();
+
+  const onChange = (_, v) => {
+    switch (v) {
+      case 0:
+        navigate("/inbox");
+        break;
+      case 1:
+        navigate("/outbox");
+        break;
+      case 2:
+        navigate("/followers");
+        break;
+    }
+    setTab(v);
+  };
+
   return (
     <AppBar
       position="relative"
@@ -15,7 +33,7 @@ const SubBar = () => {
       <Container maxWidth="md">
         <Tabs
           value={tab}
-          onChange={(_, v) => setTab(v)}
+          onChange={onChange}
           indicatorColor="primary"
           textColor="primary"
         >

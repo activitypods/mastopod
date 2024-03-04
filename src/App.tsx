@@ -10,7 +10,10 @@ import Layout from "./layout/Layout";
 import PodLoginPage from "./pages/PodLoginPage/PodLoginPage";
 import HomePage from "./pages/HomePage";
 import ActorPage from "./pages/ActorPage/ActorPage";
-import InboxPage from "./pages/InboxPage/InboxPage";
+import MainPage from "./pages/MainPage/MainPage";
+import InboxPage from "./pages/MainPage/InboxPage";
+import OutboxPage from "./pages/MainPage/OutboxPage";
+import FollowersPage from "./pages/MainPage/FollowersPage";
 import theme from "./config/theme";
 import i18nProvider from "./config/i18nProvider";
 
@@ -49,8 +52,12 @@ export const App = () => (
         <Route path="/" element={<HomePage />} />
       </CustomRoutes>
       <CustomRoutes>
-        <Route path="/inbox" element={<InboxPage />} />
-        <Route path="actor" element={<ActorPage />} />
+        <Route element={<MainPage />}>
+          <Route path="/inbox" element={<InboxPage />} />
+          <Route path="/outbox" element={<OutboxPage />} />
+          <Route path="/followers" element={<FollowersPage />} />
+        </Route>
+        <Route path="/actor" element={<ActorPage />} />
       </CustomRoutes>
       <Resource name="Note" />
       <Resource name="Actor" />

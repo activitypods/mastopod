@@ -23,8 +23,6 @@ const Activity = ({ activity }) => {
     ({ data: boostedActivity } = useGetOne("Activity", {
       id: activity.object,
     }));
-
-    console.log("boostedActivity", boostedActivity);
   }
 
   const actorUri =
