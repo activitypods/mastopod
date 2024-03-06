@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { AppBar, Container, Tabs, Tab } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useCollection } from "@semapps/activitypub-components";
 
 const SubBar = () => {
   const location = useLocation();
   const [tab, setTab] = useState(location.pathname);
   const navigate = useNavigate();
+
+  const { totalItems: numFollowers } = useCollection("followers");
+  const { totalItems: numFollowing } = useCollection("following");
 
   const onChange = (_, v) => {
     navigate(v);
@@ -35,12 +39,12 @@ const SubBar = () => {
             sx={{ fontWeight: "normal" }}
           />
           <Tab
-            label="My Followers"
+            label={`Followers ${numFollowers ? `(${numFollowers})` : ""}`}
             value="/followers"
             sx={{ fontWeight: "normal" }}
           />
           <Tab
-            label="My Following"
+            label={`Following ${numFollowing ? `(${numFollowing})` : ""}`}
             value="/following"
             sx={{ fontWeight: "normal" }}
           />
