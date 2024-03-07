@@ -3,8 +3,10 @@
 export default {
   app: {
     action: {
-      send: "Send",
       edit_profile: "Edit profile",
+      follow: "Follow",
+      unfollow: "Undo Follow",
+      send: "Send",
     },
     page: {},
     card: {},
@@ -15,8 +17,12 @@ export default {
     helper: {},
     message: {},
     notification: {
+      message_sent: "Your message has been sent",
+      message_send_error: "Error while sending the message: %{error}",
       post_boosted: "The post has been boosted",
       post_liked: "The post has been starred",
+      actor_followed: "You are now following this actor",
+      actor_unfollowed: "You are not following this actor anymore",
     },
     validation: {},
   },

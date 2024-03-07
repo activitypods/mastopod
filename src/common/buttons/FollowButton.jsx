@@ -1,11 +1,17 @@
 import { useCallback } from "react";
 import { Button } from "@mui/material";
-import { useNotify } from "react-admin";
-import { useOutbox, ACTIVITY_TYPES } from "@semapps/activitypub-components";
+import { useNotify, useTranslate } from "react-admin";
+import {
+  useOutbox,
+  useCollection,
+  ACTIVITY_TYPES,
+} from "@semapps/activitypub-components";
 
 const FollowButton = ({ actorUri, children, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
+  const translate = useTranslate();
+  const { items: following, addItem, removeItem } = useCollection("following");
 
   const follow = useCallback(async () => {
     try {
@@ -15,20 +21,40 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
         object: actorUri,
         to: actorUri,
       });
+      notify("app.notification.actor_followed", { type: "success" });
     } catch (e) {
-      notify(e.message, "error");
+      notify(e.message, { type: "error" });
     }
-  }, [actorUri, outbox, notify]);
+    addItem(actorUri);
+  }, [actorUri, outbox, notify, addItem]);
 
-  return (
+  const unfollow = useCallback(async () => {
+    try {
+      await outbox.post({
+        type: ACTIVITY_TYPES.UNDO,
+        actor: outbox.owner,
+        object: {
+          type: ACTIVITY_TYPES.FOLLOW,
+          object: actorUri,
+        },
+        to: actorUri,
+      });
+      notify("app.notification.actor_unfollowed", { type: "success" });
+    } catch (e) {
+      notify(e.message, { type: "error" });
+    }
+    removeItem(actorUri);
+  }, [actorUri, outbox, notify, removeItem]);
+
+  return following?.includes(actorUri) ? (
+    <Button variant="contained" onClick={unfollow} {...rest}>
+      {translate("app.action.unfollow")}
+    </Button>
+  ) : (
     <Button variant="contained" onClick={follow} {...rest}>
-      {children}
+      {translate("app.action.follow")}
     </Button>
   );
-};
-
-FollowButton.defaultProps = {
-  children: "Follow",
 };
 
 export default FollowButton;

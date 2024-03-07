@@ -18,7 +18,11 @@ const LikeButton = ({ activity, ...rest }) => {
       await outbox.post({
         type: ACTIVITY_TYPES.ANNOUNCE,
         actor: outbox.owner,
-        object: activity.id,
+        object:
+          activity.type === ACTIVITY_TYPES.CREATE ||
+          activity.type === ACTIVITY_TYPES.ANNOUNCE
+            ? activity.object.id
+            : activity.id,
         to: [identity.webIdData.followers, activity.actor, PUBLIC_URI],
       });
       notify("app.notification.post_boosted", { type: "success" });

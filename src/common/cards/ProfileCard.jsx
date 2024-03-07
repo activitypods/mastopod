@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 150,
     height: 150,
+    backgroundColor: "lightgrey",
   },
   block: {
     backgroundColor: "white",
@@ -72,7 +73,7 @@ const ProfileCard = () => {
         {actor.isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <Typography variant="h3" align="center">
+          <Typography variant="h4" align="center">
             {actor?.name}
           </Typography>
         )}
