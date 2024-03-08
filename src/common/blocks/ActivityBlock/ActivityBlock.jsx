@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Box, Card, Avatar, Typography, LinearProgress } from "@mui/material";
 import { Link, useGetOne } from "react-admin";
 import LikeButton from "../../buttons/LikeButton";
@@ -6,13 +7,15 @@ import BoostBanner from "./BoostBanner";
 import ReplyIcon from "@mui/icons-material/Reply";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import RelativeDate from "../../RelativeDate";
-import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
+import { ACTIVITY_TYPES, OBJECT_TYPES } from "@semapps/activitypub-components";
 import useActor from "../../../hooks/useActor";
+import { arrayOf } from "../../../utils";
 
 const ActivityBlock = ({ activity, showReplies }) => {
   if (
     activity.type !== ACTIVITY_TYPES.CREATE &&
-    activity.type !== ACTIVITY_TYPES.ANNOUNCE
+    activity.type !== ACTIVITY_TYPES.ANNOUNCE &&
+    activity.type !== OBJECT_TYPES.NOTE
   ) {
     return null;
   }
@@ -32,9 +35,28 @@ const ActivityBlock = ({ activity, showReplies }) => {
   const actorUri =
     boostedActivity?.object?.attributedTo ||
     boostedActivity?.attributedTo ||
+    activity.attributedTo ||
     activity.object?.attributedTo;
 
   const actor = useActor(actorUri);
+
+  const content = useMemo(() => {
+    let content =
+      boostedActivity?.object?.content ||
+      boostedActivity?.content ||
+      activity.content ||
+      activity.object?.content;
+
+    // Replace mentions links to local actor links
+    // TODO use a react-router Link to avoid page reload
+    arrayOf(activity?.object?.tag || activity?.tag)
+      .filter((tag) => tag.type === "Mention")
+      .forEach((mention) => {
+        content = content.replaceAll(mention.href, `/actor/${mention.name}`);
+      });
+
+    return content;
+  }, [boostedActivity, activity]);
 
   if (actor.isLoading) {
     return (
@@ -85,21 +107,16 @@ const ActivityBlock = ({ activity, showReplies }) => {
           </Box>
         )}
 
-        <Link
-          to={`/activity?uri=${encodeURIComponent(
+        {/* <Link
+          to={`/activity/${encodeURIComponent(
             boostedActivity?.id || activity?.id
           )}`}
-        >
-          <Typography
-            sx={{ color: "black" }}
-            dangerouslySetInnerHTML={{
-              __html:
-                boostedActivity?.object?.content ||
-                boostedActivity?.content ||
-                activity.object?.content,
-            }}
-          />
-        </Link>
+        > */}
+        <Typography
+          sx={{ color: "black" }}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+        {/* </Link> */}
 
         {boostedActivity?.attachment && (
           <img

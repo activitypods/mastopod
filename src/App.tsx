@@ -65,8 +65,8 @@ export const App = () => (
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
         </Route>
-        <Route path="/activity" element={<ActivityPage />} />
-        <Route path="/actor" element={<ActorPage />}>
+        <Route path="/activity/:activityUri" element={<ActivityPage />} />
+        <Route path="/actor/:username" element={<ActorPage />}>
           <Route index element={<ActorPosts />} />
           <Route path="replies" element={<ActorPostsAndReplies />} />
           <Route path="followers" element={<ActorFollowers />} />

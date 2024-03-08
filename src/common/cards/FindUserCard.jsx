@@ -17,7 +17,7 @@ const ShareContactCard = () => {
   const redirect = useRedirect();
 
   const onSubmit = ({ username }) => {
-    redirect(`/actor?username=${encodeURIComponent(username)}`);
+    redirect(`/actor/${username}`);
   };
 
   return (

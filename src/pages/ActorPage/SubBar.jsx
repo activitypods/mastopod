@@ -14,7 +14,7 @@ const SubBar = () => {
   const { totalItems: numFollowing } = useCollection(actor?.following);
 
   const onChange = (_, v) => {
-    navigate(v + "?username=" + encodeURIComponent(actor.username));
+    navigate(v);
     setTab(v);
   };
 
@@ -34,20 +34,24 @@ const SubBar = () => {
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="Posts" sx={{ fontWeight: "normal" }} value="/actor" />
+          <Tab
+            label="Posts"
+            sx={{ fontWeight: "normal" }}
+            value={`/actor/${actor.username}`}
+          />
           <Tab
             label="Posts & Replies"
             sx={{ fontWeight: "normal" }}
-            value="/actor/replies"
+            value={`/actor/${actor.username}/replies`}
           />
           <Tab
             label={`Followers ${numFollowers ? `(${numFollowers})` : ""}`}
-            value="/actor/followers"
+            value={`/actor/${actor.username}/followers`}
             sx={{ fontWeight: "normal" }}
           />
           <Tab
             label={`Following ${numFollowing ? `(${numFollowing})` : ""}`}
-            value="/actor/following"
+            value={`/actor/${actor.username}/following`}
             sx={{ fontWeight: "normal" }}
           />
         </Tabs>

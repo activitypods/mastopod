@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useSearchParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { Box, Container, Grid } from "@mui/material";
 import { useWebfinger } from "@semapps/activitypub-components";
 import useActor from "../../hooks/useActor";
@@ -9,8 +9,7 @@ import Hero from "./Hero";
 import SubBar from "./SubBar";
 
 const ActorPage = () => {
-  const [searchParams] = useSearchParams();
-  const username = searchParams.get("username");
+  const { username } = useParams();
   const [actorUri, setActorUri] = useState();
   const webfinger = useWebfinger();
 
