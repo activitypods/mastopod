@@ -23,16 +23,12 @@ const Note = ({ object, activity }) => {
       content = Object.values(content)?.[0];
     }
 
-    console.log("object.tag || activity?.tag", object.tag || activity?.tag);
-
     // Replace mentions links to local actor links
     // TODO use a react-router Link to avoid page reload
     arrayOf(object.tag || activity?.tag)
       .filter((tag) => tag.type === "Mention")
       .forEach((mention) => {
-        console.log("replace", mention.href, `/actor/${mention.name}`);
         content = content.replaceAll(mention.href, `/actor/${mention.name}`);
-        console.log("after", content);
       });
 
     return content;

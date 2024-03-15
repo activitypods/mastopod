@@ -5,6 +5,7 @@ import {
   useNotify,
   useTranslate,
   useGetIdentity,
+  useRedirect,
 } from "react-admin";
 import { useLocation } from "react-router-dom";
 import { Card, Box, Button } from "@mui/material";
@@ -18,6 +19,7 @@ import { useCallback } from "react";
 
 const PostBlock = ({ inReplyTo, mention }) => {
   const notify = useNotify();
+  const redirect = useRedirect();
   const inputRef = useRef(null);
   const outbox = useOutbox();
   const translate = useTranslate();
@@ -34,7 +36,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const onSubmit = useCallback(
     async (values) => {
       try {
-        await outbox.post({
+        const activityUri = await outbox.post({
           type: OBJECT_TYPES.NOTE,
           attributedTo: outbox.owner,
           content: values.content,
@@ -44,6 +46,9 @@ const PostBlock = ({ inReplyTo, mention }) => {
             : [PUBLIC_URI, identity?.webIdData?.followers],
         });
         notify("app.notification.message_sent", { type: "success" });
+        if (inReplyTo) {
+          redirect(`/activity/${encodeURIComponent(activityUri)}`);
+        }
       } catch (e) {
         notify("app.notification.message_send_error", {
           type: "error",
@@ -51,7 +56,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         });
       }
     },
-    [outbox, identity, notify, mention, inReplyTo]
+    [outbox, identity, notify, mention, inReplyTo, redirect]
   );
 
   return (

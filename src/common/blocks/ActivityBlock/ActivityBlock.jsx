@@ -12,8 +12,9 @@ const ActivityBlock = ({ activity, showReplies }) => {
   } else if (activity.type === OBJECT_TYPES.NOTE) {
     return <Create activity={{ object: activity }} showReplies={showReplies} />;
   } else {
-    console.warn(
-      `Activities or objects of type ${activity.type} are not displayed`
+    console.info(
+      `Activities or objects of type ${activity.type} are not displayed`,
+      activity
     );
   }
 };

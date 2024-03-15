@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@semapps/activitypub-components": {
-      "signature": "b5daeb6719e8393ca47662bb27e94e5d"
+      "signature": "6f477ceb7817c4fb0ec36ae53fecd44a"
     },
     "@semapps/auth-provider": {
       "signature": "3450147b08ce7b2d6d7003e965e9ee11"
