@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Box, Button, Typography, ThemeProvider } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useGetIdentity, useTranslate, Link, useRedirect } from "react-admin";
-import AppIcon from "../config/AppIcon";
 import theme from "../config/theme";
 
 const useStyles = makeStyles(() => ({
@@ -27,8 +26,9 @@ const useStyles = makeStyles(() => ({
   description: {
     color: "white",
     fontStyle: "italic",
-    marginTop: 16,
+    paddingTop: 12,
     whiteSpace: "pre-line",
+    maxWidth: 220,
   },
   link: {
     textDecoration: "underline",
@@ -60,7 +60,7 @@ const HomePage = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box className={classes.root}>
-        <AppIcon className={classes.logo} />
+        <img src="/logo-transparent.png" style={{ width: 150 }} />
         <Typography variant="h4" className={classes.title}>
           {import.meta.env.VITE_APP_NAME}
         </Typography>
@@ -91,6 +91,7 @@ const HomePage = () => {
               {translate("auth.action.signup")}
             </Button>
           </Link>
+          &nbsp;&nbsp;
           <Link to="/login">
             <Button
               variant="contained"

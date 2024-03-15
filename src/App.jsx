@@ -53,7 +53,6 @@ export const App = () => (
       layout={Layout}
       loginPage={LoginPage}
       theme={theme}
-      requireAuth
     >
       <CustomRoutes noLayout>
         <Route path="/" element={<HomePage />} />

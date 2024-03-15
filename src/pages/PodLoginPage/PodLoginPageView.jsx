@@ -24,11 +24,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import StorageIcon from "@mui/icons-material/Storage";
 
 const useStyles = makeStyles((theme) => ({
-  // "@global": {
-  //   body: {
-  //     backgroundColor: theme.palette.primary.main,
-  //   },
-  // },
+  "@global": {
+    body: {
+      backgroundColor: "#A7C340",
+    },
+  },
   text: {
     textAlign: "center",
     padding: "4px 8px 8px",
@@ -140,7 +140,12 @@ const PodLoginPageView = ({ text, customPodProviders }) => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      sx={{ bgcolor: "#A7C340" }}
+    >
       <Card className={classes.card}>
         <div className={classes.lockIconAvatar}>
           <Avatar className={classes.lockIcon}>

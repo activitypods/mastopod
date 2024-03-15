@@ -22,11 +22,6 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     textAlign: "center",
   },
-  avatar: {
-    width: 150,
-    height: 150,
-    backgroundColor: "lightgrey",
-  },
   block: {
     backgroundColor: "white",
     paddingTop: 80,
@@ -64,7 +59,7 @@ const ProfileCard = () => {
             <Avatar
               src={actor?.image}
               alt={actor?.name}
-              className={classes.avatar}
+              sx={{ width: 150, height: 150, bgcolor: "grey" }}
             />
           )}
         </Box>

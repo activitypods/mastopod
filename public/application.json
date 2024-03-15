@@ -1,0 +1,10 @@
+{
+  "@context": "https://activitypods.org/context.json",
+  "id": "http://localhost:4000/application.json",
+  "type": "Application",
+  "name": "Mastopod",
+  "content": "A Mastodon-compatible app that saves all data in a Pod.",
+  "image": "http://localhost:4000/logo512.png",
+  "apods:handledTypes": "https://www.w3.org/ns/activitystreams#Note",
+  "dc:language": "en"
+}

@@ -1,16 +1,23 @@
 import { useMemo } from "react";
 import isObject from "isobject";
-import { Box, Card, Avatar, Typography, LinearProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  Avatar,
+  Typography,
+  MenuItem,
+  LinearProgress,
+} from "@mui/material";
 import { Link, useGetOne } from "react-admin";
 import LikeButton from "../../buttons/LikeButton";
 import BoostButton from "../../buttons/BoostButton";
 import BoostBanner from "./BoostBanner";
 import ReplyButton from "../../buttons/ReplyButton";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import RelativeDate from "../../RelativeDate";
 import { ACTIVITY_TYPES, OBJECT_TYPES } from "@semapps/activitypub-components";
 import useActor from "../../../hooks/useActor";
 import { arrayOf } from "../../../utils";
+import MoreButton from "../../buttons/MoreButton";
 
 const ActivityBlock = ({ activity, showReplies }) => {
   if (
@@ -152,7 +159,11 @@ const ActivityBlock = ({ activity, showReplies }) => {
           activity={boostedActivity?.object || boostedActivity || activity}
         />
         <LikeButton activity={boostedActivity || activity} />
-        <MoreHorizIcon sx={{ color: "grey" }} />
+        <MoreButton>
+          <MenuItem onClick={(event) => console.log("event", event)}>
+            Unfollow
+          </MenuItem>
+        </MoreButton>
       </Box>
     </Card>
   );
