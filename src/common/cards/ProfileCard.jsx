@@ -46,7 +46,7 @@ const ProfileCard = () => {
   const actor = useActorContext();
   const translate = useTranslate();
   return (
-    <Card elevation={0}>
+    <Card>
       <Box className={classes.title}>
         <Box
           display="flex"

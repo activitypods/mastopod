@@ -27,27 +27,6 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: 20,
     },
   },
-  title: {
-    lineHeight: 1.15,
-  },
-  username: {
-    fontStyle: "italic",
-  },
-  note: {
-    marginTop: 10,
-  },
-  avatar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: 100,
-    height: 100,
-  },
-  button: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-  },
 }));
 
 const Hero = () => {
@@ -61,20 +40,26 @@ const Hero = () => {
           <Avatar
             src={actor?.image}
             alt={actor?.name}
-            className={classes.avatar}
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 100,
+              height: 100,
+            }}
           />
-          <Typography variant="h3" className={classes.title}>
+          <Typography variant="h3" sx={{ lineHeight: 1.15 }}>
             {actor?.name}
           </Typography>
           {actor && (
-            <Typography variant="body2" className={classes.username}>
+            <Typography variant="body2" sx={{ fontStyle: "italic" }}>
               {actor?.username}
             </Typography>
           )}
           <FollowButton
             actorUri={actor.uri}
             color="secondary"
-            className={classes.button}
+            sx={{ position: "absolute", bottom: 0, right: 0 }}
           />
         </Box>
       </Container>

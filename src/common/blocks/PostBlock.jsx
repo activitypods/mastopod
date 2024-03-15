@@ -55,7 +55,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   );
 
   return (
-    <Card elevation={0} sx={{ mb: 3 }}>
+    <Card>
       <Box p={2}>
         <Form onSubmit={onSubmit}>
           <TextInput

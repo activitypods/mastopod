@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   IconButton,
   Popper,
-  Grow,
   Paper,
   ClickAwayListener,
   MenuList,
@@ -27,33 +26,14 @@ const MoreButton = ({ activity, children, ...rest }) => {
       >
         <MoreHorizIcon />
       </IconButton>
-      <Popper
-        sx={{
-          zIndex: 1,
-        }}
-        open={open}
-        anchorEl={anchorRef.current}
-        placement="bottom"
-        transition
-        disablePortal
-      >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom" ? "center top" : "center bottom",
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleToggle}>
-                <MenuList id="split-button-menu" autoFocusItem>
-                  {children}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start">
+        <Paper>
+          <ClickAwayListener onClickAway={handleToggle}>
+            <MenuList id="split-button-menu" autoFocusItem>
+              {children}
+            </MenuList>
+          </ClickAwayListener>
+        </Paper>
       </Popper>
     </>
   );

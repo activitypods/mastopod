@@ -56,12 +56,24 @@ const useActor = (actorUri) => {
     }
   }, [webId, profile]);
 
+  const image = useMemo(() => {
+    let image = profile?.["vcard:photo"] || webId?.icon;
+
+    if (Array.isArray(image)) {
+      // Select the largest image
+      image.sort((a, b) => b?.height - a?.height);
+      image = image[0];
+    }
+
+    return image?.url || image;
+  }, [webId, profile]);
+
   return {
     ...webId,
     uri: actorUri,
     isLoggedUser: actorUri === identity?.id,
     name,
-    image: profile?.["vcard:photo"] || webId?.icon?.url,
+    image,
     username,
     isLoading: isWebIdLoading || isProfileLoading,
   };

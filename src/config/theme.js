@@ -35,6 +35,16 @@ const theme = createTheme({
         },
       },
     },
+    MuiCard: {
+      defaultProps: {
+        elevation: 0,
+      },
+      styleOverrides: {
+        root: {
+          marginBottom: 24,
+        },
+      },
+    },
   },
 });
 

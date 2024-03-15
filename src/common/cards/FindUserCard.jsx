@@ -21,7 +21,7 @@ const ShareContactCard = () => {
   };
 
   return (
-    <Card sx={{ mt: 3 }}>
+    <Card>
       <Box className={classes.title} p={1}>
         <Typography variant="h6">Find user</Typography>
       </Box>

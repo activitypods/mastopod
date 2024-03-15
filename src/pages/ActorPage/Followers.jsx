@@ -17,7 +17,7 @@ const Followers = () => {
 
   return (
     <>
-      <Card elevation={0} sx={{ mb: 3 }}>
+      <Card>
         <List sx={{ p: 0 }}>
           {followers?.map((actorUri) => (
             <ActorItem actorUri={actorUri} key={actorUri} />

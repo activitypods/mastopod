@@ -16,7 +16,7 @@ const ActorItem = ({ actorUri }) => {
     <ListItem sx={{ p: 0 }}>
       <ListItemButton
         component={Link}
-        to={`/actor?username=${encodeURIComponent(actor.username)}`}
+        to={`/actor/${encodeURIComponent(actor.username)}`}
       >
         {actor.isLoading ? (
           <Skeleton variant="circular" width={40} height={40} />
