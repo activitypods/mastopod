@@ -1,10 +1,11 @@
 import { useMemo } from "react";
+import isObject from "isobject";
 import { Box, Card, Avatar, Typography, LinearProgress } from "@mui/material";
 import { Link, useGetOne } from "react-admin";
 import LikeButton from "../../buttons/LikeButton";
 import BoostButton from "../../buttons/BoostButton";
 import BoostBanner from "./BoostBanner";
-import ReplyIcon from "@mui/icons-material/Reply";
+import ReplyButton from "../../buttons/ReplyButton";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import RelativeDate from "../../RelativeDate";
 import { ACTIVITY_TYPES, OBJECT_TYPES } from "@semapps/activitypub-components";
@@ -19,6 +20,8 @@ const ActivityBlock = ({ activity, showReplies }) => {
   ) {
     return null;
   }
+
+  console.log("activity", activity);
 
   let boostedActivity;
 
@@ -43,9 +46,18 @@ const ActivityBlock = ({ activity, showReplies }) => {
   const content = useMemo(() => {
     let content =
       boostedActivity?.object?.content ||
+      boostedActivity?.object?.contentMap ||
       boostedActivity?.content ||
+      boostedActivity?.contentMap ||
       activity.content ||
-      activity.object?.content;
+      activity.contentMap ||
+      activity.object?.content ||
+      activity.object?.contentMap;
+
+    // If we have a contentMap, take first value
+    if (isObject(content)) {
+      content = Object.values(content)?.[0];
+    }
 
     // Replace mentions links to local actor links
     // TODO use a react-router Link to avoid page reload
@@ -58,7 +70,23 @@ const ActivityBlock = ({ activity, showReplies }) => {
     return content;
   }, [boostedActivity, activity]);
 
-  if (actor.isLoading) {
+  const image = useMemo(() => {
+    let image =
+      boostedActivity?.attachment ||
+      boostedActivity?.icon ||
+      activity?.attachment ||
+      activity?.icon;
+
+    if (Array.isArray(image)) {
+      // Select the largest image
+      image.sort((a, b) => b?.height - a?.height);
+      image = image[0];
+    }
+
+    return image?.url;
+  }, [boostedActivity, activity]);
+
+  if (actor.isLoading || !content) {
     return (
       <Card elevation={0} sx={{ mb: 3, p: 4 }}>
         <LinearProgress />
@@ -70,7 +98,7 @@ const ActivityBlock = ({ activity, showReplies }) => {
     <Card elevation={0} sx={{ mb: 3, p: 2 }}>
       {boostedActivity && <BoostBanner activity={activity} />}
       <Box pl={8} sx={{ position: "relative" }}>
-        <Link to={`/actor?username=${encodeURIComponent(actor?.username)}`}>
+        <Link to={`/actor/${actor?.username}`}>
           <Avatar
             src={actor?.image}
             alt={actor?.name}
@@ -106,27 +134,20 @@ const ActivityBlock = ({ activity, showReplies }) => {
             />
           </Box>
         )}
-
-        {/* <Link
+        <Link
           to={`/activity/${encodeURIComponent(
             boostedActivity?.id || activity?.id
           )}`}
-        > */}
-        <Typography
-          sx={{ color: "black" }}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-        {/* </Link> */}
-
-        {boostedActivity?.attachment && (
-          <img
-            src={boostedActivity?.attachment.url}
-            style={{ width: "100%" }}
+        >
+          <Typography
+            sx={{ color: "black" }}
+            dangerouslySetInnerHTML={{ __html: content }}
           />
-        )}
+        </Link>
+        {image && <img src={image} style={{ width: "100%", marginTop: 10 }} />}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        <ReplyIcon sx={{ color: "grey" }} />
+        <ReplyButton activity={boostedActivity || activity} />
         <BoostButton
           activity={boostedActivity?.object || boostedActivity || activity}
         />

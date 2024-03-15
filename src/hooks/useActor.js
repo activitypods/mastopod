@@ -1,9 +1,17 @@
-import { useGetOne, useGetIdentity } from "react-admin";
-import { formatUsername } from "../utils";
 import { useMemo } from "react";
+import isObject from "isobject";
+import { useGetOne, useGetIdentity } from "react-admin";
+import { ACTOR_TYPES } from "@semapps/activitypub-components";
+import { formatUsername } from "../utils";
 
 const useActor = (actorUri) => {
   const { data: identity } = useGetIdentity();
+
+  if (Array.isArray(actorUri)) {
+    // Case of Peertube which allow to post as an actor AND a group
+    // actor: [{id: 'https://framatube.org/accounts/test', type: 'Person'}, {id: 'https://framatube.org/video-channels/channel-name', type: 'Group'}]
+    actorUri = actorUri.find((actor) => actor.type === ACTOR_TYPES.PERSON)?.id;
+  }
 
   const { data: webId, isLoading: isWebIdLoading } = useGetOne(
     "Actor",
@@ -32,15 +40,27 @@ const useActor = (actorUri) => {
     [actorUri]
   );
 
+  const name = useMemo(() => {
+    if (webId) {
+      const name =
+        profile?.["vcard:given-name"] ||
+        webId?.name ||
+        webId?.["foaf:nick"] ||
+        webId?.preferredUsername;
+
+      if (isObject(name)) {
+        return name?.["@value"];
+      } else {
+        return name;
+      }
+    }
+  }, [webId, profile]);
+
   return {
     ...webId,
     uri: actorUri,
     isLoggedUser: actorUri === identity?.id,
-    name:
-      profile?.["vcard:given-name"] ||
-      webId?.name ||
-      webId?.["foaf:nick"] ||
-      webId?.preferredUsername,
+    name,
     image: profile?.["vcard:photo"] || webId?.icon?.url,
     username,
     isLoading: isWebIdLoading || isProfileLoading,

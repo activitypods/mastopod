@@ -6,6 +6,8 @@ import ActorContext from "../../contexts/ActorContext";
 import ProfileCard from "../../common/cards/ProfileCard";
 import ActivityBlock from "../../common/blocks/ActivityBlock/ActivityBlock";
 import ReplyBlock from "../../common/blocks/ReplyBlock";
+import Replies from "./Replies";
+import PostBlock from "../../common/blocks/PostBlock";
 
 const ActivityPage = () => {
   const { activityUri } = useParams();
@@ -16,7 +18,7 @@ const ActivityPage = () => {
     { staleTime: Infinity }
   );
 
-  const actor = useActor(activity?.actor);
+  const actor = useActor(activity?.actor || activity?.attributedTo);
 
   if (!activity) return null;
 
@@ -30,6 +32,18 @@ const ActivityPage = () => {
                 <ReplyBlock activityUri={activity.object.inReplyTo} />
               )}
               <ActivityBlock activity={activity} showReplies={true} />
+              <PostBlock
+                inReplyTo={activity.object?.id || activity.id}
+                mention={actor}
+              />
+              <Replies
+                repliesUrl={
+                  activity?.object?.replies?.id ||
+                  activity.object?.replies ||
+                  activity.replies?.id ||
+                  activity.replies
+                }
+              />
             </Grid>
             <Grid item xs={4}>
               <ProfileCard />

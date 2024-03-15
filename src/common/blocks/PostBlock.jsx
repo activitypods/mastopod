@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import {
   Form,
   TextInput,
@@ -5,6 +6,7 @@ import {
   useTranslate,
   useGetIdentity,
 } from "react-admin";
+import { useLocation } from "react-router-dom";
 import { Card, Box, Button } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import {
@@ -14,11 +16,20 @@ import {
 } from "@semapps/activitypub-components";
 import { useCallback } from "react";
 
-const PostBlock = () => {
+const PostBlock = ({ inReplyTo, mention }) => {
   const notify = useNotify();
+  const inputRef = useRef(null);
   const outbox = useOutbox();
   const translate = useTranslate();
+  const { hash } = useLocation();
   const { data: identity } = useGetIdentity();
+
+  // Doesn't work
+  useEffect(() => {
+    if (hash === "#reply" && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [hash, inputRef.current]);
 
   const onSubmit = useCallback(
     async (values) => {
@@ -27,7 +38,10 @@ const PostBlock = () => {
           type: OBJECT_TYPES.NOTE,
           attributedTo: outbox.owner,
           content: values.content,
-          to: [PUBLIC_URI, identity?.webIdData?.followers],
+          inReplyTo,
+          to: mention
+            ? [PUBLIC_URI, identity?.webIdData?.followers, mention.uri]
+            : [PUBLIC_URI, identity?.webIdData?.followers],
         });
         notify("app.notification.message_sent", { type: "success" });
       } catch (e) {
@@ -37,7 +51,7 @@ const PostBlock = () => {
         });
       }
     },
-    [outbox, identity, notify]
+    [outbox, identity, notify, mention, inReplyTo]
   );
 
   return (
@@ -45,13 +59,19 @@ const PostBlock = () => {
       <Box p={2}>
         <Form onSubmit={onSubmit}>
           <TextInput
+            inputRef={inputRef}
             source="content"
-            label={translate("app.input.message")}
+            label={
+              inReplyTo
+                ? translate("app.input.reply")
+                : translate("app.input.message")
+            }
             margin="dense"
             fullWidth
             multiline
             minRows={4}
             sx={{ m: 0, mb: -2 }}
+            autoFocus={hash === "#reply"}
           />
           <Box display="flex" flexDirection="column" alignItems="flex-end">
             <Button

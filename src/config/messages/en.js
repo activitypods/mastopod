@@ -13,6 +13,7 @@ export default {
     block: {},
     input: {
       message: "Your message",
+      reply: "Your reply",
     },
     helper: {},
     message: {},

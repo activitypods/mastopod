@@ -15,6 +15,7 @@
   "dependencies": {
     "@semapps/activitypub-components": "^0.6.0-alpha.5",
     "dayjs": "^1.11.10",
+    "isobject": "^4.0.0",
     "ra-language-french": "^4.16.0",
     "react": "^18.2.0",
     "react-admin": "^4.16.0",
