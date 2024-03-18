@@ -8,7 +8,11 @@ export default {
       unfollow: "Undo Follow",
       send: "Send",
     },
-    page: {},
+    page: {
+      addresses: "My addresses",
+      network: "My network",
+      profile: "My profile",
+    },
     card: {},
     block: {},
     input: {

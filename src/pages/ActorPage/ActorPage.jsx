@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
+import StickyBox from "react-sticky-box";
 import { Box, Container, Grid } from "@mui/material";
 import { useWebfinger } from "@semapps/activitypub-components";
 import useActor from "../../hooks/useActor";
@@ -35,7 +36,9 @@ const ActorPage = () => {
               <Outlet />
             </Grid>
             <Grid item xs={4}>
-              <ProfileCard />
+              <StickyBox offsetTop={24}>
+                <ProfileCard />
+              </StickyBox>
             </Grid>
           </Grid>
         </Container>

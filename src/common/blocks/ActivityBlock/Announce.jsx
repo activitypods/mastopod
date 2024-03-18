@@ -4,7 +4,11 @@ import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
 import BoostBanner from "./BoostBanner";
 import Note from "./Note";
 const Announce = ({ activity }) => {
-  const { data: boostedObject, isLoading } = useGetOne("Activity", {
+  const {
+    data: boostedObject,
+    isLoading,
+    error,
+  } = useGetOne("Activity", {
     id: activity.object,
   });
 
@@ -13,6 +17,10 @@ const Announce = ({ activity }) => {
       <Card sx={{ p: 4 }}>
         <LinearProgress />
       </Card>
+    );
+  } else if (error) {
+    console.log(
+      `Could not load object ${activity.object}. Error message: ${error.message}`
     );
   } else {
     return (

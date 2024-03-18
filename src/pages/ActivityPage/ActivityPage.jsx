@@ -1,5 +1,6 @@
 import { useGetOne } from "react-admin";
 import { useParams } from "react-router-dom";
+import StickyBox from "react-sticky-box";
 import { Box, Container, Grid } from "@mui/material";
 import useActor from "../../hooks/useActor";
 import ActorContext from "../../contexts/ActorContext";
@@ -31,7 +32,11 @@ const ActivityPage = () => {
               {activity?.object?.inReplyTo && (
                 <ReplyBlock activityUri={activity.object.inReplyTo} />
               )}
-              <ActivityBlock activity={activity} showReplies={true} />
+              <ActivityBlock
+                activity={activity}
+                showReplies={true}
+                clickOnContent={false}
+              />
               <PostBlock
                 inReplyTo={activity.object?.id || activity.id}
                 mention={actor}
@@ -46,7 +51,9 @@ const ActivityPage = () => {
               />
             </Grid>
             <Grid item xs={4}>
-              <ProfileCard />
+              <StickyBox offsetTop={24}>
+                <ProfileCard />
+              </StickyBox>
             </Grid>
           </Grid>
         </Container>

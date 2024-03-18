@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import isObject from "isobject";
 import { Box, Avatar, Typography, MenuItem } from "@mui/material";
 import { Link } from "react-admin";
+import { useNavigate } from "react-router-dom";
 import LikeButton from "../../buttons/LikeButton";
 import BoostButton from "../../buttons/BoostButton";
 import ReplyButton from "../../buttons/ReplyButton";
@@ -10,7 +11,11 @@ import useActor from "../../../hooks/useActor";
 import { arrayOf } from "../../../utils";
 import MoreButton from "../../buttons/MoreButton";
 
-const Note = ({ object, activity }) => {
+const mentionRegex =
+  /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
+
+const Note = ({ object, activity, clickOnContent }) => {
+  const navigate = useNavigate();
   const actorUri = object?.attributedTo;
 
   const actor = useActor(actorUri);
@@ -23,13 +28,27 @@ const Note = ({ object, activity }) => {
       content = Object.values(content)?.[0];
     }
 
-    // Replace mentions links to local actor links
-    // TODO use a react-router Link to avoid page reload
-    arrayOf(object.tag || activity?.tag)
-      .filter((tag) => tag.type === "Mention")
-      .forEach((mention) => {
-        content = content.replaceAll(mention.href, `/actor/${mention.name}`);
-      });
+    // Find all mentions
+    const mentions = arrayOf(object.tag || activity?.tag).filter(
+      (tag) => tag.type === "Mention"
+    );
+
+    if (mentions.length > 0) {
+      // Replace mentions to local actor links
+      content = content.replaceAll(
+        mentionRegex,
+        (match, actorUri, actorName) => {
+          const mention = mentions.find((mention) =>
+            mention.name.startsWith(`@${actorName}@`)
+          );
+          if (mention) {
+            return match.replace(actorUri, `/actor/${mention.name}`);
+          } else {
+            return match;
+          }
+        }
+      );
+    }
 
     return content;
   }, [object, activity]);
@@ -45,6 +64,15 @@ const Note = ({ object, activity }) => {
 
     return image?.url;
   }, [object]);
+
+  // Catch links to actors with react-router
+  const onContentClick = (e) => {
+    const link = e.target.closest("a")?.getAttribute("href");
+    if (link?.startsWith("/actor/")) {
+      e.preventDefault();
+      navigate(link);
+    }
+  };
 
   return (
     <>
@@ -85,12 +113,23 @@ const Note = ({ object, activity }) => {
             />
           </Box>
         )}
-        <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`}>
+        {clickOnContent ? (
+          <Link
+            to={`/activity/${encodeURIComponent(activity?.id || object.id)}`}
+            onClick={onContentClick}
+          >
+            <Typography
+              sx={{ color: "black" }}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+          </Link>
+        ) : (
           <Typography
             sx={{ color: "black" }}
             dangerouslySetInnerHTML={{ __html: content }}
           />
-        </Link>
+        )}
+
         {image && <img src={image} style={{ width: "100%", marginTop: 10 }} />}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
@@ -105,6 +144,10 @@ const Note = ({ object, activity }) => {
       </Box>
     </>
   );
+};
+
+Note.defaultProps = {
+  clickOnContent: true,
 };
 
 export default Note;

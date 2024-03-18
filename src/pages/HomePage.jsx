@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Button, Typography, ThemeProvider } from "@mui/material";
+import { Box, Button, Typography, ThemeProvider, Alert } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useGetIdentity, useTranslate, Link, useRedirect } from "react-admin";
 import theme from "../config/theme";
@@ -67,6 +67,7 @@ const HomePage = () => {
         <Typography align="center" className={classes.description}>
           {import.meta.env.VITE_APP_DESCRIPTION}
         </Typography>
+
         {import.meta.env.VITE_ORGANIZATION_NAME && (
           <a
             href={import.meta.env.VITE_ORGANIZATION_URL}
@@ -102,6 +103,19 @@ const HomePage = () => {
             </Button>
           </Link>
         </Box>
+        <Alert variant="filled" severity="warning" sx={{ ml: 3, mr: 3 }}>
+          This application is in early development.
+          <br />
+          Use it for tests only, and please{" "}
+          <a
+            href="https://github.com/assemblee-virtuelle/mastopod/issues"
+            target="_blank"
+            style={{ color: "white" }}
+          >
+            report
+          </a>{" "}
+          issues you find.
+        </Alert>
       </Box>
     </ThemeProvider>
   );

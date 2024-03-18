@@ -8,7 +8,7 @@ const Replies = ({ repliesUrl }) => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useCollection(repliesUrl);
+  } = useCollection(repliesUrl, { dereferenceItems: true });
   return (
     <>
       {activities?.map((activity, i) => (

@@ -1,6 +1,7 @@
 import { Grid, Box, Container } from "@mui/material";
 import { useGetIdentity } from "react-admin";
 import { Outlet } from "react-router-dom";
+import StickyBox from "react-sticky-box";
 import ProfileCard from "../../common/cards/ProfileCard";
 import FindUserCard from "../../common/cards/FindUserCard";
 import SubBar from "./SubBar";
@@ -20,8 +21,10 @@ const MainPage = () => {
               <Outlet />
             </Grid>
             <Grid item xs={4}>
-              <ProfileCard />
-              <FindUserCard />
+              <StickyBox offsetTop={24}>
+                <ProfileCard />
+                <FindUserCard />
+              </StickyBox>
             </Grid>
           </Grid>
         </Container>

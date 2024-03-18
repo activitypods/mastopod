@@ -2,10 +2,10 @@
   "version": "v1",
   "packages": {
     "@semapps/activitypub-components": {
-      "signature": "6f477ceb7817c4fb0ec36ae53fecd44a"
+      "signature": "7a1a9fc0d16830cecfdbbf88fdbeb1ff"
     },
     "@semapps/auth-provider": {
-      "signature": "3450147b08ce7b2d6d7003e965e9ee11"
+      "signature": "9a4bfb2b2c17c436a3f467016bc94ac9"
     },
     "@semapps/date-components": {
       "signature": "80630bfd71121309e08c50ca63a12fd3"

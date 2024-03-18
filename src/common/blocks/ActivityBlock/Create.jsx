@@ -3,8 +3,12 @@ import { useGetOne } from "react-admin";
 import Note from "./Note";
 import isObject from "isobject";
 
-const Create = ({ activity, showReplies }) => {
-  let { data: createdObject, isLoading } = useGetOne(
+const Create = ({ activity, showReplies, clickOnContent }) => {
+  let {
+    data: createdObject,
+    isLoading,
+    error,
+  } = useGetOne(
     "Activity",
     {
       id: activity.object,
@@ -22,6 +26,11 @@ const Create = ({ activity, showReplies }) => {
         <LinearProgress />
       </Card>
     );
+  } else if (error) {
+    console.log(
+      `Could not load object ${activity.object}. Error message: ${error.message}`
+    );
+    return null;
   }
 
   // Do not display replies
@@ -31,13 +40,18 @@ const Create = ({ activity, showReplies }) => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Note object={createdObject} activity={activity} />
+      <Note
+        object={createdObject}
+        activity={activity}
+        clickOnContent={clickOnContent}
+      />
     </Card>
   );
 };
 
 Create.defaultProps = {
   showReplies: true,
+  clickOnContent: true,
 };
 
 export default Create;
