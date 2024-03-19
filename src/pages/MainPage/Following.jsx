@@ -15,7 +15,7 @@ const Following = () => {
       <Card>
         <List sx={{ p: 0 }}>
           {following?.map((actorUri) => (
-            <ActorItem actorUri={actorUri} key={actorUri} />
+            <ActorItem actorUri={actorUri} key={actorUri} unfollowButton />
           ))}
         </List>
       </Card>

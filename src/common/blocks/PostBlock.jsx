@@ -50,7 +50,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
           redirect(`/activity/${encodeURIComponent(activityUri)}`);
         }
       } catch (e) {
-        notify("app.notification.message_send_error", {
+        notify("app.notification.activity_send_error", {
           type: "error",
           messageArgs: { error: e.message },
         });

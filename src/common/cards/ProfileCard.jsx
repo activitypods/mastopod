@@ -1,9 +1,10 @@
 import { Box, Card, Typography, Avatar, Button, Skeleton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { useCreatePath, useTranslate } from "react-admin";
+import { useCreatePath, useGetIdentity, useTranslate } from "react-admin";
 import { Link } from "react-router-dom";
 import useActorContext from "../../hooks/useActorContext";
 import FollowButton from "../buttons/FollowButton";
+import useOpenExternalApp from "../../hooks/useOpenExternalApp";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -42,9 +43,11 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileCard = () => {
   const classes = useStyles();
-  const createPath = useCreatePath();
+  const { data: identity } = useGetIdentity();
   const actor = useActorContext();
   const translate = useTranslate();
+  const openExternalApp = useOpenExternalApp();
+
   return (
     <Card>
       <Box className={classes.title}>
@@ -88,17 +91,11 @@ const ProfileCard = () => {
 
       <Box className={classes.button} pb={3} pr={3} pl={3}>
         {actor.isLoggedUser ? (
-          <Link
-            to={createPath({
-              resource: "Profile",
-              id: actor?.uri,
-              type: "edit",
-            })}
-          >
+          <a href={openExternalApp("as:Profile", identity?.profileData?.id)}>
             <Button variant="contained" color="secondary" type="submit">
               {translate("app.action.edit_profile")}
             </Button>
-          </Link>
+          </a>
         ) : (
           <FollowButton color="secondary" actorUri={actor?.uri} />
         )}

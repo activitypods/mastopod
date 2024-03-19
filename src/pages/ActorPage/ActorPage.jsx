@@ -16,8 +16,13 @@ const ActorPage = () => {
 
   useEffect(() => {
     (async () => {
-      const actorUri = await webfinger.fetch(username);
-      setActorUri(actorUri);
+      if (username.startsWith("http")) {
+        // Allow to use the full URI for the username
+        setActorUri(username);
+      } else {
+        const actorUri = await webfinger.fetch(username);
+        setActorUri(actorUri);
+      }
     })();
   }, [webfinger, username, setActorUri]);
 
