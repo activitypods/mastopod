@@ -1,4 +1,4 @@
-import { Grid, Box, Container } from "@mui/material";
+import { Grid, Box, Container, Hidden } from "@mui/material";
 import { useGetIdentity } from "react-admin";
 import { Outlet } from "react-router-dom";
 import StickyBox from "react-sticky-box";
@@ -14,18 +14,25 @@ const MainPage = () => {
   return (
     <ActorContext.Provider value={actor}>
       <SubBar />
-      <Box marginTop={3}>
+      <Hidden smUp>
+        <Box p={2}>
+          <FindUserCard stripCard />
+        </Box>
+      </Hidden>
+      <Box marginTop={{ xs: 0, sm: 3 }}>
         <Container maxWidth="md">
           <Grid container spacing={3}>
-            <Grid item xs={8}>
+            <Grid item sm={8} xs={12}>
               <Outlet />
             </Grid>
-            <Grid item xs={4}>
-              <StickyBox offsetTop={24}>
-                <ProfileCard />
-                <FindUserCard />
-              </StickyBox>
-            </Grid>
+            <Hidden smDown>
+              <Grid item sm={4} xs={12}>
+                <StickyBox offsetTop={24}>
+                  <ProfileCard />
+                  <FindUserCard />
+                </StickyBox>
+              </Grid>
+            </Hidden>
           </Grid>
         </Container>
       </Box>

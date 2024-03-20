@@ -56,10 +56,7 @@ const ActorItem = ({ actorUri, unfollowButton }) => {
         )
       }
     >
-      <ListItemButton
-        component={Link}
-        to={`/actor/${encodeURIComponent(actor.username)}`}
-      >
+      <ListItemButton component={Link} to={`/actor/${actor.username}`}>
         {actor.isLoading ? (
           <Skeleton variant="circular" width={40} height={40} />
         ) : (

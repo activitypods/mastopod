@@ -3,6 +3,7 @@ import { Card, LinearProgress } from "@mui/material";
 import { ACTIVITY_TYPES } from "@semapps/activitypub-components";
 import BoostBanner from "./BoostBanner";
 import Note from "./Note";
+
 const Announce = ({ activity }) => {
   const {
     data: boostedObject,
@@ -27,7 +28,7 @@ const Announce = ({ activity }) => {
       <Card sx={{ p: 2 }}>
         <BoostBanner activity={activity} />
         {boostedObject.type === ACTIVITY_TYPES.CREATE ? (
-          <Create activity={boostedObject} />
+          <Note object={boostedObject.object} activity={boostedObject} />
         ) : (
           <Note object={boostedObject} activity={activity} />
         )}

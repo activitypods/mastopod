@@ -8,7 +8,7 @@ import {
 } from "@semapps/activitypub-components";
 import RepeatIcon from "@mui/icons-material/Repeat";
 
-const LikeButton = ({ activity, ...rest }) => {
+const LikeButton = ({ object, activity, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
   const { data: identity } = useGetIdentity();
@@ -18,18 +18,18 @@ const LikeButton = ({ activity, ...rest }) => {
       await outbox.post({
         type: ACTIVITY_TYPES.ANNOUNCE,
         actor: outbox.owner,
-        object:
-          activity.type === ACTIVITY_TYPES.CREATE ||
-          activity.type === ACTIVITY_TYPES.ANNOUNCE
-            ? activity.object.id
-            : activity.id,
-        to: [identity.webIdData.followers, activity.actor, PUBLIC_URI],
+        object: object?.id || activity?.id,
+        to: [
+          identity.webIdData.followers,
+          activity?.actor || object?.attributedTo,
+          PUBLIC_URI,
+        ],
       });
       notify("app.notification.post_boosted", { type: "success" });
     } catch (e) {
       notify(e.message, "error");
     }
-  }, [activity, outbox, notify]);
+  }, [object, activity, outbox, notify]);
 
   return (
     <IconButton aria-label="like" onClick={boost} {...rest}>

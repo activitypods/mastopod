@@ -18,6 +18,8 @@ const Note = ({ object, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const actorUri = object?.attributedTo;
 
+  console.log("Note", object, activity);
+
   const actor = useActor(actorUri);
 
   const content = useMemo(() => {
@@ -133,9 +135,9 @@ const Note = ({ object, activity, clickOnContent }) => {
         {image && <img src={image} style={{ width: "100%", marginTop: 10 }} />}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        <ReplyButton activity={object} />
-        <BoostButton activity={object} />
-        <LikeButton activity={object} />
+        <ReplyButton objectUri={object.id || activity.id} />
+        <BoostButton activity={activity} object={object} />
+        <LikeButton activity={activity} object={object} />
         <MoreButton>
           <MenuItem onClick={(event) => console.log("event", event)}>
             Unfollow

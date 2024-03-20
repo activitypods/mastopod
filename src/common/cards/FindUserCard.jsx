@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ShareContactCard = () => {
+const FindUserCard = ({ stripCard }) => {
   const classes = useStyles();
   const redirect = useRedirect();
 
@@ -20,16 +20,25 @@ const ShareContactCard = () => {
     redirect(`/actor/${username}`);
   };
 
-  return (
+  return stripCard ? (
+    <Form onSubmit={onSubmit}>
+      <SearchInput
+        placeholder="@user@instance.com"
+        source="username"
+        margin="dense"
+        fullWidth
+        sx={{ mt: 0, mb: -3 }}
+      />
+    </Form>
+  ) : (
     <Card>
       <Box className={classes.title} p={1}>
         <Typography variant="h6">Find user</Typography>
       </Box>
       <Box p={2}>
         <Typography variant="body2">
-          To find another Mastodon user, enter their handle and hit enter.
+          To find another fediverse member, enter their handle and hit enter.
         </Typography>
-
         <Form onSubmit={onSubmit}>
           <SearchInput
             placeholder="@user@instance.com"
@@ -44,4 +53,4 @@ const ShareContactCard = () => {
   );
 };
 
-export default ShareContactCard;
+export default FindUserCard;

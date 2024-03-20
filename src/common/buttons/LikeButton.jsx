@@ -4,7 +4,7 @@ import { useNotify } from "react-admin";
 import { useOutbox, ACTIVITY_TYPES } from "@semapps/activitypub-components";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 
-const LikeButton = ({ activity, ...rest }) => {
+const LikeButton = ({ activity, object, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
 
@@ -13,14 +13,14 @@ const LikeButton = ({ activity, ...rest }) => {
       await outbox.post({
         type: ACTIVITY_TYPES.LIKE,
         actor: outbox.owner,
-        object: activity.id,
-        to: activity.actor,
+        object: object?.id || activity?.id,
+        to: activity?.actor || object?.attributedTo,
       });
       notify("app.notification.post_liked", { type: "success" });
     } catch (e) {
       notify(e.message, "error");
     }
-  }, [activity, outbox, notify]);
+  }, [activity, object, outbox, notify]);
 
   return (
     <IconButton aria-label="like" onClick={like} {...rest}>

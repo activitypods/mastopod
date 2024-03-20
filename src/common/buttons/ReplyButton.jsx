@@ -1,14 +1,13 @@
-import { useCallback } from "react";
 import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import ReplyIcon from "@mui/icons-material/Reply";
 
-const ReplyButton = ({ activity, ...rest }) => {
+const ReplyButton = ({ objectUri, ...rest }) => {
   return (
     <IconButton
       aria-label="reply"
       component={Link}
-      to={`/activity/${encodeURIComponent(activity.id)}#reply`}
+      to={`/activity/${encodeURIComponent(objectUri)}#reply`}
       {...rest}
     >
       <ReplyIcon />

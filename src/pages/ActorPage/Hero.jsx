@@ -1,8 +1,5 @@
 import { Box, Container, Avatar, Typography } from "@mui/material";
-import { useNotify } from "react-admin";
-import { useOutbox } from "@semapps/activitypub-components";
 import makeStyles from "@mui/styles/makeStyles";
-import { formatUsername } from "../../utils";
 import FollowButton from "../../common/buttons/FollowButton";
 import useActorContext from "../../hooks/useActorContext";
 
@@ -11,20 +8,21 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "white",
     paddingTop: 25,
     paddingBottom: 25,
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       paddingTop: 20,
       paddingBottom: 20,
       marginBottom: 0,
-      height: 100,
     },
   },
   container: {
     position: "relative",
     paddingLeft: 130,
     paddingTop: 15,
-    [theme.breakpoints.down("xs")]: {
-      paddingLeft: 120,
-      paddingTop: 20,
+    height: 100,
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 100,
+      paddingTop: 10,
+      height: 110,
     },
   },
 }));
@@ -44,11 +42,20 @@ const Hero = () => {
               position: "absolute",
               top: 0,
               left: 0,
-              width: 100,
-              height: 100,
+              width: {
+                xs: 80,
+                sm: 100,
+              },
+              height: {
+                xs: 80,
+                sm: 100,
+              },
             }}
           />
-          <Typography variant="h3" sx={{ lineHeight: 1.15 }}>
+          <Typography
+            variant="h3"
+            sx={{ lineHeight: 1.15, fontSize: { xs: 24, sm: 40 } }}
+          >
             {actor?.name}
           </Typography>
           {actor && (
