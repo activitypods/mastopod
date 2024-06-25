@@ -18,8 +18,6 @@ const Note = ({ object, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const actorUri = object?.attributedTo;
 
-  console.log("Note", object, activity);
-
   const actor = useActor(actorUri);
 
   const content = useMemo(() => {

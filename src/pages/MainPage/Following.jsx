@@ -1,3 +1,4 @@
+import { CircularProgress, Box } from "@mui/material";
 import { Card, List } from "@mui/material";
 import { useCollection } from "@semapps/activitypub-components";
 import ActorItem from "./ActorItem";
@@ -6,9 +7,9 @@ import LoadMore from "../../common/LoadMore";
 const Following = () => {
   const {
     items: following,
-    hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useCollection("following");
   return (
     <>
@@ -19,12 +20,15 @@ const Following = () => {
           ))}
         </List>
       </Card>
-      {hasNextPage && (
-        <LoadMore
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
+      {following.length === 0 && isLoading && (
+        <Box height={50} mt={4} mb={4} display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
       )}
+      <LoadMore
+        fetchNextPage={fetchNextPage}
+        isLoading={isFetchingNextPage || isLoading}
+      />{" "}
     </>
   );
 };

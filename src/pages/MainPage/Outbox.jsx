@@ -1,3 +1,4 @@
+import { CircularProgress, Box } from "@mui/material";
 import { useCollection } from "@semapps/activitypub-components";
 import ActivityBlock from "../../common/blocks/ActivityBlock/ActivityBlock";
 import PostBlock from "../../common/blocks/PostBlock";
@@ -9,19 +10,20 @@ const Outbox = () => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useCollection("outbox");
+    isLoading,
+  } = useCollection("outbox", { dereferenceItems: true });
   return (
     <>
       <PostBlock />
       {activities?.map((activity) => (
         <ActivityBlock activity={activity} key={activity.id} showReplies />
       ))}
-      {hasNextPage && (
+      {
         <LoadMore
           fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
+          isLoading={isFetchingNextPage || isLoading}
         />
-      )}
+      }
     </>
   );
 };
