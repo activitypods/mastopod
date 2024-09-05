@@ -1,0 +1,39 @@
+{
+  "queues": [
+    {
+      "name": "remotePost",
+      "hostId": "mastopod",
+      "host": "redis",
+      "port": 6379,
+      "db": 8
+    },
+    {
+      "name": "processOutbox",
+      "hostId": "mastopod",
+      "host": "redis",
+      "port": 6379,
+      "db": 8
+    },
+    {
+      "name": "processInbox",
+      "hostId": "mastopod",
+      "host": "redis",
+      "port": 6379,
+      "db": 8
+    },
+    {
+      "name": "registerListener",
+      "hostId": "mastopod",
+      "host": "redis",
+      "port": 6379,
+      "db": 8
+    },
+    {
+      "name": "timeout",
+      "hostId": "mastopod",
+      "host": "redis",
+      "port": 6379,
+      "db": 8
+    }
+  ]
+}

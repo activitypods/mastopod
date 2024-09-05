@@ -1,0 +1,74 @@
+services:
+  fuseki:
+    image: semapps/jena-fuseki-webacl
+    volumes:
+      - ./data/fuseki:/fuseki:z
+    ports:
+      - "3030:3030"
+    expose:
+      - "3030"
+    environment:
+      ADMIN_PASSWORD: admin
+
+  activitypods-backend:
+    image: activitypods/backend
+    depends_on:
+      - fuseki
+      - redis
+    restart: always
+    expose:
+      - "3000"
+    volumes:
+      - ./data/activitypods/logs:/app/backend/logs:z
+      - ./data/activitypods/jwt:/app/backend/jwt:z
+      - ./data/activitypods/uploads:/app/backend/uploads:z
+    environment:
+      SEMAPPS_JENA_PASSWORD: admin
+      SEMAPPS_APP_LANG: en
+      SEMAPPS_MAPBOX_ACCESS_TOKEN: ${MAPBOX_ACCESS_TOKEN:?You must set it in the .env.local file}
+    # Allow the Pod backend to access the app backend as localhost:3001
+    # See https://docs.docker.com/network/drivers/host/
+    network_mode: "host"
+
+  activitypods-frontend:
+    image: activitypods/frontend
+    depends_on:
+      - activitypods-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    expose:
+      - "5000"
+    environment:
+      REACT_APP_CONFIG_URL: "http://localhost:3000/.well-known/config.js"
+
+  mailcatcher:
+    image: dockage/mailcatcher:0.7.1
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    restart: on-failure
+
+  redis:
+    image: redis
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data:z
+    command: [ "redis-server", "--appendonly", "yes" ]
+
+  arena:
+    image: activitypods/arena
+    restart: always
+    volumes:
+      - ./docker/arena-dev.json:/opt/arena/src/server/config/index.json:z
+    depends_on:
+      - redis
+    expose:
+      - "4567"
+    ports:
+      - "4567:4567"
+    environment:
+      REDIS_HOST: "redis"
