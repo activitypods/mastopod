@@ -1,30 +1,25 @@
-import { Card, List } from "@mui/material";
-import { useCollection } from "@semapps/activitypub-components";
-import ActorItem from "./ActorItem";
-import LoadMore from "../../common/LoadMore";
+import { Card, List } from '@mui/material';
+import { useCollection } from '@semapps/activitypub-components';
+import ActorItem from './ActorItem';
+import LoadMore from '../../common/LoadMore';
 
 const Following = () => {
   const {
     items: following,
     hasNextPage,
     fetchNextPage,
-    isFetchingNextPage,
-  } = useCollection("following");
+    isFetchingNextPage
+  } = useCollection('following', { liveUpdates: true });
   return (
     <>
       <Card>
         <List sx={{ p: 0 }}>
-          {following?.map((actorUri) => (
+          {following?.map(actorUri => (
             <ActorItem actorUri={actorUri} key={actorUri} unfollowButton />
           ))}
         </List>
       </Card>
-      {hasNextPage && (
-        <LoadMore
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      )}
+      {hasNextPage && <LoadMore fetchNextPage={fetchNextPage} isFetchingNextPage={isFetchingNextPage} />}
     </>
   );
 };

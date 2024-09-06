@@ -11,7 +11,7 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
   const translate = useTranslate();
-  const { items: following, addItem, removeItem } = useCollection("following");
+  const { items: following, addItem, removeItem } = useCollection("following", { liveUpdates: true });
 
   const follow = useCallback(async () => {
     try {
