@@ -19,7 +19,7 @@ services:
       - "8080:8080"
     volumes:
       - ./data/letsencrypt:/letsencrypt:z
-      - /var/run/docker.sock:/var/run/docker.sock:ro:z
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   fuseki:
     image: semapps/jena-fuseki-webacl
@@ -36,6 +36,15 @@ services:
     build:
       context: .
       dockerfile: ./docker/frontend.dockerfile
+      args:
+        REACT_APP_NAME: $APP_NAME
+        REACT_APP_DESCRIPTION: $APP_DESCRIPTION
+        REACT_APP_LANG: $APP_LANG
+        REACT_APP_BACKEND_URL: https://${DOMAIN_NAME}${BACKEND_PATH}
+        REACT_APP_BACKEND_CLIENT_ID: https://${DOMAIN_NAME}${BACKEND_PATH}/app
+        REACT_APP_POD_PROVIDER_BASE_URL: $POD_PROVIDER_BASE_URL
+        REACT_APP_MAPBOX_ACCESS_TOKEN: $MAPBOX_ACCESS_TOKEN
+        PORT: 4000
     image: $FRONTEND_DOCKER_IMAGE
     restart: always
     expose:
@@ -45,11 +54,6 @@ services:
       - "traefik.http.routers.frontend.rule=Host(`${DOMAIN_NAME}`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-    env_file:
-      - ./frontend/.env
-      - ./frontend/.env.production
-      - path: ./frontend/.env.production.local
-        required: false
 
   app-backend:
     build:
