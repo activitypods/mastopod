@@ -7,10 +7,10 @@
     "unlink-packages": "yarn unlink @activitypods/app @semapps/activitypub @semapps/auth @semapps/backup @semapps/core @semapps/crypto @semapps/importer @semapps/inference @semapps/jsonld @semapps/ldp @semapps/middlewares @semapps/migration @semapps/mime-types @semapps/ontologies @semapps/sync @semapps/nodeinfo @semapps/notifications @semapps/solid @semapps/sparql-endpoint @semapps/triplestore @semapps/void @semapps/webacl @semapps/webfinger @semapps/webhooks @semapps/webid"
   },
   "dependencies": {
-    "@activitypods/app": "2.0.0-alpha.14",
-    "@semapps/auth": "0.9.2",
-    "@semapps/core": "0.9.2",
-    "@semapps/crypto": "0.9.2",
+    "@activitypods/app": "2.0.0-alpha.15",
+    "@semapps/auth": "0.9.3",
+    "@semapps/core": "0.9.3",
+    "@semapps/crypto": "0.9.3",
     "dotenv-flow": "^3.2.0",
     "ioredis": "^4.17.3",
     "url-join": "^4.0.1",
