@@ -512,6 +512,28 @@
     moleculer-db "^0.8.16"
     node-fetch "^2.6.6"
 
+"@semapps/solid@0.9.3":
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/@semapps/solid/-/solid-0.9.3.tgz#d495a89bdbac67538b72964cd066420f2626412e"
+  integrity sha512-HQS9Zin5Va9WF4l9ffkL6SVh7Htj2wdzHoF4CkZfe2epgsTGlW/J78ukk6N6YnIvHq4roYrrcLQX7SreqfYLLQ==
+  dependencies:
+    "@rdfjs/data-model" "^1.3.4"
+    "@semapps/activitypub" "0.9.3"
+    "@semapps/ldp" "0.9.3"
+    "@semapps/middlewares" "0.9.3"
+    "@semapps/mime-types" "0.9.3"
+    "@semapps/ontologies" "0.9.3"
+    "@semapps/triplestore" "0.9.3"
+    "@semapps/webid" "0.9.3"
+    http-link-header "^1.1.1"
+    moleculer "^0.14.19"
+    moleculer-bull "0.2.8"
+    moleculer-db "^0.8.16"
+    moment "2.30.1"
+    node-fetch "^2.6.6"
+    url-join "^4.0.1"
+    uuid "^9.0.1"
+
 "@semapps/sparql-endpoint@0.9.3":
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/@semapps/sparql-endpoint/-/sparql-endpoint-0.9.3.tgz#c7e5f1088df87dd167dd0ee25fd2ca876b31af89"
@@ -3458,7 +3480,7 @@ mkdirp@^1.0.3:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moleculer-bull@^0.2.5:
+moleculer-bull@0.2.8, moleculer-bull@^0.2.5:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/moleculer-bull/-/moleculer-bull-0.2.8.tgz#304bd9f0ac8143c1202e5d0a5d328ec11434c05c"
   integrity sha512-ayVIqVmc6HVD6SL0RLsmMYqDnnPqwrcEWAPpY31kbUIfU3CBH2grGaqA5adyZBNCo4gQz09+4O9m+Hqxls06Ag==
@@ -3551,7 +3573,7 @@ moment-timezone@^0.5.31:
   dependencies:
     moment "^2.29.4"
 
-moment@^2.29.4:
+moment@2.30.1, moment@^2.29.4:
   version "2.30.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
   integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
