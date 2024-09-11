@@ -44,7 +44,6 @@ module.exports = {
           en: 'Messages',
           fr: 'Messages'
         },
-        labelPredicate: 'as:name',
         openEndpoint: urlJoin(CONFIG.FRONT_URL, '/r')
       }
     },

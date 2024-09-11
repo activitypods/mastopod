@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@mui/styles": "^5.14.13",
-    "@activitypods/react": "2.0.0-alpha.15",
+    "@activitypods/react": "2.0.0-alpha.16",
     "@semapps/activitypub-components": "0.8.1",
     "@semapps/auth-provider": "0.8.1",
     "@semapps/semantic-data-provider": "0.8.1",

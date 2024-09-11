@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@activitypods/react@2.0.0-alpha.15":
-  version "2.0.0-alpha.15"
-  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.0.0-alpha.15.tgz#f6e35a8e2f916218eba23102727bba80cced618f"
-  integrity sha512-qWrZaSUIvW+67HYRs7I84UUTTJoL7dEBH29MDbDKQFCTDNeMw3m4M+2ec2AqJJvChnfnQc89rccAMRhS2mAeeA==
+"@activitypods/react@2.0.0-alpha.16":
+  version "2.0.0-alpha.16"
+  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.0.0-alpha.16.tgz#9f88c69e6cb044bdf69579b1d0885d40369aedab"
+  integrity sha512-o1wRVgfd0lIPkk8BMTfewIbJ7ZXESqv8On748fCTZBVooRtFYCP9SKAhtdpe4LeUlxHo6lBlTYzEaF0zREO6pA==
   dependencies:
     "@semapps/activitypub-components" "0.8.1"
     "@semapps/semantic-data-provider" "0.8.1"
