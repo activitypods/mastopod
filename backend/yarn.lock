@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@activitypods/app@2.0.0-alpha.16":
-  version "2.0.0-alpha.16"
-  resolved "https://registry.yarnpkg.com/@activitypods/app/-/app-2.0.0-alpha.16.tgz#0cbabb61713f2d9383551d78379b5ad944b13274"
-  integrity sha512-dRxMMcOp21q5Gu08PL/XbtNvYmUMtB7Wpp12FmkzR7vuVIan3gwT0hi0qTttdTn2RbDcr9guBUB0wFKjdEVtNg==
+"@activitypods/app@2.0.0-alpha.17":
+  version "2.0.0-alpha.17"
+  resolved "https://registry.yarnpkg.com/@activitypods/app/-/app-2.0.0-alpha.17.tgz#64d4335723a0ebec20cc0ea0ca66e5d29a07b267"
+  integrity sha512-vnXtBndWv6kDGdsKssmgmuOuiepcublp8oQZJemMZro5q9gyDk3qrazYF1nmbSWWv1gDunoX3ePTGI2pewjg7A==
   dependencies:
     "@rdfjs/data-model" "^1.3.4"
     "@semapps/activitypub" "0.9.4"
