@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: parseInt(env.VITE_PORT)
     },
-    base: './'
+    preview: {
+      port: 4004 // Use same port as dev mode, to avoid redirection problems when testing build
+    },
+    base: '/'
   };
 });
