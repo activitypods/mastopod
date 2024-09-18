@@ -37,4 +37,4 @@ RUN yarn run build
 
 EXPOSE 4000
 
-CMD yarn run preview
+CMD serve -s dist -l 4000
