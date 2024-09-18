@@ -841,12 +841,41 @@
     ra-input-rich-text "^4.11.0"
     tippy.js "^6.3.7"
 
+"@semapps/activitypub-components@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@semapps/activitypub-components/-/activitypub-components-0.8.2.tgz#aa81295bcaa0d4ac64e361765967b29a4c8cbaef"
+  integrity sha512-3idG1/rckgNLbSJO1w7fnhnpjBLLc4ZeQ5bIz4uiT230Dy9Hwjy5zxLreg6BXbxPpAe2SbKWJSoUhlf0hfe3jg==
+  dependencies:
+    "@semapps/auth-provider" "0.8.2"
+    "@semapps/field-components" "0.8.2"
+    "@semapps/semantic-data-provider" "0.8.2"
+    "@tiptap/core" "^2.0.0-beta.95"
+    "@tiptap/extension-mention" "^2.0.0-beta.95"
+    "@tiptap/extension-placeholder" "^2.0.0-beta.95"
+    "@tiptap/react" "^2.0.0-beta.95"
+    "@tiptap/suggestion" "^2.0.0-beta.95"
+    ra-input-rich-text "^4.11.0"
+    tippy.js "^6.3.7"
+
 "@semapps/auth-provider@0.8.1":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@semapps/auth-provider/-/auth-provider-0.8.1.tgz#baf189895315e5c04d4c7103e86377722affe561"
   integrity sha512-9d+hQ1FW6gqJzeXhYmgXvBV1wDPqI/aWhtfbScmn8xNRimeO4H90FzNc+LliqQKdscRPdWJSDtZeqeG88WJDAw==
   dependencies:
     "@semapps/semantic-data-provider" "0.8.1"
+    classnames "^2.3.2"
+    jwt-decode "^3.0.0"
+    lodash "^4.17.21"
+    oauth4webapi "^2.3.0"
+    speakingurl "^14.0.1"
+    url-join "^4.0.1"
+
+"@semapps/auth-provider@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@semapps/auth-provider/-/auth-provider-0.8.2.tgz#be59a39f0a9157758d73acfc221d77c3eb831f2c"
+  integrity sha512-oIpRClVdZPETtqXrVSXQzOo8xsTllqYACgseA6ybeVGootKHgda7jvJyxPgxqEEJnvTbro/Qv3jAxX6rL3Tl1g==
+  dependencies:
+    "@semapps/semantic-data-provider" "0.8.2"
     classnames "^2.3.2"
     jwt-decode "^3.0.0"
     lodash "^4.17.21"
@@ -863,10 +892,31 @@
     lodash.debounce "^4.0.8"
     react-icons "^4.4.0"
 
+"@semapps/field-components@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@semapps/field-components/-/field-components-0.8.2.tgz#5c4ab17a959a766783edfa715a8e7371f38e0335"
+  integrity sha512-hwwzi8joiLHLE5cfoFmTmHztFyXVmkMnI37OBnNyyymMt2xiW8t9EmAgVvMt+4hWlRzDIGOdOCZtIwTGVUHjpw==
+  dependencies:
+    "@semapps/semantic-data-provider" "0.8.2"
+    lodash.debounce "^4.0.8"
+    react-icons "^4.4.0"
+
 "@semapps/semantic-data-provider@0.8.1":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-0.8.1.tgz#2db44b8b413d77209c0b2dfd059ddc6293fe5ee2"
   integrity sha512-YO/uqySjqn+SXBhEAb/AAEV5V5MPsjTA/g6+JNLLKULdtLzc6ITjQ0zlN7uGgN1IJFR2J/C5J7+Is4rxWN5Ang==
+  dependencies:
+    "@rdfjs/data-model" "^1.3.4"
+    crypto-js "^4.1.1"
+    jsonld "^5.2.0"
+    jwt-decode "^3.0.0"
+    sparqljs "^3.5.1"
+    url-join "^4.0.1"
+
+"@semapps/semantic-data-provider@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-0.8.2.tgz#5a3d041a9055f30cb2224bd31701d11c67afa2ed"
+  integrity sha512-4lTIG2yBci+KWTfTAPSYJHSS82jTgV1t8VZAaUnoW3GsjvpvWlPXMqAGCnRHHUAsILJVLjixYOvxsbrLgDn3Eg==
   dependencies:
     "@rdfjs/data-model" "^1.3.4"
     crypto-js "^4.1.1"

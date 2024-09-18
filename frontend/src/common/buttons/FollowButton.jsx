@@ -1,17 +1,15 @@
-import { useCallback } from "react";
-import { Button } from "@mui/material";
-import { useNotify, useTranslate } from "react-admin";
-import {
-  useOutbox,
-  useCollection,
-  ACTIVITY_TYPES,
-} from "@semapps/activitypub-components";
+import { useCallback, useMemo } from 'react';
+import { Button } from '@mui/material';
+import { useNotify, useTranslate } from 'react-admin';
+import { useOutbox, useCollection, ACTIVITY_TYPES } from '@semapps/activitypub-components';
 
 const FollowButton = ({ actorUri, children, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
   const translate = useTranslate();
-  const { items: following, addItem, removeItem } = useCollection("following", { liveUpdates: true });
+  const { items: following } = useCollection('following', { liveUpdates: true });
+
+  const isFollowing = useMemo(() => following?.includes(actorUri), [following, actorUri]);
 
   const follow = useCallback(async () => {
     try {
@@ -19,14 +17,13 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
         type: ACTIVITY_TYPES.FOLLOW,
         actor: outbox.owner,
         object: actorUri,
-        to: actorUri,
+        to: actorUri
       });
-      notify("app.notification.actor_followed", { type: "success" });
+      notify('app.notification.actor_followed', { type: 'success' });
     } catch (e) {
-      notify(e.message, { type: "error" });
+      notify(e.message, { type: 'error' });
     }
-    addItem(actorUri);
-  }, [actorUri, outbox, notify, addItem]);
+  }, [actorUri, outbox, notify]);
 
   const unfollow = useCallback(async () => {
     try {
@@ -35,24 +32,19 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
         actor: outbox.owner,
         object: {
           type: ACTIVITY_TYPES.FOLLOW,
-          object: actorUri,
+          object: actorUri
         },
-        to: actorUri,
+        to: actorUri
       });
-      notify("app.notification.actor_unfollowed", { type: "success" });
+      notify('app.notification.actor_unfollowed', { type: 'success' });
     } catch (e) {
-      notify(e.message, { type: "error" });
+      notify(e.message, { type: 'error' });
     }
-    removeItem(actorUri);
-  }, [actorUri, outbox, notify, removeItem]);
+  }, [actorUri, outbox, notify]);
 
-  return following?.includes(actorUri) ? (
-    <Button variant="contained" onClick={unfollow} {...rest}>
-      {translate("app.action.unfollow")}
-    </Button>
-  ) : (
-    <Button variant="contained" onClick={follow} {...rest}>
-      {translate("app.action.follow")}
+  return (
+    <Button variant="contained" onClick={isFollowing ? unfollow : follow} {...rest}>
+      {translate(isFollowing ? 'app.action.unfollow' : 'app.action.follow')}
     </Button>
   );
 };
