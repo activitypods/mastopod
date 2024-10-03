@@ -26,10 +26,10 @@ const ActivityBlock = ({ activity, showReplies, clickOnContent }) => {
       );
 
     default:
-      console.info(
-        `Activities or objects of type ${activity.type} are not displayed`,
-        activity
-      );
+      // console.debug(
+      //   `Activities or objects of type ${activity.type} are not displayed`,
+      //   activity
+      // );
   }
 };
 

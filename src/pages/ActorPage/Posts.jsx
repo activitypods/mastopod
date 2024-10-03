@@ -8,9 +8,9 @@ const Posts = () => {
   const {
     items: activities,
     fetchNextPage,
-    hasNextPage,
+    isLoading,
     isFetchingNextPage,
-  } = useCollection(actor?.outbox);
+  } = useCollection(actor?.outbox, { dereferenceItems: true });
   return (
     <>
       {activities?.map((activity) => (
@@ -20,12 +20,10 @@ const Posts = () => {
           key={activity.id}
         />
       ))}
-      {hasNextPage && (
-        <LoadMore
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      )}
+      <LoadMore
+        fetchNextPage={fetchNextPage}
+        isLoading={isFetchingNextPage || isLoading}
+      />
     </>
   );
 };

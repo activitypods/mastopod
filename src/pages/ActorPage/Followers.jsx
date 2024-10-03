@@ -11,7 +11,6 @@ const Followers = () => {
     totalItems,
     isLoading,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage,
   } = useCollection(actor?.followers);
 
@@ -29,12 +28,10 @@ const Followers = () => {
           </Typography>
         )}
       </Card>
-      {hasNextPage && (
-        <LoadMore
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      )}
+      <LoadMore
+        fetchNextPage={fetchNextPage}
+        isLoading={isFetchingNextPage || isLoading}
+      />
     </>
   );
 };
