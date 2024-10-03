@@ -10,7 +10,8 @@ module.exports = {
       name: CONFIG.APP_NAME,
       description: CONFIG.APP_DESCRIPTION,
       thumbnail: urlJoin(CONFIG.FRONT_URL, 'logo192.png'),
-      frontUrl: CONFIG.FRONT_URL
+      frontUrl: CONFIG.FRONT_URL,
+      supportedLocales: CONFIG.APP_LANG
     },
     oidc: {
       clientUri: CONFIG.FRONT_URL,
