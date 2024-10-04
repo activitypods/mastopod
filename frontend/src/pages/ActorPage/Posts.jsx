@@ -5,7 +5,12 @@ import LoadMore from '../../common/LoadMore';
 
 const Posts = () => {
   const actor = useActorContext();
-  const { items: activities, fetchNextPage, isFetchingNextPage } = useCollection(actor?.outbox, { liveUpdates: true });
+  const {
+    items: activities,
+    fetchNextPage,
+    isLoading,
+    isFetchingNextPage
+  } = useCollection(actor?.outbox, { liveUpdates: true });
   return (
     <>
       {activities?.map(activity => (
