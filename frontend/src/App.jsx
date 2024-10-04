@@ -28,7 +28,16 @@ import { RedirectPage } from '@activitypods/react';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+      cacheTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
+      retry: 3
+    },
+    mutations: {
+      onError: (error, variables, context) => {
+        // TODO: Show notifications for fetch errors.
+        console.error('react query mutations.onError:', error);
+      }
     }
   }
 });

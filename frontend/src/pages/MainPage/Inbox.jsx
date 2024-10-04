@@ -1,3 +1,4 @@
+import { CircularProgress, Box } from '@mui/material';
 import { useCollection } from '@semapps/activitypub-components';
 import { useCheckAuthenticated } from '@semapps/auth-provider';
 import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
@@ -10,15 +11,21 @@ const Inbox = () => {
     items: activities,
     hasNextPage,
     fetchNextPage,
-    isFetchingNextPage
-  } = useCollection('inbox', { liveUpdates: true });
+    isFetchingNextPage,
+    isLoading
+  } = useCollection('inbox', { liveUpdates: true, dereferenceItems: true });
   return (
     <>
       <PostBlock />
       {activities?.map(activity => (
         <ActivityBlock activity={activity} key={activity.id} />
       ))}
-      {hasNextPage && <LoadMore fetchNextPage={fetchNextPage} isFetchingNextPage={isFetchingNextPage} />}
+      {activities.length === 0 && isLoading && (
+        <Box height={50} mt={4} mb={4} display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      )}
+      {hasNextPage && <LoadMore fetchNextPage={fetchNextPage} isLoading={isFetchingNextPage || isLoading} />}
     </>
   );
 };

@@ -11,7 +11,6 @@ const Followers = () => {
     totalItems,
     isLoading,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage
   } = useCollection(actor?.followers, { liveUpdates: true });
 
@@ -27,7 +26,7 @@ const Followers = () => {
           <Typography>This user has chosen to not make this information available</Typography>
         )}
       </Card>
-      {hasNextPage && <LoadMore fetchNextPage={fetchNextPage} isFetchingNextPage={isFetchingNextPage} />}
+      <LoadMore fetchNextPage={fetchNextPage} isLoading={isFetchingNextPage || isLoading} />
     </>
   );
 };

@@ -6,17 +6,17 @@ import LoadMore from '../../common/LoadMore';
 const Outbox = () => {
   const {
     items: activities,
-    hasNextPage,
     fetchNextPage,
-    isFetchingNextPage
-  } = useCollection('outbox', { liveUpdates: true });
+    isFetchingNextPage,
+    isLoading
+  } = useCollection('outbox', { liveUpdates: true, dereferenceItems: true });
   return (
     <>
       <PostBlock />
       {activities?.map(activity => (
         <ActivityBlock activity={activity} key={activity.id} showReplies />
       ))}
-      {hasNextPage && <LoadMore fetchNextPage={fetchNextPage} isFetchingNextPage={isFetchingNextPage} />}
+      <LoadMore fetchNextPage={fetchNextPage} isLoading={isFetchingNextPage || isLoading} />
     </>
   );
 };
