@@ -23,7 +23,8 @@ export default {
       post_liked: 'Le message a été liké',
       post_like_removed: 'Le like du message a été enlevé',
       actor_followed: 'Vous suivez maintenant cet acteur',
-      actor_unfollowed: 'Vous ne suivez plus cet acteur'
+      actor_unfollowed: 'Vous ne suivez plus cet acteur',
+      image_upload_error: 'Echec de l\'upload de l\'image',
     },
     validation: {}
   }

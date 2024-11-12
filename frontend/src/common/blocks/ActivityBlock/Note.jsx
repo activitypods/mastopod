@@ -53,16 +53,8 @@ const Note = ({ object, activity, clickOnContent }) => {
     return content;
   }, [object, activity]);
 
-  const image = useMemo(() => {
-    let image = object.attachment || object.icon;
-
-    if (Array.isArray(image)) {
-      // Select the largest image
-      image.sort((a, b) => b?.height - a?.height);
-      image = image[0];
-    }
-
-    return image?.url;
+  const images = useMemo(() => {
+    return arrayOf(object.attachment || object.icon || []);
   }, [object]);
 
   // Catch links to actors with react-router
@@ -130,7 +122,7 @@ const Note = ({ object, activity, clickOnContent }) => {
           />
         )}
 
-        {image && <img src={image} style={{ width: "100%", marginTop: 10 }} />}
+        {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={object.id || activity.id} />
