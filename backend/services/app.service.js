@@ -8,10 +8,13 @@ module.exports = {
   settings: {
     app: {
       name: CONFIG.APP_NAME,
-      description: CONFIG.APP_DESCRIPTION,
+      description: {
+        en: 'A Mastodon-compatible app that saves all data in a Pod',
+        fr: 'Une appli compatible avec Mastodon qui enregistre tout dans votre Pod'
+      },
       thumbnail: urlJoin(CONFIG.FRONT_URL, 'logo192.png'),
       frontUrl: CONFIG.FRONT_URL,
-      supportedLocales: CONFIG.APP_LANG
+      supportedLocales: ['en', 'fr']
     },
     oidc: {
       clientUri: CONFIG.FRONT_URL,

@@ -2,20 +2,40 @@
 
 export default {
   app: {
+    description: 'Une appli compatible Mastodon qui enregistre tout dans votre Pod',
     action: {
       edit_profile: 'Editer le profile',
       follow: 'Suivre',
       unfollow: 'Ne plus suivre',
-      send: 'Envoyer'
+      send: 'Envoyer',
+      reply: 'Répondre',
+      boost: 'Booster',
+      like: 'Soutenir'
     },
-    card: {},
+    page: {
+      my_inbox: 'Boîte de réception',
+      my_outbox: "Boîte d'envoi",
+      followers: 'Abonnés',
+      following: 'Abonnements',
+      posts: 'Messages',
+      posts_and_replies: 'Messages & Réponses'
+    },
+    card: {
+      find_user: 'Trouver un acteur'
+    },
     block: {},
     input: {
       message: 'Votre message',
       reply: 'Votre réponse'
     },
-    helper: {},
-    message: {},
+    helper: {
+      find_user: 'Pour trouver un acteur dans le fediverse, entrez son identifiant et tapez Enter.'
+    },
+    message: {
+      early_dev_warning:
+        'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
+      actor_boosted: '%{actor} a boosté'
+    },
     notification: {
       message_sent: 'Votre message a été envoyé',
       message_send_error: 'Erreur en envoyant le message: %{error}',
