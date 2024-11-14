@@ -46,12 +46,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
       console.error(error);
       throw new Error(translate("app.notification.image_upload_error"));
     }
-  });
+  }, [dataProvider, translate]);
 
   const handleAttachments = useCallback(async () =>  {
     const attachments = await Promise.all(
       imageFiles.map(async (file) => {
-        const imageUrl = await uploadImage(file);
+        const imageUrl = await uploadImage(file.file);
         return {
           type: "Image",
           mediaType: file.type,
@@ -60,14 +60,14 @@ const PostBlock = ({ inReplyTo, mention }) => {
       })
     );
     return attachments;
-  });
+  }, [imageFiles, uploadImage]);
 
   const clearForm = useCallback(() =>  {
     // still looking for a way to clear the actual form
     // Clearing local URL for image preview (avoid memory leaks)
-    imageFiles.forEach((fileObj) => URL.revokeObjectURL(fileObj.preview));
+    imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
     setImageFiles([]);
-  });
+  }, []);
 
   const onSubmit = useCallback(
     async (values, { reset }) => {
@@ -106,8 +106,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
 
   const handleFileChange = useCallback((event) => {
     const files = Array.from(event.target.files);
-    setImageFiles((prevFiles) => [...prevFiles, ...files]);
-  });
+    const newFiles = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    setImageFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  }, []);
 
   const handleRemoveImage = useCallback((index) => {
     setImageFiles((prevFiles) => {
@@ -118,7 +122,14 @@ const PostBlock = ({ inReplyTo, mention }) => {
 
       return updatedFiles;
     });
-  });
+  }, []);
+
+  //revoke preview URL at unmount time to avoid further memory leaks cases
+  useEffect(() => {
+    return () => {
+      imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
+    };
+  }, []);
 
   return (
     <Card>
@@ -149,9 +160,9 @@ const PostBlock = ({ inReplyTo, mention }) => {
               mt: 1,
             }}
           >
-            {imageFiles.map((file, index) => (
+            {imageFiles.map((image, index) => (
               <Box
-                key={index}
+                key={image.preview}
                 sx={{
                   height: 80,
                   borderRadius: 1,
@@ -160,7 +171,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 }}
               >
                 <img
-                  src={URL.createObjectURL(file)}
+                  src={image.preview}
                   alt="Preview"
                   style={{
                     width: '100%',
