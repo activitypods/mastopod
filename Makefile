@@ -4,6 +4,7 @@
 DOCKER_COMPOSE_DEV=docker compose -f docker-compose-dev.yml  --env-file .env --env-file .env.local
 DOCKER_COMPOSE_ZROK=docker compose -f docker-compose-zrok.yml  --env-file .env.zrok --env-file .env.zrok.local
 DOCKER_COMPOSE_PROD=docker compose -f docker-compose-prod.yml --env-file .env.production --env-file .env.production.local
+DOCKER_COMPOSE_DEV=docker compose -f docker-compose-prod.yml --env-file .env.dev
 
 # Dev commands
 
@@ -70,3 +71,25 @@ publish-backend-latest:
 	export TAG=latest
 	$(DOCKER_COMPOSE_PROD) build app-backend
 	$(DOCKER_COMPOSE_PROD) push app-backend
+
+# Publish commands for dev ENV
+
+publish-dev-frontend:
+	export TAG=`git describe --tags --abbrev=0`
+	$(DOCKER_COMPOSE_DEV) build app-frontend
+	$(DOCKER_COMPOSE_DEV) push app-frontend
+
+publish-dev-backend:
+	export TAG=`git describe --tags --abbrev=0`
+	$(DOCKER_COMPOSE_DEV) build app-backend
+	$(DOCKER_COMPOSE_DEV) push app-backend
+
+publish-dev-frontend-latest:
+	export TAG=latest
+	$(DOCKER_COMPOSE_DEV) build app-frontend
+	$(DOCKER_COMPOSE_DEV) push app-frontend
+
+publish-dev-backend-latest:
+	export TAG=latest
+	$(DOCKER_COMPOSE_DEV) build app-backend
+	$(DOCKER_COMPOSE_DEV) push app-backend
