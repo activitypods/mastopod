@@ -2,20 +2,40 @@
 
 export default {
   app: {
+    description: 'A Mastodon-compatible app that saves all data in your Pod',
     action: {
       edit_profile: 'Edit profile',
       follow: 'Follow',
-      unfollow: 'Undo Follow',
-      send: 'Send'
+      unfollow: 'Unfollow',
+      send: 'Send',
+      reply: 'Reply',
+      boost: 'Boost',
+      like: 'Like'
     },
-    card: {},
+    page: {
+      my_inbox: 'My inbox',
+      my_outbox: 'My outbox',
+      followers: 'Followers',
+      following: 'Following',
+      posts: 'Posts',
+      posts_and_replies: 'Posts & Replies'
+    },
+    card: {
+      find_user: 'Find user'
+    },
     block: {},
     input: {
       message: 'Your message',
       reply: 'Your reply'
     },
-    helper: {},
-    message: {},
+    helper: {
+      find_user: 'To find another fediverse member, enter their handle and hit enter.'
+    },
+    message: {
+      early_dev_warning:
+        'This application is in early development. Use it for tests only, and please report issues you find on',
+      actor_boosted: '%{actor} boosted'
+    },
     notification: {
       activity_send_error: 'Error while posting the activity: %{error}',
       message_sent: 'Your message has been sent',

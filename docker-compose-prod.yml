@@ -38,8 +38,6 @@ services:
       dockerfile: ./docker/frontend.dockerfile
       args:
         VITE_APP_NAME: $APP_NAME
-        VITE_APP_DESCRIPTION: $APP_DESCRIPTION
-        VITE_APP_LANG: $APP_LANG
         VITE_BACKEND_URL: https://${DOMAIN_NAME}${BACKEND_PATH}
         VITE_BACKEND_CLIENT_ID: https://${DOMAIN_NAME}${BACKEND_PATH}/app
         VITE_POD_PROVIDER_BASE_URL: $POD_PROVIDER_BASE_URL

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { IconButton } from '@mui/material';
-import { useNotify } from 'react-admin';
+import { IconButton, Tooltip } from '@mui/material';
+import { useNotify, useTranslate } from 'react-admin';
 import { useOutbox, useCollection, ACTIVITY_TYPES } from '@semapps/activitypub-components';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
@@ -8,6 +8,7 @@ import StarIcon from '@mui/icons-material/Star';
 const LikeButton = ({ activity, object, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
+  const translate = useTranslate();
   const { items: liked } = useCollection('liked', { liveUpdates: true });
 
   const isLiked = useMemo(() => liked.includes(object?.id) || liked.includes(activity?.id), [liked, object, activity]);
@@ -44,9 +45,11 @@ const LikeButton = ({ activity, object, ...rest }) => {
   }, [activity, object, outbox, notify]);
 
   return (
-    <IconButton aria-label="like" onClick={isLiked ? undoLike : like} {...rest}>
-      {isLiked ? <StarIcon /> : <StarBorderIcon />}
-    </IconButton>
+    <Tooltip title={translate('app.action.like')}>
+      <IconButton aria-label={translate('app.action.like')} onClick={isLiked ? undoLike : like} {...rest}>
+        {isLiked ? <StarIcon /> : <StarBorderIcon />}
+      </IconButton>
+    </Tooltip>
   );
 };
 
