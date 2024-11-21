@@ -28,6 +28,9 @@ const Note = ({ object, activity, clickOnContent }) => {
       content = Object.values(content)?.[0];
     }
 
+    //Handle carriage return
+    content = content.replaceAll('\n', '<br>')
+
     // Find all mentions
     const mentions = arrayOf(object.tag || activity?.tag).filter(tag => tag.type === 'Mention');
 
