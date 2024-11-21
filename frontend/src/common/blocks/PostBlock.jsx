@@ -1,24 +1,30 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import {
   Form,
-  TextInput,
   useNotify,
   useTranslate,
   useGetIdentity,
   useRedirect,
   useDataProvider
-} from "react-admin";
-import { useLocation } from "react-router-dom";
-import { Card, Box, Button, IconButton, CircularProgress, Backdrop } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import DeleteIcon from "@mui/icons-material/Delete";
+} from 'react-admin';
+import { useLocation } from 'react-router-dom';
+import { Card, Box, Button, IconButton, CircularProgress, Backdrop } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   useOutbox,
   OBJECT_TYPES,
-  PUBLIC_URI,
-} from "@semapps/activitypub-components";
-import { useCallback } from "react";
+  PUBLIC_URI
+} from '@semapps/activitypub-components';
+import { useCallback } from 'react';
+import { RichTextInput, DefaultEditorOptions } from 'ra-input-rich-text';
+import { useCollection } from '@semapps/activitypub-components';
+import useMentions from '../../hooks/useMentions/useMentions.js';
+import Placeholder from '@tiptap/extension-placeholder';
+import Mention from '@tiptap/extension-mention';
+import { HardBreak } from '@tiptap/extension-hard-break';
+import { uniqBy, sortBy } from 'lodash';
 
 const PostBlock = ({ inReplyTo, mention }) => {
   const dataProvider = useDataProvider();
@@ -32,9 +38,20 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [imageFiles, setImageFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  //List of mentionable actors
+  const { items: followers } = useCollection('followers', { dereferenceItems: true });
+  const { items: following } = useCollection('following', { dereferenceItems: true });
+  const mentionables = useMemo(() => sortBy(uniqBy([...followers, ...following], 'id'), 'preferredUsername').map((actor) => ({
+    id: actor.id,
+    label: actor['preferredUsername'],
+    actor: actor
+  })), [followers, following]);
+
+  const suggestions = useMentions(mentionables);
+
   // Doesn't work
   useEffect(() => {
-    if (hash === "#reply" && inputRef.current) {
+    if (hash === '#reply' && inputRef.current) {
       inputRef.current.focus();
     }
   }, [hash, inputRef.current]);
@@ -45,62 +62,135 @@ const PostBlock = ({ inReplyTo, mention }) => {
       return imageUrl;
     } catch (error) {
       console.error(error);
-      throw new Error(translate("app.notification.image_upload_error"));
+      throw new Error(translate('app.notification.image_upload_error'));
     }
   }, [dataProvider, translate]);
 
-  const handleAttachments = useCallback(async () =>  {
+  const handleAttachments = useCallback(async () => {
     const attachments = await Promise.all(
       imageFiles.map(async (file) => {
         const imageUrl = await uploadImage(file.file);
         return {
-          type: "Image",
+          type: 'Image',
           mediaType: file.type,
-          url: imageUrl,
+          url: imageUrl
         };
       })
     );
     return attachments;
   }, [imageFiles, uploadImage]);
 
-  const clearForm = useCallback(() =>  {
+  const clearForm = useCallback(() => {
     // still looking for a way to clear the actual form
     // Clearing local URL for image preview (avoid memory leaks)
     imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
     setImageFiles([]);
   }, []);
 
+  /*
+    The RichTextInput provides an HTML result with (by default) a new <p> for each new line
+    The HardBreak extension avoids multiple paragraphs by using <br> when enter is pressed
+    We end up with a wrapping <p> and some <br> inside so let's make it look like what TextInput would have produced
+    and collect mentioned users URI at the same time
+    e.g.
+      <p>line1<br>line2<br><span class="mention" data-id="https://mypod.store/alice" data-label="patrick">@alice</span><br></p>
+        =>  {
+              processedContent: "line1\nline2\n<a href="https://mypod.store/alice" class="mention">@<span>alice</span></a>",
+              mentionedUserUris : ["http://mypod.store/alice"]
+            }
+  */
+  const processEditorContent = useCallback((content) => {
+    const document = new DOMParser().parseFromString(content, 'text/html');
+    const mentionNodes = Array.from(document.body.getElementsByClassName('mention'));
+
+    const mentionedUsersUris = [];
+
+    mentionNodes.forEach((node) => {
+      const userUri = node.attributes['data-id'].value;
+      const userLabel = node.attributes['data-label'].value;
+      const link = document.createElement('a');
+      link.setAttribute('href', userUri);
+      link.setAttribute('class', 'mention');
+      const atTextNode = document.createTextNode('@');
+      const spanNode = document.createElement('span');
+      spanNode.textContent = userLabel;
+      link.appendChild(atTextNode);
+      link.appendChild(spanNode);
+
+      node.parentNode.replaceChild(link, node);
+      mentionedUsersUris.push(userUri);
+    });
+
+    const paragraph = document.querySelector('p');
+    return {
+      processedContent: paragraph
+        ? paragraph.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim()
+        : '',
+      mentionedUsersUris
+    };
+  }, []);
+
+  const getFormattedMentions = useCallback((mentionedUsersUris) => {
+    return mentionedUsersUris.map((uri) => {
+      const actor = mentionables.find((m) => m.id === uri);
+      if (actor) {
+        const actorName = actor.actor['foaf:nick'] || actor.actor.preferredUsername || 'unknown';
+        const instance = new URL(actor.id).host;
+        return {
+          type: 'Mention',
+          href: actor.id,
+          name: `@${actorName}@${instance}`
+        };
+      }
+      return null;
+    }).filter(Boolean);
+  }, []);
+
   const onSubmit = useCallback(
     async (values, { reset }) => {
       setIsSubmitting(true);
       try {
+        const { processedContent, mentionedUsersUris } = processEditorContent(values.content);
+
+        const recipients = [PUBLIC_URI, identity?.webIdData?.followers, ...mentionedUsersUris];
+        if (mention) {
+          recipients.push(mention);
+        }
+
         const activity = {
           type: OBJECT_TYPES.NOTE,
           attributedTo: outbox.owner,
-          content: values.content,
+          content: processedContent,
           inReplyTo,
-          to: mention
-            ? [PUBLIC_URI, identity?.webIdData?.followers, mention.uri]
-            : [PUBLIC_URI, identity?.webIdData?.followers],
+          to: recipients
         };
 
+        //handle attachments
         let attachments = await handleAttachments();
         if (attachments.length > 0) {
           activity.attachment = attachments;
         }
 
+        //handle mentions
+        const formattedMentions = getFormattedMentions(mentionedUsersUris);
+        if (formattedMentions.length > 0) {
+          activity.tag = formattedMentions;
+        }
+
+        //post the activity
         const activityUri = await outbox.post(activity);
-        notify("app.notification.message_sent", { type: "success" });
+        notify('app.notification.message_sent', { type: 'success' });
         clearForm();
 
         if (inReplyTo) {
           redirect(`/activity/${encodeURIComponent(activityUri)}`);
         }
       } catch (e) {
-        notify("app.notification.activity_send_error", {
-          type: "error",
-          messageArgs: { error: e.message },
+        notify('app.notification.activity_send_error', {
+          type: 'error',
+          messageArgs: { error: e.message }
         });
+        console.error(e);
       } finally {
         setIsSubmitting(false);
       }
@@ -112,7 +202,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
     const files = Array.from(event.target.files);
     const newFiles = files.map((file) => ({
       file,
-      preview: URL.createObjectURL(file),
+      preview: URL.createObjectURL(file)
     }));
     setImageFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
@@ -146,9 +236,9 @@ const PostBlock = ({ inReplyTo, mention }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            margin: 1,
+            margin: 0,
             zIndex: (theme) => theme.zIndex.drawer + 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
             borderRadius: 1
           }}
           open={isSubmitting}
@@ -156,20 +246,78 @@ const PostBlock = ({ inReplyTo, mention }) => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Form onSubmit={onSubmit}>
-          <TextInput
-            inputRef={inputRef}
+          <RichTextInput
             source="content"
-            label={
-              inReplyTo
-                ? translate("app.input.reply")
-                : translate("app.input.message")
-            }
-            margin="dense"
+            helperText={false}
+            label={false}
+            toolbar={<></>}
+            editorOptions={{
+              ...DefaultEditorOptions,
+              extensions: [
+                ...DefaultEditorOptions.extensions.map(ext =>
+                  ext.name === 'starterKit'
+                    ? ext.configure({
+                      hardBreak: false
+                    })
+                    : ext
+                ),
+                //To avoid creating a new paragraph (<p>) each time Enter is pressed
+                HardBreak.extend({
+                  addKeyboardShortcuts() {
+                    return {
+                      Enter: () => this.editor.commands.setHardBreak()
+                    };
+                  }
+                }),
+                Placeholder.configure({
+                  placeholder: inReplyTo
+                    ? translate('app.input.reply')
+                    : translate('app.input.message')
+                }),
+                Mention.configure({
+                  HTMLAttributes: {
+                    class: 'mention'
+                  },
+                  suggestion: suggestions
+                })
+              ]
+            }}
+            sx={{
+              //To display the placeholder, as per tiptap documentation
+              '.ProseMirror p.is-editor-empty:first-of-type::before': {
+                content: `attr(data-placeholder)`,
+                float: 'left',
+                color: 'rgba(0, 0, 0, 0.6)',
+                pointerEvents: 'none',
+                height: 0
+              },
+              //Styling the RichTextInput to look like a TextInput
+              '& .RaRichTextInput-editorContent': {
+                backgroundColor: '#fff',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                padding: '8.5px 14px 8.5px 14px'
+              },
+              '& .tiptap.ProseMirror': {
+                backgroundColor: '#fff',
+                minHeight: '91px',
+                outline: 'none',
+                border: 'none',
+                fontSize: '16px',
+                color: '#000',
+                padding: 0,
+              },
+              '& .tiptap.ProseMirror:hover': {
+                backgroundColor: '#fff'
+              },
+              '& .tiptap.ProseMirror:focus': {
+                backgroundColor: '#fff',
+                border: 'none'
+              }
+            }}
             fullWidth
             multiline
-            minRows={4}
-            sx={{ m: 0, mb: imageFiles.length > 0 ? -2 : -4 }}
-            autoFocus={hash === "#reply"}
+            autoFocus={hash === '#reply'}
           />
 
           {/*Preview of selected pictures*/}
@@ -179,7 +327,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 display: 'flex',
                 gap: 1,
                 flexWrap: 'wrap',
-                mt: 1,
+                mt: 1
               }}
             >
               {imageFiles.map((image, index) => (
@@ -189,7 +337,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     height: 80,
                     borderRadius: 1,
                     overflow: 'hidden',
-                    position: 'relative',
+                    position: 'relative'
                   }}
                 >
                   <img
@@ -198,7 +346,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
+                      objectFit: 'cover'
                     }}
                   />
                   <IconButton
@@ -213,7 +361,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                       padding: '4px',
                       '&:hover': {
                         backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                        color: '#ff5252',
+                        color: '#ff5252'
                       }
                     }}
                     size="small"
@@ -225,7 +373,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
             </Box>
           )}
 
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={imageFiles.length > 0 ? 2 : 2}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={imageFiles.length > 0 ? 2 : 0}>
             <Button
               variant="contained"
               color="primary"
@@ -253,7 +401,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
               endIcon={<SendIcon />}
               disabled={isSubmitting}
             >
-              {translate("app.action.send")}
+              {translate('app.action.send')}
             </Button>
           </Box>
         </Form>
