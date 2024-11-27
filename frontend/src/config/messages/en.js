@@ -48,6 +48,11 @@ export default {
       actor_unfollowed: 'You are not following this actor anymore',
       image_upload_error: 'Uploading picture failed'
     },
-    validation: {}
+    validation: {},
+    visibility: {
+      public: 'Public',
+      followersOnly: 'Followers',
+      mentionsOnly: 'Specific people'
+    }
   }
 };
