@@ -9,6 +9,7 @@ import {
 } from 'react-admin';
 import { useLocation } from 'react-router-dom';
 import { Card, Box, Button, IconButton, CircularProgress, Backdrop } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import SendIcon from '@mui/icons-material/Send';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -37,15 +38,20 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const { data: identity } = useGetIdentity();
   const [imageFiles, setImageFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const theme = useTheme();
 
   //List of mentionable actors
   const { items: followers } = useCollection('followers', { dereferenceItems: true });
   const { items: following } = useCollection('following', { dereferenceItems: true });
-  const mentionables = useMemo(() => sortBy(uniqBy([...followers, ...following], 'id'), 'preferredUsername').map((actor) => ({
-    id: actor.id,
-    label: actor['preferredUsername'],
-    actor: actor
-  })), [followers, following]);
+  const mentionables = useMemo(() => sortBy(uniqBy([...followers, ...following], 'id'), 'preferredUsername').map((actor) => {
+    const instance = new URL(actor.id).host;
+
+    return {
+      id: actor.id,
+      label: `${actor['preferredUsername']}@${instance}`,
+      actor: actor
+    }
+  }), [followers, following]);
 
   const suggestions = useMentions(mentionables);
 
@@ -305,7 +311,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 border: 'none',
                 fontSize: '16px',
                 color: '#000',
-                padding: 0,
+                padding: 0
               },
               '& .tiptap.ProseMirror:hover': {
                 backgroundColor: '#fff'
@@ -313,6 +319,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
               '& .tiptap.ProseMirror:focus': {
                 backgroundColor: '#fff',
                 border: 'none'
+              },
+              //Styling the mentions
+              '& .tiptap.ProseMirror .mention': {
+                fontStyle: 'italic',
+                color: theme.palette.primary.main,
+                textDecoration: 'none',
               }
             }}
             fullWidth
