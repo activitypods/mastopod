@@ -12,7 +12,9 @@ export default {
       send: 'Send',
       reply: 'Reply',
       boost: 'Boost',
-      like: 'Like'
+      like: 'Like',
+      sendDirectMessage: 'Send a direct message',
+      message: 'Message'
     },
     page: {
       my_inbox: 'My inbox',

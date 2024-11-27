@@ -12,7 +12,9 @@ export default {
       send: 'Envoyer',
       reply: 'Répondre',
       boost: 'Booster',
-      like: 'Soutenir'
+      like: 'Soutenir',
+      sendDirectMessage: 'Envoyer un message direct',
+      message: 'Message'
     },
     page: {
       my_inbox: 'Boîte de réception',
