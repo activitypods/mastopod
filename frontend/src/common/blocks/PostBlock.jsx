@@ -5,7 +5,8 @@ import {
   useTranslate,
   useGetIdentity,
   useRedirect,
-  useDataProvider
+  useDataProvider,
+  SelectInput
 } from 'react-admin';
 import { useLocation } from 'react-router-dom';
 import { Card, Box, Button, IconButton, CircularProgress, Backdrop } from '@mui/material';
@@ -13,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import SendIcon from '@mui/icons-material/Send';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PublicIcon from '@mui/icons-material/Public';
 import {
   useOutbox,
   OBJECT_TYPES,
@@ -45,12 +47,11 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const { items: following } = useCollection('following', { dereferenceItems: true });
   const mentionables = useMemo(() => sortBy(uniqBy([...followers, ...following], 'id'), 'preferredUsername').map((actor) => {
     const instance = new URL(actor.id).host;
-
     return {
       id: actor.id,
       label: `${actor['preferredUsername']}@${instance}`,
       actor: actor
-    }
+    };
   }), [followers, following]);
 
   const suggestions = useMentions(mentionables);
@@ -152,23 +153,31 @@ const PostBlock = ({ inReplyTo, mention }) => {
     }).filter(Boolean);
   }, []);
 
+  const getRecipients = useCallback((mentionedUsersUris, values) => {
+    const recipients = mentionedUsersUris;
+    if (values.visibility === 'public') {
+      recipients.push(PUBLIC_URI, identity?.webIdData?.followers);
+    } else if (values.visibility === 'followers-only') {
+      recipients.push(identity?.webIdData?.followers);
+    }
+    if (mention) {
+      recipients.push(mention);
+    }
+    return recipients;
+  }, [identity, mention]);
+
   const onSubmit = useCallback(
     async (values, { reset }) => {
       setIsSubmitting(true);
       try {
         const { processedContent, mentionedUsersUris } = processEditorContent(values.content);
 
-        const recipients = [PUBLIC_URI, identity?.webIdData?.followers, ...mentionedUsersUris];
-        if (mention) {
-          recipients.push(mention);
-        }
-
         const activity = {
           type: OBJECT_TYPES.NOTE,
           attributedTo: outbox.owner,
           content: processedContent,
           inReplyTo,
-          to: recipients
+          to: getRecipients(mentionedUsersUris, values)
         };
 
         //handle attachments
@@ -324,7 +333,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
               '& .tiptap.ProseMirror .mention': {
                 fontStyle: 'italic',
                 color: theme.palette.primary.main,
-                textDecoration: 'none',
+                textDecoration: 'none'
               }
             }}
             fullWidth
@@ -385,26 +394,51 @@ const PostBlock = ({ inReplyTo, mention }) => {
             </Box>
           )}
 
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={imageFiles.length > 0 ? 2 : 0}>
-            <Button
-              variant="contained"
-              color="primary"
-              component="label"
-              size="medium"
-              sx={{
-                minWidth: 0
-              }}
-              disabled={isSubmitting}
-            >
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                hidden
-                onChange={handleFileChange}
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={imageFiles.length > 0 ? 2 : 0} flexWrap="wrap">
+            <Box display="flex" alignItems="center" gap={1}>
+              <SelectInput
+                helperText={false}
+                label={<PublicIcon/>}
+                source="visibility"
+                defaultValue="public"
+                parse={(value) => value || 'public'} //if empty, fallback to public
+                choices={[
+                  { id: 'public', name: translate('app.visibility.public') },
+                  { id: 'followers-only', name: translate('app.visibility.followersOnly') },
+                  { id: 'mentions-only', name: translate('app.visibility.mentionsOnly') }
+                ]}
+                sx={{
+                  '& .MuiInputBase-root': {
+                    height: '36px',
+                    padding: '0 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  },
+                  '& .MuiSelect-select': {
+                    display: 'flex',
+                    alignItems: 'center',
+                  },
+                  minWidth: '150px',
+                }}
               />
-              <InsertPhotoIcon />
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                component="label"
+                size="medium"
+                sx={{ minWidth: 0 }}
+                disabled={isSubmitting}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  onChange={handleFileChange}
+                />
+                <InsertPhotoIcon />
+              </Button>
+            </Box>
             <Button
               type="submit"
               variant="contained"

@@ -44,8 +44,13 @@ export default {
       post_like_removed: 'The post has been unstarred',
       actor_followed: 'You are now following this actor',
       actor_unfollowed: 'You are not following this actor anymore',
-      image_upload_error: 'Uploading picture failed',
+      image_upload_error: 'Uploading picture failed'
     },
-    validation: {}
+    validation: {},
+    visibility: {
+      public: 'Public',
+      followersOnly: 'Followers',
+      mentionsOnly: 'Specific people'
+    }
   }
 };

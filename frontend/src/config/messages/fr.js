@@ -46,6 +46,11 @@ export default {
       actor_unfollowed: 'Vous ne suivez plus cet acteur',
       image_upload_error: 'Echec de l\'upload de l\'image',
     },
-    validation: {}
+    validation: {},
+    visibility: {
+      public: 'Publique',
+      followersOnly: 'Abonnés',
+      mentionsOnly: 'Personnes spécifique'
+    }
   }
 };
