@@ -35,7 +35,7 @@ const EditProfileButton = ({ ...props }) => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  window.location.href = openExternalApp('as:Actor', identity?.id, 'edit');
+                  window.location.href = openExternalApp('as:Person', identity?.id, 'edit');
                 }}
               >
                 {translate('app.action.edit_public_profile')}
