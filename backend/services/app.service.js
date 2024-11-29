@@ -35,10 +35,7 @@ module.exports = {
         'apods:ReadInbox',
         'apods:ReadOutbox',
         'apods:PostOutbox',
-        'apods:QuerySparqlEndpoint',
-        'apods:CreateWacGroup',
-        'apods:CreateCollection',
-        'apods:UpdateWebId'
+        'apods:QuerySparqlEndpoint'
       ],
       optional: []
     },
