@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       host: true,
+      open: true,
       port: parseInt(env.VITE_PORT)
     },
     preview: {

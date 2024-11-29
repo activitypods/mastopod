@@ -5,6 +5,8 @@ export default {
     description: 'A Mastodon-compatible app that saves all data in your Pod',
     action: {
       edit_profile: 'Edit profile',
+      edit_public_profile: 'Edit public profile',
+      edit_private_profile: 'Edit private profile',
       follow: 'Follow',
       unfollow: 'Unfollow',
       send: 'Send',
@@ -44,7 +46,7 @@ export default {
       post_like_removed: 'The post has been unstarred',
       actor_followed: 'You are now following this actor',
       actor_unfollowed: 'You are not following this actor anymore',
-      image_upload_error: 'Uploading picture failed',
+      image_upload_error: 'Uploading picture failed'
     },
     validation: {}
   }
