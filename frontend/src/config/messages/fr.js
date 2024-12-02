@@ -55,7 +55,7 @@ export default {
     visibility: {
       public: 'Publique',
       followersOnly: 'Abonnés',
-      mentionsOnly: 'Personnes spécifique'
+      mentionsOnly: 'Personnes spécifiques'
     }
   }
 };
