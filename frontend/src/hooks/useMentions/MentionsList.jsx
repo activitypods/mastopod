@@ -1,4 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import {useTranslate} from 'react-admin';
 import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 export default forwardRef((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const classes = useStyles();
+  const translate = useTranslate();
 
   const selectItem = index => {
     const item = props.items[index];
@@ -87,7 +89,7 @@ export default forwardRef((props, ref) => {
           </button>
         ))
       ) : (
-        <div className={classes.item}>Aucun résultat</div>
+        <div className={classes.item}>{translate('app.message.no_result')}</div>
       )}
     </div>
   );

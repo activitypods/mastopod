@@ -9,12 +9,14 @@ import {
   SelectInput
 } from 'react-admin';
 import { useLocation } from 'react-router-dom';
-import { Card, Box, Button, IconButton, CircularProgress, Backdrop } from '@mui/material';
+import { Card, Box, Button, IconButton, CircularProgress, Backdrop, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SendIcon from '@mui/icons-material/Send';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PublicIcon from '@mui/icons-material/Public';
+import LockPersonIcon from '@mui/icons-material/LockPerson';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import {
   useOutbox,
   OBJECT_TYPES,
@@ -394,11 +396,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
             </Box>
           )}
 
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={imageFiles.length > 0 ? 2 : 0} flexWrap="wrap">
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={imageFiles.length > 0 ? 2 : 0}
+               flexWrap="wrap">
             <Box display="flex" alignItems="center" gap={1}>
               <SelectInput
                 helperText={false}
-                label={<PublicIcon/>}
+                label={false}
                 source="visibility"
                 defaultValue="public"
                 parse={(value) => value || 'public'} //if empty, fallback to public
@@ -407,18 +410,29 @@ const PostBlock = ({ inReplyTo, mention }) => {
                   { id: 'followers-only', name: translate('app.visibility.followersOnly') },
                   { id: 'mentions-only', name: translate('app.visibility.mentionsOnly') }
                 ]}
+                optionText={(choice) => (
+                  <Box display="flex" alignItems="center">
+                    {choice.id === 'public' && <PublicIcon color="primary" />}
+                    {choice.id === 'followers-only' && <LockPersonIcon color="secondary" />}
+                    {choice.id === 'mentions-only' && <AlternateEmailIcon color="action" />}
+                    <Typography variant="body2" sx={{ ml: 1 }}>
+                      {choice.name}
+                    </Typography>
+                  </Box>
+                )}
+                optionValue="id"
                 sx={{
+                  //hide the legend element in the fieldset to avoid empty space in the border
+                  '& .MuiOutlinedInput-notchedOutline legend': {
+                    display: 'none'
+                  },
+                  //adjust height and margin to align with buttons
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    mt: '3px'
+                  },
                   '& .MuiInputBase-root': {
                     height: '36px',
-                    padding: '0 12px',
-                    display: 'flex',
-                    alignItems: 'center',
                   },
-                  '& .MuiSelect-select': {
-                    display: 'flex',
-                    alignItems: 'center',
-                  },
-                  minWidth: '150px',
                 }}
               />
               <Button

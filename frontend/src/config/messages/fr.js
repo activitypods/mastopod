@@ -38,7 +38,8 @@ export default {
     message: {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
-      actor_boosted: '%{actor} a boosté'
+      actor_boosted: '%{actor} a boosté',
+      no_result: 'Aucun résultat'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
