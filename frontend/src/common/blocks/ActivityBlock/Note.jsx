@@ -28,13 +28,18 @@ const Note = ({ object, activity, clickOnContent }) => {
       content = Object.values(content)?.[0];
     }
 
+    //Handle carriage return
+    content = content?.replaceAll('\n', '<br>')
+
     // Find all mentions
     const mentions = arrayOf(object.tag || activity?.tag).filter(tag => tag.type === 'Mention');
 
     if (mentions.length > 0) {
       // Replace mentions to local actor links
       content = content.replaceAll(mentionRegex, (match, actorUri, actorName) => {
-        const mention = mentions.find(mention => mention.name.startsWith(`@${actorName}@`));
+        const mention = actorName.includes('@')
+          ? mentions.find(mention => mention.name.startsWith(`@${actorName}`))
+          : mentions.find(mention => mention.name.startsWith(`@${actorName}@`));
         if (mention) {
           return match.replace(actorUri, `/actor/${mention.name}`);
         } else {

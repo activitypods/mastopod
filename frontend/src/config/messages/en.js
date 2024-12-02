@@ -12,7 +12,9 @@ export default {
       send: 'Send',
       reply: 'Reply',
       boost: 'Boost',
-      like: 'Like'
+      like: 'Like',
+      sendDirectMessage: 'Send a direct message',
+      message: 'Message'
     },
     page: {
       my_inbox: 'My inbox',
@@ -36,7 +38,8 @@ export default {
     message: {
       early_dev_warning:
         'This application is in early development. Use it for tests only, and please report issues you find on',
-      actor_boosted: '%{actor} boosted'
+      actor_boosted: '%{actor} boosted',
+      no_result: 'No result'
     },
     notification: {
       activity_send_error: 'Error while posting the activity: %{error}',
@@ -48,6 +51,11 @@ export default {
       actor_unfollowed: 'You are not following this actor anymore',
       image_upload_error: 'Uploading picture failed'
     },
-    validation: {}
+    validation: {},
+    visibility: {
+      public: 'Public',
+      followersOnly: 'Followers',
+      mentionsOnly: 'Specific people'
+    }
   }
 };

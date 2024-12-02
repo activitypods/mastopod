@@ -2,6 +2,7 @@ import { Box, Container, Avatar, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import FollowButton from "../../common/buttons/FollowButton";
 import useActorContext from "../../hooks/useActorContext";
+import SendDirectMessageButton from '../../common/buttons/SendDirectMessageButton.jsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,11 +64,24 @@ const Hero = () => {
               {actor?.username}
             </Typography>
           )}
-          <FollowButton
-            actorUri={actor.uri}
-            color="secondary"
-            sx={{ position: "absolute", bottom: 0, right: 0 }}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+            }}
+          >
+            <SendDirectMessageButton
+              actorUri={actor.uri}
+              color="secondary"
+            />
+            <FollowButton
+              actorUri={actor.uri}
+              color="secondary"
+            />
+          </Box>
         </Box>
       </Container>
     </Box>

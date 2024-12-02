@@ -12,7 +12,9 @@ export default {
       send: 'Envoyer',
       reply: 'Répondre',
       boost: 'Booster',
-      like: 'Soutenir'
+      like: 'Soutenir',
+      sendDirectMessage: 'Envoyer un message direct',
+      message: 'Message'
     },
     page: {
       my_inbox: 'Boîte de réception',
@@ -36,7 +38,8 @@ export default {
     message: {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
-      actor_boosted: '%{actor} a boosté'
+      actor_boosted: '%{actor} a boosté',
+      no_result: 'Aucun résultat'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
@@ -48,6 +51,11 @@ export default {
       actor_unfollowed: 'Vous ne suivez plus cet acteur',
       image_upload_error: "Échec de l'upload de l'image"
     },
-    validation: {}
+    validation: {},
+    visibility: {
+      public: 'Publique',
+      followersOnly: 'Abonnés',
+      mentionsOnly: 'Personnes spécifiques'
+    }
   }
 };
