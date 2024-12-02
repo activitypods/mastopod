@@ -30,6 +30,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Mention from '@tiptap/extension-mention';
 import { HardBreak } from '@tiptap/extension-hard-break';
 import { uniqBy, sortBy } from 'lodash';
+import { required } from 'ra-core';
 
 const PostBlock = ({ inReplyTo, mention }) => {
   const dataProvider = useDataProvider();
@@ -400,6 +401,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                flexWrap="wrap">
             <Box display="flex" alignItems="center" gap={1}>
               <SelectInput
+                validate={required()}
                 helperText={false}
                 label={false}
                 source="visibility"
@@ -412,9 +414,9 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 ]}
                 optionText={(choice) => (
                   <Box display="flex" alignItems="center">
-                    {choice.id === 'public' && <PublicIcon color="primary" />}
+                    {choice.id === 'public' && <PublicIcon color="secondary" />}
                     {choice.id === 'followers-only' && <LockPersonIcon color="secondary" />}
-                    {choice.id === 'mentions-only' && <AlternateEmailIcon color="action" />}
+                    {choice.id === 'mentions-only' && <AlternateEmailIcon color="secondary" />}
                     <Typography variant="body2" sx={{ ml: 1 }}>
                       {choice.name}
                     </Typography>
