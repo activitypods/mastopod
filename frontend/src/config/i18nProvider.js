@@ -7,23 +7,18 @@ import { frenchMessages as apodsFrenchMessages, englishMessages as apodsEnglishM
 import frAppMessages from './messages/fr';
 import enAppMessages from './messages/en';
 
-const getMessages = lang => {
-  if (lang === 'en') {
-    return {
-      ...raEnglishMessages,
-      ...authEnglishMessages,
-      ...apodsEnglishMessages,
-      ...enAppMessages
-    };
-  } else if (lang === 'fr') {
-    return {
-      ...raFrenchMessages,
-      ...authFrenchMessages,
-      ...apodsFrenchMessages,
-      ...frAppMessages
-    };
-  } else {
-    throw new Error('Language not handled: ' + lang);
+const messages = {
+  fr: {
+    ...raFrenchMessages,
+    ...authFrenchMessages,
+    ...apodsFrenchMessages,
+    ...frAppMessages
+  },
+  en: {
+    ...raEnglishMessages,
+    ...authEnglishMessages,
+    ...apodsEnglishMessages,
+    ...enAppMessages
   }
 };
 
@@ -32,8 +27,16 @@ export const locales = [
   { locale: 'fr', name: 'Français' }
 ];
 
-// Filter locales based on the settings
+// Filter locales based on the Pod provider settings
 export const availableLocales = locales.filter(e => import.meta.env.VITE_AVAILABLE_LOCALES.includes(e.locale));
+
+const getMessages = lang => {
+  if (Object.keys(availableLocales).includes(lang)) {
+    return messages[lang];
+  } else {
+    return messages[import.meta.env.VITE_DEFAULT_LOCALE];
+  }
+};
 
 const i18nProvider = polyglotI18nProvider(
   getMessages,
