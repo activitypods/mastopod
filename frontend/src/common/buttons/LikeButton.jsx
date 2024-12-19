@@ -5,7 +5,7 @@ import { useOutbox, useCollection, ACTIVITY_TYPES } from '@semapps/activitypub-c
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 
-const LikeButton = ({ activity, object, ...rest }) => {
+const LikeButton = ({ activity, object, numlikes, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
   const translate = useTranslate();
@@ -46,9 +46,12 @@ const LikeButton = ({ activity, object, ...rest }) => {
 
   return (
     <Tooltip title={translate('app.action.like')}>
-      <IconButton aria-label={translate('app.action.like')} onClick={isLiked ? undoLike : like} {...rest}>
-        {isLiked ? <StarIcon /> : <StarBorderIcon />}
-      </IconButton>
+      <>
+        <IconButton aria-label={translate('app.action.like')} onClick={isLiked ? undoLike : like} {...rest}>
+          {isLiked ? <StarIcon /> : <StarBorderIcon />}
+        </IconButton>
+        {numlikes}
+      </>
     </Tooltip>
   );
 };

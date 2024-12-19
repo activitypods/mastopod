@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import isObject from 'isobject';
 import { Box, Avatar, Typography, MenuItem } from '@mui/material';
-import { Link, useTranslate } from 'react-admin';
+import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../../buttons/LikeButton';
 import BoostButton from '../../buttons/BoostButton';
@@ -10,6 +10,7 @@ import RelativeDate from '../../RelativeDate';
 import useActor from '../../../hooks/useActor';
 import { arrayOf } from '../../../utils';
 import MoreButton from '../../buttons/MoreButton';
+import { useCollection } from '@semapps/activitypub-components';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
@@ -17,8 +18,32 @@ const Note = ({ object, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
   const actorUri = object?.attributedTo;
-
+  const noteId = object.current || object.id || object;
+  let {
+    data: note
+  } = useGetOne(
+    "Note",
+    {
+      id: noteId,
+    },
+    {
+      enabled: !!noteId,
+    }
+  );
   const actor = useActor(actorUri);
+
+  //Mastodon collection URI is nested
+  const repliesUri = note?.replies?.id || note?.replies;
+  const likesUri = note?.likes?.id || note?.likes;
+
+  const { totalItems: numReplies } = useCollection(
+    repliesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
+  );
+  const { totalItems: numLikes } = useCollection(
+    likesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
+  );
 
   const content = useMemo(() => {
     let content = object.content || object.contentMap;
@@ -110,9 +135,9 @@ const Note = ({ object, activity, clickOnContent }) => {
         {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        <ReplyButton objectUri={object.id || activity.id} />
+        <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />
         <BoostButton activity={activity} object={object} />
-        <LikeButton activity={activity} object={object} />
+        <LikeButton activity={activity} object={object} numlikes={numLikes}/>
         <MoreButton>
           <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>
