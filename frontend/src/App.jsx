@@ -1,7 +1,7 @@
 import { Admin, Resource, CustomRoutes } from 'react-admin';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { QueryClient } from 'react-query';
-import { PodLoginPage } from '@activitypods/react';
+import { LoginPage } from '@activitypods/react';
 
 import dataProvider from './config/dataProvider';
 import authProvider from './config/authProvider';
@@ -42,14 +42,20 @@ const queryClient = new QueryClient({
   }
 });
 
-const customPodProviders = import.meta.env.VITE_POD_PROVIDER_BASE_URL && [
-  {
-    'apods:baseUrl': import.meta.env.VITE_POD_PROVIDER_BASE_URL,
-    'apods:area': 'Local'
-  }
-];
-
-const LoginPage = props => <PodLoginPage customPodProviders={customPodProviders} {...props} />;
+const MyLoginPage = props => (
+  <LoginPage
+    customPodProviders={
+      import.meta.env.VITE_POD_PROVIDER_BASE_URL && [
+        {
+          'apods:baseUrl': import.meta.env.VITE_POD_PROVIDER_BASE_URL,
+          'apods:area': 'Local'
+        }
+      ]
+    }
+    clientId={import.meta.env.VITE_BACKEND_CLIENT_ID}
+    {...props}
+  />
+);
 
 export const App = () => (
   <BrowserRouter>
@@ -59,7 +65,7 @@ export const App = () => (
       i18nProvider={i18nProvider}
       queryClient={queryClient}
       layout={Layout}
-      loginPage={LoginPage}
+      loginPage={MyLoginPage}
       theme={theme}
       disableTelemetry
     >

@@ -18,11 +18,11 @@
     "unlink-packages": "yalc remove --all && rm -rf node_modules/@semapps && rm -rf node_modules/@activitypods && yarn install --force"
   },
   "dependencies": {
-    "@activitypods/react": "2.0.4",
+    "@activitypods/react": "2.0.5",
     "@mui/styles": "^5.14.13",
-    "@semapps/activitypub-components": "1.0.3",
-    "@semapps/auth-provider": "1.0.3",
-    "@semapps/semantic-data-provider": "1.0.3",
+    "@semapps/activitypub-components": "1.0.4",
+    "@semapps/auth-provider": "1.0.4",
+    "@semapps/semantic-data-provider": "1.0.4",
     "@tiptap/extension-hard-break": "^2.10.2",
     "@tiptap/extension-mention": "^2.10.2",
     "@tiptap/extension-placeholder": "^2.10.2",
