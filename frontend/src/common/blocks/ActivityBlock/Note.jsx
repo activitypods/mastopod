@@ -19,31 +19,54 @@ const Note = ({ object, activity, clickOnContent }) => {
   const translate = useTranslate();
   const actorUri = object?.attributedTo;
   const noteId = object.current || object.id || object;
-  let {
-    data: note
-  } = useGetOne(
+  console.log("From Note: Object", object);
+  console.log("From Note: ID", noteId);
+  console.log("From Note: Activity", activity);
+
+  const { data: note } = useGetOne(
     "Note",
     {
       id: noteId,
     },
     {
-      enabled: !!noteId,
+      enabled: !!noteId && !object?.replies,
     }
   );
+  const noteInitialized = useMemo(() => {
+    if (object?.replies) {
+      return object;
+    }
+    return note;
+  }, [object, note]);
+
+  // const {
+  //   data: note
+  // } = useGetOne(
+  //   "Note",
+  //   {
+  //     id: noteId,
+  //   },
+  //   {
+  //     enabled: !!noteId,
+  //   }
+  // );
+  console.log("From Note: Note", note);
   const actor = useActor(actorUri);
 
   //Mastodon collection URI is nested
-  const repliesUri = note?.replies?.id || note?.replies;
+  const repliesUri = note?.replies?.id || note?.replies; 
   const likesUri = note?.likes?.id || note?.likes;
 
   const { totalItems: numReplies } = useCollection(
     repliesUri,
     { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
   );
+  console.log("From Note: numReplies", numReplies);
   const { totalItems: numLikes } = useCollection(
     likesUri,
     { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
   );
+  console.log("From Note: numLikes", numLikes);
 
   const content = useMemo(() => {
     let content = object.content || object.contentMap;
@@ -135,6 +158,7 @@ const Note = ({ object, activity, clickOnContent }) => {
         {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
+        {/* {numReplies && <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />} */}
         <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />
         <BoostButton activity={activity} object={object} />
         <LikeButton activity={activity} object={object} numlikes={numLikes}/>
