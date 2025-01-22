@@ -17,7 +17,11 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
       enabled: !isObject(activity.object),
     }
   );
-
+  console.log(
+    `From Create: Activity's id ${activity.id}, Object's id ${activity.object.id ||
+      activity.object.current ||
+      activity.object} : isEnabled ${!isObject(activity.object)}`,
+  );
   if (isObject(activity.object)) createdObject = activity.object;
 
   if (isLoading) {
@@ -35,6 +39,9 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
 
   // Do not display replies
   if (!showReplies && createdObject.inReplyTo) {
+    console.log(
+      `Object ${activity.object.id} is a reply, but replies are not displayed`
+    );
     return null;
   }
 

@@ -29,8 +29,10 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-      cacheTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
+      staleTime: 0, // Consider data fresh for 5 minutes
+      cacheTime: 0, // Cache unused data for 30 minutes.
+      // staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+      // cacheTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
       retry: 3
     },
     mutations: {

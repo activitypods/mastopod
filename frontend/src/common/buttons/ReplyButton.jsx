@@ -3,18 +3,21 @@ import { IconButton, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ReplyIcon from '@mui/icons-material/Reply';
 
-const ReplyButton = ({ objectUri, ...rest }) => {
+const ReplyButton = ({ objectUri, numReplies, ...rest }) => {
   const translate = useTranslate();
   return (
     <Tooltip title={translate('app.action.reply')}>
-      <IconButton
-        aria-label={translate('app.action.reply')}
-        component={Link}
-        to={`/activity/${encodeURIComponent(objectUri)}#reply`}
-        {...rest}
-      >
-        <ReplyIcon />
-      </IconButton>
+      <>
+        <IconButton
+          aria-label={translate('app.action.reply')}
+          component={Link}
+          to={`/activity/${encodeURIComponent(objectUri)}#reply`}
+          {...rest}
+        >
+          <ReplyIcon />
+        </IconButton>
+        {numReplies}
+      </>
     </Tooltip>
   );
 };
