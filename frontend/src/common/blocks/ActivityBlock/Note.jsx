@@ -14,43 +14,18 @@ import { useCollection } from '@semapps/activitypub-components';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
-const Note = ({ object, activity, clickOnContent }) => {
+const Note = ({ noteUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
-  const actorUri = object?.attributedTo;
-  const noteId = object.current || object.id || object;
-  console.log("From Note: Object", object);
-  console.log("From Note: ID", noteId);
-  console.log("From Note: Activity", activity);
 
   const { data: note } = useGetOne(
     "Note",
     {
-      id: noteId,
-    },
-    {
-      enabled: !!noteId && !object?.replies,
+      id: noteUri,
     }
   );
-  const noteInitialized = useMemo(() => {
-    if (object?.replies) {
-      return object;
-    }
-    return note;
-  }, [object, note]);
+  const actorUri = note?.attributedTo;
 
-  // const {
-  //   data: note
-  // } = useGetOne(
-  //   "Note",
-  //   {
-  //     id: noteId,
-  //   },
-  //   {
-  //     enabled: !!noteId,
-  //   }
-  // );
-  console.log("From Note: Note", note);
   const actor = useActor(actorUri);
 
   //Mastodon collection URI is nested
@@ -61,15 +36,18 @@ const Note = ({ object, activity, clickOnContent }) => {
     repliesUri,
     { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
   );
-  console.log("From Note: numReplies", numReplies);
+
   const { totalItems: numLikes } = useCollection(
     likesUri,
     { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
   );
-  console.log("From Note: numLikes", numLikes);
 
   const content = useMemo(() => {
-    let content = object.content || object.contentMap;
+    let content = note?.content || note?.contentMap;
+
+    if (!content) {
+      return null;
+    }
 
     // If we have a contentMap, take first value
     if (isObject(content)) {
@@ -80,7 +58,7 @@ const Note = ({ object, activity, clickOnContent }) => {
     content = content?.replaceAll('\n', '<br>')
 
     // Find all mentions
-    const mentions = arrayOf(object.tag || activity?.tag).filter(tag => tag.type === 'Mention');
+    const mentions = arrayOf(note.tag || activity?.tag).filter(tag => tag.type === 'Mention');
 
     if (mentions.length > 0) {
       // Replace mentions to local actor links
@@ -97,11 +75,11 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
 
     return content;
-  }, [object, activity]);
+  }, [note, activity]);
 
   const images = useMemo(() => {
-    return arrayOf(object.attachment || object.icon || []);
-  }, [object]);
+    return arrayOf(note?.attachment || note?.icon || []);
+  }, [note]);
 
   // Catch links to actors with react-router
   const onContentClick = e => {
@@ -143,13 +121,13 @@ const Note = ({ object, activity, clickOnContent }) => {
           </Typography>
         </Link>
 
-        {object?.published && (
+        {note?.published && (
           <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-            <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
+            <RelativeDate date={note?.published} sx={{ fontSize: 13, color: 'grey' }} />
           </Box>
         )}
         {clickOnContent ? (
-          <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} onClick={onContentClick}>
+          <Link to={`/activity/${encodeURIComponent(activity?.id || note?.id)}`} onClick={onContentClick}>
             <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
           </Link>
         ) : (
@@ -159,9 +137,9 @@ const Note = ({ object, activity, clickOnContent }) => {
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         {/* {numReplies && <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />} */}
-        <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />
-        <BoostButton activity={activity} object={object} />
-        <LikeButton activity={activity} object={object} numlikes={numLikes}/>
+        <ReplyButton objectUri={note?.id || activity.id} numReplies={numReplies} />
+        <BoostButton activity={activity} object={note} />
+        <LikeButton activity={activity} object={note} numlikes={numLikes}/>
         <MoreButton>
           <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>

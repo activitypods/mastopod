@@ -17,11 +17,7 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
       enabled: !isObject(activity.object),
     }
   );
-  console.log(
-    `From Create: Activity's id ${activity.id}, Object's id ${activity.object.id ||
-      activity.object.current ||
-      activity.object} : isEnabled ${!isObject(activity.object)}`,
-  );
+
   if (isObject(activity.object)) createdObject = activity.object;
 
   if (isLoading) {
@@ -48,7 +44,7 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
   return (
     <Card sx={{ p: 2 }}>
       <Note
-        object={createdObject}
+        noteUri={createdObject.current || createdObject.id}
         activity={activity}
         clickOnContent={clickOnContent}
       />
