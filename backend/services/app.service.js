@@ -6,6 +6,7 @@ const CONFIG = require('../config/config');
 module.exports = {
   mixins: [AppService],
   settings: {
+    baseUrl: CONFIG.HOME_URL,
     app: {
       name: CONFIG.APP_NAME,
       description: {
@@ -25,12 +26,16 @@ module.exports = {
     accessNeeds: {
       required: [
         {
-          registeredClass: 'as:Note',
+          shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Note'),
           accessMode: ['acl:Read', 'acl:Write']
         },
         {
-          registeredClass: 'vcard:Individual',
+          shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Profile'),
           accessMode: 'acl:Read'
+        },
+        {
+          shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/File'),
+          accessMode: ['acl:Read', 'acl:Write']
         },
         'apods:ReadInbox',
         'apods:ReadOutbox',
@@ -38,15 +43,6 @@ module.exports = {
         'apods:QuerySparqlEndpoint'
       ],
       optional: []
-    },
-    classDescriptions: {
-      'as:Note': {
-        label: {
-          en: 'Messages',
-          fr: 'Messages'
-        },
-        openEndpoint: urlJoin(CONFIG.FRONT_URL, '/r')
-      }
     },
     queueServiceUrl: CONFIG.QUEUE_SERVICE_URL
   }
