@@ -3,7 +3,6 @@ import { useCheckAuthenticated } from '@semapps/auth-provider';
 import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
 import PostBlock from '../../common/blocks/PostBlock';
 import LoadMore from '../../common/LoadMore';
-import { useEffect } from 'react';
 
 const Outbox = () => {
   useCheckAuthenticated();

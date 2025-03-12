@@ -141,7 +141,6 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
         {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        {/* {numReplies && <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />} */}
         <ReplyButton objectUri={note?.id || activity.id} numReplies={numReplies} />
         <BoostButton activity={activity} object={note} numBoosts={numShares} shares={shares}/>
         <LikeButton activity={activity} object={note} numlikes={numLikes}/>

@@ -35,9 +35,6 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
 
   // Do not display replies
   if (!showReplies && createdObject.inReplyTo) {
-    console.log(
-      `Object ${activity.object.id} is a reply, but replies are not displayed`
-    );
     return null;
   }
 

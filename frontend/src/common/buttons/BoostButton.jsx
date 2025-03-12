@@ -3,6 +3,7 @@ import { IconButton, Tooltip, Box } from '@mui/material';
 import { useNotify, useGetIdentity, useTranslate } from 'react-admin';
 import { useOutbox, ACTIVITY_TYPES, PUBLIC_URI } from '@semapps/activitypub-components';
 import RepeatIcon from '@mui/icons-material/Repeat';
+import RepeatOnIcon from '@mui/icons-material/RepeatOn';
 
 const BoostButton = ({ object, activity, numBoosts, shares, ...rest }) => {
   const outbox = useOutbox();
@@ -37,7 +38,6 @@ const BoostButton = ({ object, activity, numBoosts, shares, ...rest }) => {
         to: activity?.actor || object?.attributedTo
       };
       await outbox.post(undo);
-      console.log('unboost', undo);
       notify('app.notification.post_unboosted', { type: 'success' });
     } catch (e) {
       notify(e.message, 'error');
@@ -48,7 +48,7 @@ const BoostButton = ({ object, activity, numBoosts, shares, ...rest }) => {
     <Tooltip title={translate('app.action.boost')}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <IconButton aria-label={translate('app.action.boost')} onClick={isBoosted ? unboost : boost} {...rest}>
-          <RepeatIcon />
+          {isBoosted ? <RepeatOnIcon /> : <RepeatIcon />}
         </IconButton>
         {numBoosts > 0 && (
           <Box sx={{ ml: -1, fontSize: '0.875rem', color: 'text.secondary' }}>
