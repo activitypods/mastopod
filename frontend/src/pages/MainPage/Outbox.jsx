@@ -13,12 +13,6 @@ const Outbox = () => {
     isFetchingNextPage,
     isLoading
   } = useCollection('outbox', { liveUpdates: true, dereferenceItems: true });
-  useEffect(() => {
-    console.log('Outbox component mounted');
-    return () => {
-      console.log('Outbox component unmounted');
-    };
-  }, []);
   return (
     <>
       <PostBlock />

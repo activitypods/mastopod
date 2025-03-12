@@ -1,14 +1,18 @@
-import { useCallback } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
+import { useCallback, useMemo } from 'react';
+import { IconButton, Tooltip, Box } from '@mui/material';
 import { useNotify, useGetIdentity, useTranslate } from 'react-admin';
 import { useOutbox, ACTIVITY_TYPES, PUBLIC_URI } from '@semapps/activitypub-components';
 import RepeatIcon from '@mui/icons-material/Repeat';
 
-const BoostButton = ({ object, activity, ...rest }) => {
+const BoostButton = ({ object, activity, numBoosts, shares, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
   const translate = useTranslate();
   const { data: identity } = useGetIdentity();
+
+  const share = useMemo(() => shares.filter(share => share.startsWith(`${outbox.owner}/`))[0], [shares, outbox]);
+  const isBoosted = useMemo(() => !!share, [share]);
+
 
   const boost = useCallback(async () => {
     try {
@@ -24,11 +28,34 @@ const BoostButton = ({ object, activity, ...rest }) => {
     }
   }, [object, activity, outbox, notify]);
 
+  const unboost = useCallback(async () => {
+    try {
+      const undo = {
+        type: ACTIVITY_TYPES.UNDO,
+        actor: outbox.owner,
+        object: share,
+        to: activity?.actor || object?.attributedTo
+      };
+      await outbox.post(undo);
+      console.log('unboost', undo);
+      notify('app.notification.post_unboosted', { type: 'success' });
+    } catch (e) {
+      notify(e.message, 'error');
+    }
+  }, [object, activity, outbox, notify]);
+
   return (
     <Tooltip title={translate('app.action.boost')}>
-      <IconButton aria-label={translate('app.action.boost')} onClick={boost} {...rest}>
-        <RepeatIcon />
-      </IconButton>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton aria-label={translate('app.action.boost')} onClick={isBoosted ? unboost : boost} {...rest}>
+          <RepeatIcon />
+        </IconButton>
+        {numBoosts > 0 && (
+          <Box sx={{ ml: -1, fontSize: '0.875rem', color: 'text.secondary' }}>
+            {numBoosts}
+        </Box>
+        )}
+      </Box>
     </Tooltip>
   );
 };

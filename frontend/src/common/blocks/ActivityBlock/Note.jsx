@@ -31,6 +31,7 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
   //Mastodon collection URI is nested
   const repliesUri = note?.replies?.id || note?.replies; 
   const likesUri = note?.likes?.id || note?.likes;
+  const sharesUri = note?.shares?.id || note?.shares;
 
   const { totalItems: numReplies } = useCollection(
     repliesUri,
@@ -41,7 +42,11 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
     likesUri,
     { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
   );
-
+  const { totalItems: numShares, items: shares} = useCollection(
+    sharesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!sharesUri}
+  );
+  
   const content = useMemo(() => {
     let content = note?.content || note?.contentMap;
 
@@ -138,7 +143,7 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         {/* {numReplies && <ReplyButton objectUri={object.id || activity.id} numReplies={numReplies} />} */}
         <ReplyButton objectUri={note?.id || activity.id} numReplies={numReplies} />
-        <BoostButton activity={activity} object={note} />
+        <BoostButton activity={activity} object={note} numBoosts={numShares} shares={shares}/>
         <LikeButton activity={activity} object={note} numlikes={numLikes}/>
         <MoreButton>
           <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
