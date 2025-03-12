@@ -38,6 +38,19 @@ const BoostButton = ({ object, activity, numBoosts, shares, ...rest }) => {
         to: activity?.actor || object?.attributedTo
       };
       await outbox.post(undo);
+
+      /*
+       * It doesn't seem possible to delete the share from the outbox at the time.
+       * TODO: clarify the situation
+       */
+      // const deleteShare = {
+      //   type: ACTIVITY_TYPES.DELETE,
+      //   actor: outbox.owner,
+      //   object: {id: share},
+      //   to: outbox.owner
+      // };
+      // await outbox.post(deleteShare);
+      
       notify('app.notification.post_unboosted', { type: 'success' });
     } catch (e) {
       notify(e.message, 'error');
