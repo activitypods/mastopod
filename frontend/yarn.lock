@@ -7,13 +7,13 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@activitypods/react@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.0.5.tgz#d38e189b673d9879214d4e5995028c3e972bb35c"
-  integrity sha512-jifYymPrDaKM23ZOTaFIXzJM9+tkrdlg3EaYBigksApIqJSi6ONM5O4TYtV8WHSezZ6lWXWF2GGH/97vKwC2Qg==
+"@activitypods/react@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.1.0.tgz#2024f2fbd99fab059a50010e4a71804008f6d2b1"
+  integrity sha512-ygFKN0ik2h5fRkcB4FpG9SNjBljoq412gBstYHLvRf8SdW62iQ4bzTWqH/SQklYWlUlSNFpGYyE8Sr1AMuiZ6Q==
   dependencies:
-    "@semapps/activitypub-components" "1.0.4"
-    "@semapps/semantic-data-provider" "1.0.4"
+    "@semapps/activitypub-components" "1.1.0"
+    "@semapps/semantic-data-provider" "1.1.0"
     http-link-header "^1.1.1"
     jwt-decode "^3.0.0"
     url-join "^4.0.1"
@@ -827,28 +827,29 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.12.1.tgz#cd8d175e001c212d5ac71c7827ef1d5c5e14494c"
   integrity sha512-n+vkrSyphvmU0qkQ6QBNXCGr2mKjhP08mPRM/Xp5Ck2FV4NrHU+y6axzDeixUrCBHVUS51TZhjqrKBBsHLKb2Q==
 
-"@semapps/activitypub-components@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@semapps/activitypub-components/-/activitypub-components-1.0.4.tgz#1c09ae491d757b9d07384b95666bdd90dcd8e90f"
-  integrity sha512-cXM9Ob6XiyUgFc3uZYn88nIyx14H96NuSE4a0Pvx0l8ORHbIvpHNpZIlwq46XhjwzrfiwqapTb9QXI2NiXayCA==
+"@semapps/activitypub-components@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@semapps/activitypub-components/-/activitypub-components-1.1.0.tgz#ed50ac50a80e4e7ba41acc6e5693ca6858d774b5"
+  integrity sha512-GlfsOe9LIdTLq9KyYC9yhCBlt/MCcOoMzF8kuvLpHGn0otudZHUIUtV9w4D7HjCYTUIDATPFRprghFb+S3exVA==
   dependencies:
-    "@semapps/auth-provider" "1.0.4"
-    "@semapps/field-components" "1.0.4"
-    "@semapps/semantic-data-provider" "1.0.4"
+    "@semapps/auth-provider" "1.1.0"
+    "@semapps/field-components" "1.1.0"
+    "@semapps/semantic-data-provider" "1.1.0"
     "@tiptap/core" "^2.0.0-beta.95"
     "@tiptap/extension-mention" "^2.0.0-beta.95"
     "@tiptap/extension-placeholder" "^2.0.0-beta.95"
     "@tiptap/react" "^2.0.0-beta.95"
     "@tiptap/suggestion" "^2.0.0-beta.95"
     ra-input-rich-text "^4.11.0"
+    react-admin "^4.11.0"
     tippy.js "^6.3.7"
 
-"@semapps/auth-provider@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@semapps/auth-provider/-/auth-provider-1.0.4.tgz#796aa8322b2fcd2194adcc47662ece0fc2780823"
-  integrity sha512-VRL4S+Qr27m2dW9tSq6fzGB57hsoIPvXjMFDywR0o9rown7VSIJIpyTQ1rkFKFWcaPDX3ZS1Ob+/yuMgr46fyw==
+"@semapps/auth-provider@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@semapps/auth-provider/-/auth-provider-1.1.0.tgz#89891b4f725a493fd4506f0ecbbc2866f859e2b8"
+  integrity sha512-VRct3MRNSbV9D7NROMPFW2vvhS2WSHq1V3+qwUHvyodLctBbxWGhGEerNVY5L8+TiLYmKTc5q7mKY0gqbkMUmw==
   dependencies:
-    "@semapps/semantic-data-provider" "1.0.4"
+    "@semapps/semantic-data-provider" "1.1.0"
     classnames "^2.3.2"
     jwt-decode "^3.0.0"
     lodash "^4.17.21"
@@ -857,25 +858,28 @@
     speakingurl "^14.0.1"
     url-join "^4.0.1"
 
-"@semapps/field-components@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@semapps/field-components/-/field-components-1.0.4.tgz#045b9f5974939e36932f647513f21ad580d817c2"
-  integrity sha512-QB+vsYtlgUg2gyXg47NA7MGMjqdztwqrr78APQ8NHt7TtgwhUY6whG5DvxykL2DS3mIevH6yKQ0U1bAlTJl2AQ==
+"@semapps/field-components@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@semapps/field-components/-/field-components-1.1.0.tgz#7cd814b80e53cd3858c022cbd4b94e602e36ee0b"
+  integrity sha512-LHllTCZH6apvkFfyT7FqmNGzuB7xH28mel+t3XQGJQUJZBnM2d2PDXhC7RmGPcMS0jspmNog0GnQa2viuM3ntQ==
   dependencies:
-    "@semapps/semantic-data-provider" "1.0.4"
+    "@semapps/semantic-data-provider" "1.1.0"
     lodash.debounce "^4.0.8"
     react-icons "^4.4.0"
 
-"@semapps/semantic-data-provider@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-1.0.4.tgz#3aff3b88ad9748a1119d33be8907099569f3af7c"
-  integrity sha512-WxFPrsj6E0stomDoSJLzR7b/zsqvTivU8aK8Ignx9ktSQ9Q3k6HGfE0ljSZk+/ccqmasMwW4ZtJ1jEP8z4iMTg==
+"@semapps/semantic-data-provider@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-1.1.0.tgz#964648d6e36ebd0ec2e75d51154278ec33ab17b6"
+  integrity sha512-ZDxhZDmIg15zwNA8tPHmSMGmoAz5AMb5JMme+20eBWLsrrDKg4R3XlfFFdmnjkJkupt/YMQm0hwe1attbUaPNw==
   dependencies:
     "@rdfjs/data-model" "^1.3.4"
+    change-case "^5.4.4"
     crypto-js "^4.1.1"
+    http-link-header "1.1.3"
     jsonld "^5.2.0"
     jwt-decode "^3.0.0"
     sparqljs "^3.5.1"
+    speakingurl "^14.0.1"
     url-join "^4.0.1"
 
 "@tiptap/core@^2.0.0-beta.95", "@tiptap/core@^2.0.3", "@tiptap/core@^2.2.4":
@@ -2459,7 +2463,7 @@ hotscript@^1.0.12:
   resolved "https://registry.yarnpkg.com/hotscript/-/hotscript-1.0.13.tgz#6eb5de757e9b33444ffc22555e98dbc17fa31fb4"
   integrity sha512-C++tTF1GqkGYecL+2S1wJTfoH6APGAsbb7PAWQ3iVIwgG/EFseAfEVOKFgAFq4yK3+6j1EjUD4UQ9dRJHX/sSQ==
 
-http-link-header@^1.1.1:
+http-link-header@1.1.3, http-link-header@^1.1.1:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/http-link-header/-/http-link-header-1.1.3.tgz#b367b7a0ad1cf14027953f31aa1df40bb433da2a"
   integrity sha512-3cZ0SRL8fb9MUlU3mKM61FcQvPfXx2dBrZW3Vbg5CXa8jFlK8OaEpePenLe1oEXQduhz8b0QjsqfS59QP4AJDQ==
@@ -3526,6 +3530,22 @@ ra-core@^4.16.11:
     react-is "^17.0.2"
     react-query "^3.32.1"
 
+ra-core@^4.16.20:
+  version "4.16.20"
+  resolved "https://registry.yarnpkg.com/ra-core/-/ra-core-4.16.20.tgz#ad11785c706f8256ec0e9d371be2e13c8ca40e80"
+  integrity sha512-+xJSVBD3zTG9Zxy042SpAWsozuIKCNvN/cZeUr5lINHY3/zOcZ2bbJ+Ce7IMcKnlvxS4g3tvqq4HuTQpItFEcg==
+  dependencies:
+    clsx "^1.1.1"
+    date-fns "^2.19.0"
+    eventemitter3 "^4.0.7"
+    inflection "~1.12.0"
+    jsonexport "^3.2.0"
+    lodash "~4.17.5"
+    prop-types "^15.6.1"
+    query-string "^7.1.1"
+    react-is "^17.0.2"
+    react-query "^3.32.1"
+
 ra-i18n-polyglot@^4.16.11:
   version "4.16.11"
   resolved "https://registry.yarnpkg.com/ra-i18n-polyglot/-/ra-i18n-polyglot-4.16.11.tgz#163bf5d4765234a940fcf76fe06f5b02761d2d5f"
@@ -3533,6 +3553,14 @@ ra-i18n-polyglot@^4.16.11:
   dependencies:
     node-polyglot "^2.2.2"
     ra-core "^4.16.11"
+
+ra-i18n-polyglot@^4.16.20:
+  version "4.16.20"
+  resolved "https://registry.yarnpkg.com/ra-i18n-polyglot/-/ra-i18n-polyglot-4.16.20.tgz#9d0e3211b7163c83d6a9acc281cb29642d6b64ec"
+  integrity sha512-O8++vWMMUnPDSChcHDjv6teIF14Gnr0rV9Phq0168X4RhjIbxyv3T0QpGKyOzXykCsCj+2pGrK/8Gj8fGJCSug==
+  dependencies:
+    node-polyglot "^2.2.2"
+    ra-core "^4.16.20"
 
 ra-input-rich-text@^4.11.0:
   version "4.16.11"
@@ -3579,6 +3607,13 @@ ra-language-english@^4.16.11:
   dependencies:
     ra-core "^4.16.11"
 
+ra-language-english@^4.16.20:
+  version "4.16.20"
+  resolved "https://registry.yarnpkg.com/ra-language-english/-/ra-language-english-4.16.20.tgz#0dc8f646fb4fc4daaddf4c1be1bb74a3d63c3f91"
+  integrity sha512-Zr4uq3u86uz3i3R2ztFt9eF0+f8MYCkACJbvgTJlcXdnkQoJc/05SrwN9loFI8XAzC+Z1klcQM6jjKzq0T4Umg==
+  dependencies:
+    ra-core "^4.16.20"
+
 ra-language-french@^4.16.0:
   version "4.16.11"
   resolved "https://registry.yarnpkg.com/ra-language-french/-/ra-language-french-4.16.11.tgz#4c28c86491aee305fb657913f473e4d21890c476"
@@ -3590,6 +3625,26 @@ ra-ui-materialui@^4.16.11:
   version "4.16.11"
   resolved "https://registry.yarnpkg.com/ra-ui-materialui/-/ra-ui-materialui-4.16.11.tgz#4b9c31d0aa7dfaa1240512180f6264ae4c43ebe2"
   integrity sha512-XLpHuBVSOw3A8r8qBPwOmQKoqjDIL85jd8EjNeWg/iH5jGGdWTaf1zwKkOn8OkG/UoJAquw5na7YXAGqRbpceQ==
+  dependencies:
+    autosuggest-highlight "^3.1.1"
+    clsx "^1.1.1"
+    css-mediaquery "^0.1.2"
+    dompurify "^2.4.3"
+    hotscript "^1.0.12"
+    inflection "~1.12.0"
+    jsonexport "^3.2.0"
+    lodash "~4.17.5"
+    prop-types "^15.7.0"
+    query-string "^7.1.1"
+    react-dropzone "^12.0.4"
+    react-error-boundary "^3.1.4"
+    react-query "^3.32.1"
+    react-transition-group "^4.4.1"
+
+ra-ui-materialui@^4.16.20:
+  version "4.16.20"
+  resolved "https://registry.yarnpkg.com/ra-ui-materialui/-/ra-ui-materialui-4.16.20.tgz#d783f135a26a42eac1018f080886697faa518b09"
+  integrity sha512-i2DQ2219YTbjhXfBjkMIKmWiqZRQDyW+yMAgehfSjVbVD17QhoWG3fib4ILA58ADe4trLhFNg4WPkO3y8q37dw==
   dependencies:
     autosuggest-highlight "^3.1.1"
     clsx "^1.1.1"
@@ -3619,6 +3674,24 @@ rdf-data-factory@^1.1.2:
   integrity sha512-TfQD63Lokabd09ES1jAtKK8AA6rkr9rwyUBGo6olOt1CE0Um36CUQIqytyf0am2ouBPR0l7SaHxCiMcPGHkt1A==
   dependencies:
     "@rdfjs/types" "*"
+
+react-admin@^4.11.0:
+  version "4.16.20"
+  resolved "https://registry.yarnpkg.com/react-admin/-/react-admin-4.16.20.tgz#50cfc98ac1c135d4bfb546ba0ad350f99c566c24"
+  integrity sha512-9QLc5uTI669dGceC+VT08LG2vytMMSpvwg2lJJS4wqJJykQKlZXJelpOLAGWlggEuAXtyC2nMG8S6sgl7+hBDQ==
+  dependencies:
+    "@emotion/react" "^11.4.1"
+    "@emotion/styled" "^11.3.0"
+    "@mui/icons-material" "^5.0.1"
+    "@mui/material" "^5.0.2"
+    history "^5.1.0"
+    ra-core "^4.16.20"
+    ra-i18n-polyglot "^4.16.20"
+    ra-language-english "^4.16.20"
+    ra-ui-materialui "^4.16.20"
+    react-hook-form "^7.43.9"
+    react-router "^6.1.0"
+    react-router-dom "^6.1.0"
 
 react-admin@^4.16.0:
   version "4.16.11"
