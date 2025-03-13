@@ -28,8 +28,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-      cacheTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
+      //TODO: Figure out why caching prevent a proper flow of data between components related to activities
+      staleTime: 0,
+      cacheTime: 0,
+      // staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+      // cacheTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
       retry: 3
     },
     mutations: {
