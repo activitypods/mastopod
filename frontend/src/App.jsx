@@ -1,7 +1,7 @@
 import { Admin, Resource, CustomRoutes } from 'react-admin';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { QueryClient } from 'react-query';
-import { LoginPage } from '@activitypods/react';
+import { LoginPage, RedirectPage } from '@activitypods/react';
 
 import dataProvider from './config/dataProvider';
 import authProvider from './config/authProvider';
@@ -23,7 +23,6 @@ import Following from './pages/MainPage/Following';
 
 import theme from './config/theme';
 import i18nProvider from './config/i18nProvider';
-import { RedirectPage } from '@activitypods/react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
