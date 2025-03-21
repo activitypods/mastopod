@@ -28,9 +28,9 @@ const Announce = ({ activity }) => {
       <Card sx={{ p: 2 }}>
         <BoostBanner activity={activity} />
         {boostedObject.type === ACTIVITY_TYPES.CREATE ? (
-          <Note object={boostedObject.object} activity={boostedObject} />
+          <Note noteUri={boostedObject.object.current || boostedObject.object?.id} activity={boostedObject} />
         ) : (
-          <Note object={boostedObject} activity={activity} />
+          <Note noteUri={boostedObject.current || boostedObject?.id} activity={activity} />
         )}
       </Card>
     );

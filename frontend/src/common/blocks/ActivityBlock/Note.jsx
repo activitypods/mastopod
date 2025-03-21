@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import isObject from 'isobject';
 import { Box, Avatar, Typography, MenuItem } from '@mui/material';
-import { Link, useTranslate } from 'react-admin';
+import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../../buttons/LikeButton';
 import BoostButton from '../../buttons/BoostButton';
@@ -10,18 +10,49 @@ import RelativeDate from '../../RelativeDate';
 import useActor from '../../../hooks/useActor';
 import { arrayOf } from '../../../utils';
 import MoreButton from '../../buttons/MoreButton';
+import { useCollection } from '@semapps/activitypub-components';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
-const Note = ({ object, activity, clickOnContent }) => {
+const Note = ({ noteUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
-  const actorUri = object?.attributedTo;
+
+  const { data: note } = useGetOne(
+    "Note",
+    {
+      id: noteUri,
+    }
+  );
+  const actorUri = note?.attributedTo;
 
   const actor = useActor(actorUri);
 
+  //Mastodon collection URI is nested
+  const repliesUri = note?.replies?.id || note?.replies; 
+  const likesUri = note?.likes?.id || note?.likes;
+  const sharesUri = note?.shares?.id || note?.shares;
+
+  const { totalItems: numReplies } = useCollection(
+    repliesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
+  );
+
+  const { totalItems: numLikes } = useCollection(
+    likesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
+  );
+  const { totalItems: numShares, items: shares} = useCollection(
+    sharesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!sharesUri}
+  );
+  
   const content = useMemo(() => {
-    let content = object.content || object.contentMap;
+    let content = note?.content || note?.contentMap;
+
+    if (!content) {
+      return null;
+    }
 
     // If we have a contentMap, take first value
     if (isObject(content)) {
@@ -32,7 +63,7 @@ const Note = ({ object, activity, clickOnContent }) => {
     content = content?.replaceAll('\n', '<br>')
 
     // Find all mentions
-    const mentions = arrayOf(object.tag || activity?.tag).filter(tag => tag.type === 'Mention');
+    const mentions = arrayOf(note.tag || activity?.tag).filter(tag => tag.type === 'Mention');
 
     if (mentions.length > 0) {
       // Replace mentions to local actor links
@@ -49,11 +80,11 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
 
     return content;
-  }, [object, activity]);
+  }, [note, activity]);
 
   const images = useMemo(() => {
-    return arrayOf(object.attachment || object.icon || []);
-  }, [object]);
+    return arrayOf(note?.attachment || note?.icon || []);
+  }, [note]);
 
   // Catch links to actors with react-router
   const onContentClick = e => {
@@ -95,13 +126,13 @@ const Note = ({ object, activity, clickOnContent }) => {
           </Typography>
         </Link>
 
-        {object?.published && (
+        {note?.published && (
           <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-            <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
+            <RelativeDate date={note?.published} sx={{ fontSize: 13, color: 'grey' }} />
           </Box>
         )}
         {clickOnContent ? (
-          <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} onClick={onContentClick}>
+          <Link to={`/activity/${encodeURIComponent(activity?.id || note?.id)}`} onClick={onContentClick}>
             <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
           </Link>
         ) : (
@@ -110,9 +141,9 @@ const Note = ({ object, activity, clickOnContent }) => {
         {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        <ReplyButton objectUri={object.id || activity.id} />
-        <BoostButton activity={activity} object={object} />
-        <LikeButton activity={activity} object={object} />
+        <ReplyButton objectUri={note?.id || activity.id} numReplies={numReplies} />
+        <BoostButton activity={activity} object={note} numBoosts={numShares} shares={shares}/>
+        <LikeButton activity={activity} object={note} numlikes={numLikes}/>
         <MoreButton>
           <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>

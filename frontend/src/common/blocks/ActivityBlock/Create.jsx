@@ -41,7 +41,7 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
   return (
     <Card sx={{ p: 2 }}>
       <Note
-        object={createdObject}
+        noteUri={createdObject.current || createdObject.id}
         activity={activity}
         clickOnContent={clickOnContent}
       />

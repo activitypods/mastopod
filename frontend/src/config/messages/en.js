@@ -45,6 +45,7 @@ export default {
       activity_send_error: 'Error while posting the activity: %{error}',
       message_sent: 'Your message has been sent',
       post_boosted: 'The post has been boosted',
+      post_unboosted: 'The post has been unboosted',
       post_liked: 'The post has been starred',
       post_like_removed: 'The post has been unstarred',
       actor_followed: 'You are now following this actor',
