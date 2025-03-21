@@ -11,7 +11,7 @@ const Outbox = () => {
     fetchNextPage,
     isFetchingNextPage,
     isLoading
-  } = useCollection('outbox', { liveUpdates: true, dereferenceItems: true });
+  } = useCollection('outbox', { liveUpdates: true, dereferenceItems: true, shaclShapeUri: '/shapes/DisplayableActivityShape.ttl' });
   return (
     <>
       <PostBlock />

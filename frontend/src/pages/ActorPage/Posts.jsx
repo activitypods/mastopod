@@ -10,7 +10,7 @@ const Posts = () => {
     fetchNextPage,
     isLoading,
     isFetchingNextPage
-  } = useCollection(actor?.outbox, { liveUpdates: true });
+  } = useCollection(actor?.outbox, { liveUpdates: true, shaclShapeUri: '/shapes/DisplayableActivityShape.ttl' });
   return (
     <>
       {activities?.map(activity => (
