@@ -6,7 +6,7 @@
 as:ActivityShape a sh:NodeShape ;
     sh:closed false ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:in ( as:Note as:Article as:Image as:Video as:Document as:Event as:Announce as:Create ) ;
+    sh:property [ sh:in ( as:Note as:Article as:Image as:Video as:Document as:Event as:Announce as:Create as:Audio ) ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:order 0 ;
