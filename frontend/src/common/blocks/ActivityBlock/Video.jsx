@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import isObject from 'isobject';
 import { Box, Avatar, Typography, MenuItem } from '@mui/material';
 import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
+import Hls from 'hls.js';
 import LikeButton from '../../buttons/LikeButton';
 import BoostButton from '../../buttons/BoostButton';
 import ReplyButton from '../../buttons/ReplyButton';
@@ -17,6 +18,7 @@ const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(
 const Video = ({ videoUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
+  const videoRef = useRef(null);
 
   const { data: video } = useGetOne(
     "Video",
@@ -67,7 +69,7 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
     content = content?.replaceAll('\n', '<br>')
 
     // Find all mentions
-    const mentions = arrayOf(video.tag || activity?.tag).filter(tag => tag.type === 'Mention');
+    const mentions = arrayOf(video?.tag || activity?.tag).filter(tag => tag.type === 'Mention');
 
     if (mentions.length > 0) {
       // Replace mentions to local actor links
@@ -90,24 +92,108 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
     return arrayOf(video?.icon || []);
   }, [video]);
 
+  // Find all available video sources
   const videoSources = useMemo(() => {
-    if (!video?.url) return [];
+    if (!video?.url) return { hlsSource: null, directSources: [] };
     
     const urls = arrayOf(video.url);
-    // Filter for direct video URLs (mp4 is the most compatible format)
-    return urls.filter(url => 
-      url.mediaType === 'video/mp4' || 
+    
+    // First, look for HLS playlist
+    const hlsSource = urls.find(url => 
       url.mediaType === 'application/x-mpegURL'
     );
-  }, [video]);
-
-  // Get the best video source
-  const getBestVideoSource = useMemo(() => {
-    if (!videoSources.length) return null;
     
-    // Prefer MP4 over HLS for direct playback
-    const mp4Source = videoSources.find(source => source.mediaType === 'video/mp4');
-    return mp4Source ? mp4Source.href : videoSources[0].href;
+    // Then, look for direct video files at the top level
+    const directSources = urls.filter(url => 
+      url.mediaType?.startsWith('video/')
+    );
+    
+    // Finally, if we have an HLS source, also look for MP4s in its tag array
+    // (PeerTube specific pattern)
+    const nestedSources = [];
+    if (hlsSource?.tag) {
+      const nestedVideos = arrayOf(hlsSource.tag).filter(
+        tag => tag.mediaType?.startsWith('video/')
+      );
+      nestedSources.push(...nestedVideos);
+    }
+    
+    return { 
+      hlsSource, 
+      directSources: [...directSources, ...nestedSources]
+    };
+  }, [video]);
+  
+  // Set up HLS.js
+  useEffect(() => {
+    if (!videoRef.current) return;
+    
+    const { hlsSource, directSources } = videoSources;
+    
+    // Clean up any existing HLS instance
+    let hls;
+    
+    // First priority: Use HLS if available and supported
+    if (hlsSource && Hls.isSupported()) {
+      hls = new Hls({
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60
+      });
+      
+      hls.loadSource(hlsSource.href);
+      hls.attachMedia(videoRef.current);
+      
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        // Autoplay if desired
+        // videoRef.current.play();
+      });
+      
+      // Error handling
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        console.warn('HLS error:', data);
+        if (data.fatal) {
+          switch(data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              console.error('Fatal network error, trying to recover');
+              hls.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.error('Fatal media error, trying to recover');
+              hls.recoverMediaError();
+              break;
+            default:
+              // Cannot recover, fall back to direct sources if available
+              initializeDirectSource();
+              break;
+          }
+        }
+      });
+    }
+    // Second priority: Use native HLS (Safari)
+    else if (hlsSource && videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+      videoRef.current.src = hlsSource.href;
+    }
+    // Last resort: Use direct MP4 sources
+    else {
+      initializeDirectSource();
+    }
+    
+    function initializeDirectSource() {
+      if (directSources.length > 0) {
+        // Sort by height (quality) in descending order if available
+        const sortedSources = [...directSources].sort((a, b) => 
+          (b.height || 0) - (a.height || 0)
+        );
+        videoRef.current.src = sortedSources[0].href;
+      }
+    }
+    
+    return () => {
+      // Clean up HLS instance on unmount
+      if (hls) {
+        hls.destroy();
+      }
+    };
   }, [videoSources]);
 
   // Catch links to actors with react-router
@@ -158,15 +244,16 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
         <Typography sx={{ color: 'black', mb: 2 }} dangerouslySetInnerHTML={{ __html: content }} />
         
         {/* Display video player */}
-        {getBestVideoSource && (
+        {videoSources.hlsSource || videoSources.directSources.length > 0 ? (
           <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
             <video 
+              ref={videoRef}
               controls 
               style={{ width: '100%' }}
               poster={thumbnails?.[0]?.url}
               preload="metadata"
             >
-              <source src={getBestVideoSource} type={videoSources.find(s => s.href === getBestVideoSource)?.mediaType || 'video/mp4'} />
+              {/* We don't need source elements with HLS.js */}
               {video?.subtitleLanguage?.map(subtitle => (
                 <track 
                   key={subtitle.identifier}
@@ -179,7 +266,7 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
               Your browser does not support the video tag.
             </video>
           </Box>
-        )}
+        ) : null}
         
         {/* Show video metadata */}
         {video?.views !== undefined && (
