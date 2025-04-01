@@ -1,6 +1,8 @@
+import { OBJECT_TYPES } from '@semapps/activitypub-components';
 import { Card, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
 import Note from "./Note";
+import Video from "./Video";
 import isObject from "isobject";
 
 const Create = ({ activity, showReplies, clickOnContent }) => {
@@ -38,15 +40,31 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
     return null;
   }
 
-  return (
-    <Card sx={{ p: 2 }}>
-      <Note
-        noteUri={createdObject.current || createdObject.id}
-        activity={activity}
-        clickOnContent={clickOnContent}
-      />
-    </Card>
-  );
+  switch (createdObject.type) {
+    case OBJECT_TYPES.NOTE:
+      return (
+        <Card sx={{ p: 2 }}>
+          <Note
+            noteUri={createdObject.current || createdObject.id}
+            activity={activity}
+            clickOnContent={clickOnContent}
+          />
+        </Card>
+      );
+      case OBJECT_TYPES.VIDEO:
+        return (
+          <Card sx={{ p: 2 }}>
+            <Video
+              videoUri={createdObject.current || createdObject.id}
+              activity={activity}
+              clickOnContent={clickOnContent}
+            />
+          </Card>
+        );
+
+    default:
+      return <div>Unknown object type: {createdObject.type}</div>;
+  }
 };
 
 Create.defaultProps = {

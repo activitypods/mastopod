@@ -1,10 +1,14 @@
 import urlJoin from 'url-join';
 
 const dataModels = {
-  Note: {
-    shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Note'),
-    list: {}
-  },
+    Note: {
+      shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Note'),
+      list: {}
+    },
+    Video: {
+      shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Video'),
+      list: {}
+    },
   Profile: {
     shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Profile'),
     list: {}

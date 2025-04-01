@@ -30,6 +30,10 @@ module.exports = {
           accessMode: ['acl:Read', 'acl:Write']
         },
         {
+          shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Video'),
+          accessMode: ['acl:Read']
+        },
+        {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Profile'),
           accessMode: 'acl:Read'
         },
