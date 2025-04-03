@@ -160,15 +160,60 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
           </Box>
         )}
 
-        {title && (
-          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-            {title}
-          </Typography>
-        )}
-
-        {coverImage && (
-          <Box sx={{ mt: 2, mb: 2 }}>
-            <img src={coverImage} alt={title} style={{ width: "100%", maxHeight: 300, objectFit: "cover" }} />
+        {(coverImage || title) && (
+          <Box
+            sx={{
+              position: 'relative',
+              height: 200,
+              width: '100%',
+              mt: 2,
+              mb: 2,
+              bgcolor: 'grey.800',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 1,
+              overflow: 'hidden'
+            }}
+          >
+            {coverImage && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundImage: `url(${coverImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  }
+                }}
+              />
+            )}
+            {title && (
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'white',
+                  position: 'relative',
+                  zIndex: 1,
+                  px: 3,
+                  textAlign: 'center',
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                }}
+              >
+                {title}
+              </Typography>
+            )}
           </Box>
         )}
 
@@ -211,12 +256,10 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '90%',
-            maxWidth: 800,
+            width: '95%',
             maxHeight: '90vh',
             bgcolor: 'background.paper',
             boxShadow: 24,
-            p: 4,
             borderRadius: 1,
             overflow: 'auto'
           }}
@@ -225,41 +268,91 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
             onClick={() => setModalOpen(false)}
             sx={{
               position: 'absolute',
-              right: 8,
-              top: 8
+              right: 16,
+              top: 16,
+              zIndex: 1,
+              bgcolor: 'rgba(255, 255, 255, 0.7)',
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+              }
             }}
           >
             <CloseIcon />
           </IconButton>
-          
-          {title && (
-            <Typography variant="h5" id="article-modal-title" sx={{ mb: 2 }}>
-              {title}
-            </Typography>
-          )}
 
-          {coverImage && (
-            <Box sx={{ mb: 3 }}>
-              <img 
-                src={coverImage} 
-                alt={title} 
-                style={{ 
-                  width: "100%",
-                  maxHeight: 400,
-                  objectFit: "cover"
-                }} 
-              />
-            </Box>
-          )}
-
-          <Typography 
-            component="div"
-            sx={{ 
-              '& img': { maxWidth: '100%', height: 'auto' },
-              '& a': { color: 'primary.main' }
+          <Box
+            sx={{
+              position: 'relative',
+              height: 400,
+              width: '100%',
+              mb: 4,
+              bgcolor: 'grey.800',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-            dangerouslySetInnerHTML={{ __html: fullContent }} 
-          />
+          >
+            {coverImage && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundImage: `url(${coverImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  }
+                }}
+              />
+            )}
+            {title && (
+              <Typography
+                variant="h3"
+                id="article-modal-title"
+                sx={{
+                  color: 'white',
+                  position: 'relative',
+                  zIndex: 1,
+                  px: 4,
+                  textAlign: 'center',
+                  textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+                }}
+              >
+                {title}
+              </Typography>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              maxWidth: 700,
+              mx: 'auto',
+              px: 4,
+              pb: 4,
+            }}
+          >
+            <Typography 
+              component="div"
+              sx={{ 
+                '& img': { maxWidth: '100%', height: 'auto' },
+                '& a': { color: 'primary.main' },
+                '& p': { mb: 2 },
+                fontSize: '1.1rem',
+                lineHeight: 1.7
+              }}
+              dangerouslySetInnerHTML={{ __html: fullContent }} 
+            />
+          </Box>
         </Box>
       </Modal>
     </>
