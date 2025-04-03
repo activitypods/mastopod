@@ -1,6 +1,13 @@
+/**
+ * Format the username from an actor's URI into a webfinger
+ * Trims trailing slashes and takes the last part of the pathname as username
+ *
+ * @param {string} uri The actor's URI
+ * @returns {string} The actor's webfinger
+ */
 export const formatUsername = (uri) => {
   const url = new URL(uri);
-  const username = url.pathname.split("/").slice(-1);
+  const username = url.pathname.replace(/\/+$/, '').split("/").slice(-1);
   return `@${username}@${url.host}`;
 };
 

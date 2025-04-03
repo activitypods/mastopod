@@ -1,11 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import isObject from "isobject";
-import { useGetOne, useGetIdentity } from "react-admin";
+import { useGetOne, useGetIdentity, useDataProvider } from "react-admin";
 import { ACTOR_TYPES } from "@semapps/activitypub-components";
 import { formatUsername } from "../utils";
 
 const useActor = (actorUri) => {
   const { data: identity } = useGetIdentity();
+  const dataProvider = useDataProvider();
+
+  //a state to handle webId
+  const [webId, setWebId] = useState(null);
+  const [isWebIdLoading, setIsWebIdLoading] = useState(false);
 
   if (Array.isArray(actorUri)) {
     // Case of Peertube which allow to post as an actor AND a group
@@ -13,16 +18,37 @@ const useActor = (actorUri) => {
     actorUri = actorUri.find((actor) => actor.type === ACTOR_TYPES.PERSON)?.id;
   }
 
-  const { data: webId, isLoading: isWebIdLoading } = useGetOne(
-    "Actor",
-    {
-      id: actorUri,
-    },
-    {
-      enabled: !!actorUri,
-      staleTime: Infinity,
-    }
-  );
+  //fetch the webId in a useEffect
+  useEffect(() => {
+    if (!actorUri) return;
+    (async () => {
+      setIsWebIdLoading(true);
+      const response = await dataProvider.fetch(actorUri, {
+        headers: new Headers({
+          Accept: 'application/activity+json',
+        }),
+      });
+      setWebId(response.json);
+      setIsWebIdLoading(false);
+    })();
+  }, [actorUri, dataProvider]);
+  
+  
+  // const { data: webId, isLoading: isWebIdLoading } = useGetOne(
+  //   "Actor",
+  //   {
+  //     id: actorUri,
+  //   },
+  //   {
+  //     enabled: !!actorUri,
+  //     staleTime: Infinity,
+  //     meta: {
+  //       headers: {
+  //         Accept: 'application/activity+json',
+  //       }
+  //     }
+  //   }
+  // );
 
   const { data: profile, isLoading: isProfileLoading } = useGetOne(
     "Profile",

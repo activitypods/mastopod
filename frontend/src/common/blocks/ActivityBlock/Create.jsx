@@ -3,6 +3,7 @@ import { Card, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
 import Note from "./Note";
 import Video from "./Video";
+import Article from "./Article";
 import isObject from "isobject";
 
 const Create = ({ activity, showReplies, clickOnContent }) => {
@@ -39,7 +40,7 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
   if (!showReplies && createdObject.inReplyTo) {
     return null;
   }
-
+  console.log('createdObject.type', createdObject.type);
   switch (createdObject.type) {
     case OBJECT_TYPES.NOTE:
       return (
@@ -61,7 +62,17 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
             />
           </Card>
         );
-
+        case OBJECT_TYPES.ARTICLE:
+          return (
+            <Card sx={{ p: 2 }}>
+              <Article
+                articleUri={createdObject.current || createdObject.id}
+                activity={activity}
+                clickOnContent={clickOnContent}
+              />
+            </Card>
+          );
+  
     default:
       return <div>Unknown object type: {createdObject.type}</div>;
   }
