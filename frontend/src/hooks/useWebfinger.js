@@ -3,23 +3,32 @@ import { fetchUtils } from 'react-admin';
 import { useDataProvider } from 'react-admin';
 const useWebfinger = () => {
   const dataProvider = useDataProvider();
-  // Post an activity to the logged user's outbox and return its URI
+  // Fetch and actor's URI from the webfinger endpoint
   const fetch = useCallback(async id => {
     // eslint-disable-next-line
     const [_, username, host] = id.split('@');
     if (host) {
       const protocol = host.includes(':') ? 'http' : 'https'; // If the host has a port, we are most likely on localhost
       const webfingerUrl = `${protocol}://${host}/.well-known/webfinger?resource=acct:${username}@${host}`;
-
-      try {
-        const { json } = await dataProvider.fetch(webfingerUrl);
-
-        const link = json.links.find(l => l.type === 'application/activity+json');
-
-        return link ? link.href : null;
-      } catch (e) {
-        return null;
+      let json;
+      for (const accept of [false, 'application/json', 'application/activity+json']) {
+        try {
+          if (accept) {
+            ({ json } = await dataProvider.fetch(webfingerUrl, {
+              headers: new Headers({
+                'Accept': accept
+              })
+            }));
+          } else {
+            ({ json } = await dataProvider.fetch(webfingerUrl));
+          }
+          const link = json.links.find(l => l.type === 'application/activity+json');
+          return link ? link.href : null;  
+        } catch (e) {
+          //nothing to do
+        }
       }
+      return null;
     } else {
       return null;
     }
