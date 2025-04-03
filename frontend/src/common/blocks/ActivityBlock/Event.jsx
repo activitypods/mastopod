@@ -1,0 +1,435 @@
+import { useMemo, useState } from 'react';
+import isObject from 'isobject';
+import { Box, Avatar, Typography, MenuItem, Modal, IconButton } from '@mui/material';
+import { Link, useGetOne, useTranslate } from 'react-admin';
+import { useNavigate } from 'react-router-dom';
+import LikeButton from '../../buttons/LikeButton';
+import BoostButton from '../../buttons/BoostButton';
+import ReplyButton from '../../buttons/ReplyButton';
+import RelativeDate from '../../RelativeDate';
+import useActor from '../../../hooks/useActor';
+import { arrayOf } from '../../../utils';
+import MoreButton from '../../buttons/MoreButton';
+import { useCollection } from '@semapps/activitypub-components';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TagIcon from '@mui/icons-material/Tag';
+import CloseIcon from '@mui/icons-material/Close';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Link as MuiLink } from '@mui/material';
+
+const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
+
+const Event = ({ eventUri, activity, clickOnContent }) => {
+  const navigate = useNavigate();
+  const translate = useTranslate();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // const { data: event } = useGetOne(
+  //   "Event",
+  //   {
+  //     id: eventUri,
+  //   }
+  // );
+  const event = activity.object;
+  console.log('activity from event', activity);
+  console.log('event.url', event?.url);
+  const actorUri = event?.attributedTo;
+
+  const actor = useActor(actorUri);
+
+  //Mastodon collection URI is nested
+  const repliesUri = event?.replies?.id || event?.replies; 
+  const likesUri = event?.likes?.id || event?.likes;
+  const sharesUri = event?.shares?.id || event?.shares;
+
+  const { totalItems: numReplies } = useCollection(
+    repliesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
+  );
+
+  const { totalItems: numLikes } = useCollection(
+    likesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
+  );
+  const { totalItems: numShares, items: shares} = useCollection(
+    sharesUri,
+    { dereferenceItems: false, liveUpdates: true, enabled: !!sharesUri}
+  );
+  
+  const content = useMemo(() => {
+    let content = event?.content || event?.contentMap;
+
+    if (!content) {
+      return null;
+    }
+
+    // If we have a contentMap, take first value
+    if (isObject(content)) {
+      content = Object.values(content)?.[0];
+    }
+
+    //Handle carriage return
+    content = content?.replaceAll('\n', '<br>')
+
+    // Find all mentions
+    const mentions = arrayOf(event.tag || activity?.tag).filter(tag => tag.type === 'Mention');
+
+    if (mentions.length > 0) {
+      // Replace mentions to local actor links
+      content = content.replaceAll(mentionRegex, (match, actorUri, actorName) => {
+        const mention = actorName.includes('@')
+          ? mentions.find(mention => mention.name.startsWith(`@${actorName}`))
+          : mentions.find(mention => mention.name.startsWith(`@${actorName}@`));
+        if (mention) {
+          return match.replace(actorUri, `/actor/${mention.name}`);
+        } else {
+          return match;
+        }
+      });
+    }
+
+    return content;
+  }, [event, activity]);
+
+  const images = useMemo(() => {
+    return arrayOf(event?.attachment || event?.icon || []);
+  }, [event]);
+
+  // Catch links to actors with react-router
+  const onContentClick = e => {
+    const link = e.target.closest('a')?.getAttribute('href');
+    if (link?.startsWith('/actor/')) {
+      e.preventDefault();
+      navigate(link);
+    }
+  };
+
+  // Get cover image from attachments
+  const coverImage = useMemo(() => {
+    console.log(`attachments of ${event?.startTime}`, event?.attachment);
+    console.log('event', event);
+    const imageAttachment = arrayOf(event?.attachment).find(
+      att => 
+        (typeof att.mediaType === 'string' && att.mediaType.startsWith('image/')) ||
+        (typeof att.mediaType === 'object' && att.mediaType['@value'].startsWith('image/'))
+    );
+    return imageAttachment?.url;
+  }, [event]);
+
+  // Get hashtags
+  const hashtags = useMemo(() => {
+    return arrayOf(event?.tag).filter(tag => tag.type === 'Hashtag').map(tag => tag.name);
+  }, [event]);
+
+  const formatEventDate = (date) => {
+    return format(new Date(date), "d MMMM yyyy 'à' HH:mm", { locale: fr });
+    // return date;
+  };
+
+  return (
+    <>
+      <Box pl={8} sx={{ position: 'relative' }}>
+        <Link to={`/actor/${actor?.username}`}>
+          <Avatar
+            src={actor?.image}
+            alt={actor?.name}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: 50,
+              height: 50
+            }}
+          />
+          <Typography
+            sx={{
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              color: 'black',
+              pr: 8
+            }}
+          >
+            <strong>{actor?.name}</strong>{' '}
+            <Typography component="span" sx={{ color: 'grey' }}>
+              <em>{actor?.username}</em>
+            </Typography>
+          </Typography>
+        </Link>
+
+        {event?.published && (
+          <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
+            <RelativeDate date={event?.published} sx={{ fontSize: 13, color: 'grey' }} />
+          </Box>
+        )}
+
+        <Box
+          sx={{
+            position: 'relative',
+            height: 200,
+            width: '100%',
+            mt: 2,
+            bgcolor: 'grey.800',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 1,
+            overflow: 'hidden',
+            cursor: 'pointer'
+          }}
+          onClick={() => setModalOpen(true)}
+        >
+          {coverImage && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url(${coverImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                }
+              }}
+            />
+          )}
+          <Typography variant="h5" sx={{ 
+            position: 'relative',
+            zIndex: 1,
+            color: 'white',
+            textAlign: 'center',
+            p: 2,
+            textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+          }}>
+            {event?.name}
+          </Typography>
+        </Box>
+
+        <Box sx={{ mt: 2, mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <AccessTimeIcon sx={{ mr: 1, color: 'grey.600' }} />
+            <Typography>{formatEventDate(event?.startTime)}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <LocationOnIcon sx={{ mr: 1, color: 'grey.600' }} />
+            <Typography>{event?.location?.name}</Typography>
+          </Box>
+          {event?.url && (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <OpenInNewIcon sx={{ mr: 1, color: 'grey.600' }} />
+              <MuiLink 
+                href={event.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ 
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                  '&:hover': { textDecoration: 'underline' }
+                }}
+              >
+                Voir sur le site d'origine
+              </MuiLink>
+            </Box>
+          )}
+        </Box>
+
+        {hashtags.length > 0 && (
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+            <TagIcon sx={{ color: 'grey.500' }} />
+            {hashtags.map(tag => (
+              <Typography
+                key={tag}
+                sx={{
+                  bgcolor: 'grey.100',
+                  px: 1,
+                  borderRadius: 1,
+                  fontSize: '0.9rem'
+                }}
+              >
+                {tag}
+              </Typography>
+            ))}
+          </Box>
+        )}
+      </Box>
+
+      {/* Social buttons */}
+      <Box pl={8} pt={2} display="flex" justifyContent="space-between">
+        <ReplyButton objectUri={event?.id || activity.id} numReplies={numReplies} />
+        <BoostButton activity={activity} object={event} numBoosts={numShares} shares={shares}/>
+        <LikeButton activity={activity} object={event} numlikes={numLikes}/>
+        <MoreButton>
+          <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
+        </MoreButton>
+      </Box>
+
+      {/* Modal */}
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="event-modal-title"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '95%',
+            maxHeight: '90vh',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            borderRadius: 1,
+            overflow: 'auto'
+          }}
+        >
+          <IconButton
+            onClick={() => setModalOpen(false)}
+            sx={{
+              position: 'absolute',
+              right: 16,
+              top: 16,
+              zIndex: 1,
+              bgcolor: 'rgba(255, 255, 255, 0.7)',
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+              }
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <Box
+            sx={{
+              position: 'relative',
+              height: 400,
+              width: '100%',
+              bgcolor: 'grey.800',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {coverImage && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundImage: `url(${coverImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  }
+                }}
+              />
+            )}
+            <Box
+              sx={{
+                position: 'relative',
+                zIndex: 1,
+                color: 'white',
+                textAlign: 'center',
+                p: 3
+              }}
+            >
+              <Typography variant="h3" sx={{ mb: 3, textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                {event?.name}
+              </Typography>
+              <Typography variant="h5" sx={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+                {formatEventDate(event?.startTime)}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              maxWidth: 700,
+              mx: 'auto',
+              px: 4,
+              py: 4,
+            }}
+          >
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>Informations</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                  <LocationOnIcon sx={{ mr: 2 }} />
+                  <Typography>
+                    {event?.location?.name}<br />
+                    {event?.location?.address?.streetAddress}<br />
+                    {event?.location?.address?.postalCode} {event?.location?.address?.addressLocality}<br />
+                    {event?.location?.address?.addressRegion}, {event?.location?.address?.addressCountry}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                  <AccessTimeIcon sx={{ mr: 2 }} />
+                  <Typography>
+                    Du {formatEventDate(event?.startTime)}<br />
+                    au {formatEventDate(event?.endTime)}
+                  </Typography>
+                </Box>
+                {event?.url && (
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <OpenInNewIcon sx={{ mr: 2 }} />
+                    <MuiLink
+                      href={event.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ 
+                        color: 'primary.main',
+                        textDecoration: 'none',
+                        '&:hover': { textDecoration: 'underline' }
+                      }}
+                    >
+                      Voir l'événement sur le site d'origine
+                    </MuiLink>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+
+            <Typography 
+              component="div"
+              sx={{ 
+                '& img': { maxWidth: '100%', height: 'auto' },
+                '& a': { color: 'primary.main' },
+                '& p': { mb: 2 },
+                fontSize: '1.1rem',
+                lineHeight: 1.7
+              }}
+              dangerouslySetInnerHTML={{ __html: event?.content }} 
+            />
+          </Box>
+        </Box>
+      </Modal>
+    </>
+  );
+};
+
+Event.defaultProps = {
+  clickOnContent: true
+};
+
+export default Event;

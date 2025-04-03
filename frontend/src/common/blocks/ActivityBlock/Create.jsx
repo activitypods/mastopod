@@ -4,6 +4,7 @@ import { useGetOne } from "react-admin";
 import Note from "./Note";
 import Video from "./Video";
 import Article from "./Article";
+import Event from "./Event";
 import isObject from "isobject";
 
 const Create = ({ activity, showReplies, clickOnContent }) => {
@@ -67,6 +68,16 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
             <Card sx={{ p: 2 }}>
               <Article
                 articleUri={createdObject.current || createdObject.id}
+                activity={activity}
+                clickOnContent={clickOnContent}
+              />
+            </Card>
+          );
+        case OBJECT_TYPES.EVENT:
+          return (
+            <Card sx={{ p: 2 }}>
+              <Event
+                eventUri={createdObject.current || createdObject.id}
                 activity={activity}
                 clickOnContent={clickOnContent}
               />

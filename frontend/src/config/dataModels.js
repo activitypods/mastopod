@@ -13,6 +13,10 @@ const dataModels = {
     shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Article'),
     list: {}
   },
+  Event: {
+    shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Event'),
+    list: {}
+  },
   Profile: {
     shapeTreeUri: urlJoin(import.meta.env.VITE_SHAPE_REPOSITORY_URL, 'shapetrees/as/Profile'),
     list: {}

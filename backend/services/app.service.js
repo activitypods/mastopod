@@ -38,6 +38,10 @@ module.exports = {
           accessMode: ['acl:Read']
         },
         {
+          shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Event'),
+          accessMode: ['acl:Read']
+        },
+        {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Profile'),
           accessMode: 'acl:Read'
         },
