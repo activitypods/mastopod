@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import isObject from 'isobject';
-import { Box, Avatar, Typography, MenuItem } from '@mui/material';
+import { Box, Avatar, Typography, MenuItem, Modal, IconButton } from '@mui/material';
 import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../../buttons/LikeButton';
@@ -11,12 +11,14 @@ import useActor from '../../../hooks/useActor';
 import { arrayOf } from '../../../utils';
 import MoreButton from '../../buttons/MoreButton';
 import { useCollection } from '@semapps/activitypub-components';
+import CloseIcon from '@mui/icons-material/Close';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
 const Article = ({ articleUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { data: article } = useGetOne(
     "Article",
@@ -59,6 +61,28 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
       content = Object.values(content)?.[0];
     }
 
+    // Create a temporary div to strip HTML and get plain text
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    const plainText = tempDiv.textContent || tempDiv.innerText;
+    
+    // Get first 250 characters as preview
+    const contentPreview = plainText.substring(0, 250) + '...';
+
+    return contentPreview;
+  }, [article]);
+
+  const fullContent = useMemo(() => {
+    let content = article?.content || article?.contentMap;
+
+    if (!content) {
+      return null;
+    }
+
+    if (isObject(content)) {
+      content = Object.values(content)?.[0];
+    }
+
     //Handle carriage return
     content = content?.replaceAll('\n', '<br>')
 
@@ -81,6 +105,10 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
 
     return content;
   }, [article, activity]);
+
+  // Use icon as cover image if available
+  const coverImage = article?.icon?.url;
+  const title = article?.name;
 
   const images = useMemo(() => {
     return arrayOf(article?.attachment || article?.icon || []);
@@ -131,14 +159,37 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
             <RelativeDate date={article?.published} sx={{ fontSize: 13, color: 'grey' }} />
           </Box>
         )}
+
+        {title && (
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+            {title}
+          </Typography>
+        )}
+
+        {coverImage && (
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <img src={coverImage} alt={title} style={{ width: "100%", maxHeight: 300, objectFit: "cover" }} />
+          </Box>
+        )}
+
         {clickOnContent ? (
           <Link to={`/activity/${encodeURIComponent(activity?.id || article?.id)}`} onClick={onContentClick}>
-            <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
+            <Typography sx={{ color: 'black' }}>{content}</Typography>
           </Link>
         ) : (
-          <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
+          <Typography sx={{ color: 'black' }}>{content}</Typography>
         )}
-        {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
+        <Typography
+          component="span"
+          sx={{
+            color: 'primary.main',
+            cursor: 'pointer',
+            '&:hover': { textDecoration: 'underline' }
+          }}
+          onClick={() => setModalOpen(true)}
+        >
+          Read more...
+        </Typography>
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={article?.id || activity.id} numReplies={numReplies} />
@@ -148,6 +199,69 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
           <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>
       </Box>
+
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="article-modal-title"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90%',
+            maxWidth: 800,
+            maxHeight: '90vh',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 1,
+            overflow: 'auto'
+          }}
+        >
+          <IconButton
+            onClick={() => setModalOpen(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          
+          {title && (
+            <Typography variant="h5" id="article-modal-title" sx={{ mb: 2 }}>
+              {title}
+            </Typography>
+          )}
+
+          {coverImage && (
+            <Box sx={{ mb: 3 }}>
+              <img 
+                src={coverImage} 
+                alt={title} 
+                style={{ 
+                  width: "100%",
+                  maxHeight: 400,
+                  objectFit: "cover"
+                }} 
+              />
+            </Box>
+          )}
+
+          <Typography 
+            component="div"
+            sx={{ 
+              '& img': { maxWidth: '100%', height: 'auto' },
+              '& a': { color: 'primary.main' }
+            }}
+            dangerouslySetInnerHTML={{ __html: fullContent }} 
+          />
+        </Box>
+      </Modal>
     </>
   );
 };
