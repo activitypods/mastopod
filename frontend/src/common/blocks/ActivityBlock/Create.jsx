@@ -1,12 +1,8 @@
 import { OBJECT_TYPES } from '@semapps/activitypub-components';
 import { Card, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
-import Note from "./Note";
-import Video from "./Video";
-import Article from "./Article";
-import Event from "./Event";
 import isObject from "isobject";
-
+import { getComponentForObject } from "../../../utils";
 const Create = ({ activity, showReplies, clickOnContent }) => {
   let {
     data: createdObject,
@@ -41,52 +37,26 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
   if (!showReplies && createdObject.inReplyTo) {
     return null;
   }
-  console.log('createdObject.type', createdObject.type);
-  switch (createdObject.type) {
-    case OBJECT_TYPES.NOTE:
-      return (
-        <Card sx={{ p: 2 }}>
-          <Note
-            noteUri={createdObject.current || createdObject.id}
-            activity={activity}
-            clickOnContent={clickOnContent}
-          />
-        </Card>
-      );
-      case OBJECT_TYPES.VIDEO:
-        return (
-          <Card sx={{ p: 2 }}>
-            <Video
-              videoUri={createdObject.current || createdObject.id}
-              activity={activity}
-              clickOnContent={clickOnContent}
-            />
-          </Card>
-        );
-        case OBJECT_TYPES.ARTICLE:
-          return (
-            <Card sx={{ p: 2 }}>
-              <Article
-                articleUri={createdObject.current || createdObject.id}
-                activity={activity}
-                clickOnContent={clickOnContent}
-              />
-            </Card>
-          );
-        case OBJECT_TYPES.EVENT:
-          return (
-            <Card sx={{ p: 2 }}>
-              <Event
-                eventUri={createdObject.current || createdObject.id}
-                activity={activity}
-                clickOnContent={clickOnContent}
-              />
-            </Card>
-          );
-  
-    default:
-      return <div>Unknown object type: {createdObject.type}</div>;
+
+  const objectUri = createdObject.current || createdObject.id;
+
+  const config = getComponentForObject(objectUri, createdObject);
+
+  if (!config) {
+    return null;
   }
+
+  const { Component, props: specificProps } = config;
+
+  return (
+    <Card sx={{ p: 2 }}>
+      <Component
+        {...specificProps}
+        activity={activity}
+        clickOnContent={clickOnContent}
+      />
+    </Card>
+  );
 };
 
 Create.defaultProps = {
