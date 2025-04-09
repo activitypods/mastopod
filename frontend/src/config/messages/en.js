@@ -18,7 +18,9 @@ export default {
       event_url: 'See the event on the original site',
       event_start_date: 'From',
       event_end_date: 'To',
-      read_more: 'Read more'
+      read_more: 'Read more',
+      show_more: 'Show more',
+      show_less: 'Show less',
     },
     page: {
       my_inbox: 'My inbox',

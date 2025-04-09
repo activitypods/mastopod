@@ -1,6 +1,6 @@
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import isObject from 'isobject';
-import { Box, Avatar, Typography, MenuItem } from '@mui/material';
+import { Box, Avatar, Typography, MenuItem, Button } from '@mui/material';
 import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import Hls from 'hls.js';
@@ -12,6 +12,8 @@ import useActor from '../../../hooks/useActor';
 import { arrayOf } from '../../../utils';
 import MoreButton from '../../buttons/MoreButton';
 import { useCollection } from '@semapps/activitypub-components';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
@@ -19,6 +21,7 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
   const videoRef = useRef(null);
+  const [expanded, setExpanded] = useState(false);
 
   const { data: video } = useGetOne(
     "Video",
@@ -53,11 +56,11 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
     { dereferenceItems: false, liveUpdates: true, enabled: !!sharesUri}
   );
   
-  const content = useMemo(() => {
+  const { fullContent, previewContent } = useMemo(() => {
     let content = video?.content || video?.contentMap || video?.name;
 
     if (!content) {
-      return null;
+      return { fullContent: null, previewContent: null };
     }
 
     // If we have a contentMap, take first value
@@ -85,7 +88,19 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
       });
     }
 
-    return content;
+    // Create a stripped version for preview
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    const plainText = tempDiv.textContent || tempDiv.innerText;
+    
+    // Get a preview with first 100 characters
+    const preview = plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
+
+    return { 
+      fullContent: content,
+      previewContent: preview,
+      hasMoreContent: plainText.length > 100 
+    };
   }, [video, activity]);
 
   const thumbnails = useMemo(() => {
@@ -241,9 +256,8 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
             <RelativeDate date={video?.published} sx={{ fontSize: 13, color: 'grey' }} />
           </Box>
         )}
-        <Typography sx={{ color: 'black', mb: 2 }} dangerouslySetInnerHTML={{ __html: content }} />
         
-        {/* Display video player */}
+        {/* Display video player FIRST */}
         {videoSources.hlsSource || videoSources.directSources.length > 0 ? (
           <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
             <video 
@@ -274,7 +288,45 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
             {video.views} views • {video.duration?.replace('PT', '').replace('S', 's')}
           </Typography>
         )}
+        
+        {/* Content area with expand/collapse */}
+        <Box sx={{ mt: 2, mb: 2 }}>
+          {expanded ? (
+            <>
+              <Typography 
+                sx={{ color: 'black' }} 
+                dangerouslySetInnerHTML={{ __html: fullContent }} 
+              />
+              <Button 
+                onClick={() => setExpanded(false)}
+                size="small"
+                sx={{ mt: 1, textTransform: 'none' }}
+                endIcon={<ExpandLessIcon />}
+              >
+                {translate('app.action.show_less')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography sx={{ color: 'black' }}>
+                {previewContent}
+              </Typography>
+              {previewContent?.endsWith('...') && (
+                <Button 
+                  onClick={() => setExpanded(true)}
+                  size="small"
+                  sx={{ mt: 1, textTransform: 'none' }}
+                  endIcon={<ExpandMoreIcon />}
+                >
+                  {translate('app.action.show_more')}
+                </Button>
+              )}
+            </>
+          )}
+        </Box>
       </Box>
+      
+      {/* Existing action buttons */}
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={video?.id || activity?.id} numReplies={numReplies} />
         <BoostButton activity={activity} object={video} numBoosts={numShares} shares={shares}/>
