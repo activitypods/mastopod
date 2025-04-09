@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import isObject from 'isobject';
 import { Box, Avatar, Typography, MenuItem, Modal, IconButton } from '@mui/material';
-import { Link, useGetOne, useTranslate } from 'react-admin';
+import { Link, useGetOne, useTranslate, useLocaleState } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../../buttons/LikeButton';
 import BoostButton from '../../buttons/BoostButton';
@@ -13,6 +13,7 @@ import MoreButton from '../../buttons/MoreButton';
 import { useCollection } from '@semapps/activitypub-components';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { enGB } from 'date-fns/locale';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TagIcon from '@mui/icons-material/Tag';
@@ -26,7 +27,12 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [locale] = useLocaleState();
+  // put the dateLocale in the state and update it when the locale changes
+  const [dateLocale, setDateLocale] = useState(locale === 'fr' ? fr : enGB);
+  useEffect(() => {
+    setDateLocale(locale === 'fr' ? fr : enGB);
+  }, [locale]);
   // const { data: event } = useGetOne(
   //   "Event",
   //   {
@@ -34,10 +40,7 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
   //   }
   // );
   const event = activity.object;
-  console.log('activity from event', activity);
-  console.log('event.url', event?.url);
   const actorUri = event?.attributedTo;
-
   const actor = useActor(actorUri);
 
   //Mastodon collection URI is nested
@@ -124,10 +127,9 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
     return arrayOf(event?.tag).filter(tag => tag.type === 'Hashtag').map(tag => tag.name);
   }, [event]);
 
-  const formatEventDate = (date) => {
-    return format(new Date(date), "d MMMM yyyy 'à' HH:mm", { locale: fr });
-    // return date;
-  };
+  const formatEventDate = useCallback((date) => {
+    return format(new Date(date), "d MMMM yyyy HH:mm", { locale: dateLocale });
+  }, [dateLocale]);
 
   return (
     <>
@@ -239,7 +241,7 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
                   '&:hover': { textDecoration: 'underline' }
                 }}
               >
-                Voir sur le site d'origine
+                {translate('app.action.event_url')}
               </MuiLink>
             </Box>
           )}
@@ -386,8 +388,8 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
                 <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                   <AccessTimeIcon sx={{ mr: 2 }} />
                   <Typography>
-                    Du {formatEventDate(event?.startTime)}<br />
-                    au {formatEventDate(event?.endTime)}
+                    {translate('app.action.event_start_date')}: {formatEventDate(event?.startTime)}<br />
+                    {translate('app.action.event_end_date')}: {formatEventDate(event?.endTime)}
                   </Typography>
                 </Box>
                 {event?.url && (
@@ -403,7 +405,7 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
                         '&:hover': { textDecoration: 'underline' }
                       }}
                     >
-                      Voir l'événement sur le site d'origine
+                      {translate('app.action.event_url')}
                     </MuiLink>
                   </Box>
                 )}

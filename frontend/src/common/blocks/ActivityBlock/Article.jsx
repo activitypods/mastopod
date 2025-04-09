@@ -233,7 +233,7 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
           }}
           onClick={() => setModalOpen(true)}
         >
-          Read more...
+          {translate('app.action.read_more')}
         </Typography>
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
