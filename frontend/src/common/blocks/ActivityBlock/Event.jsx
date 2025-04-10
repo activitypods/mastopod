@@ -15,6 +15,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Link as MuiLink } from '@mui/material';
 
+/**
+ * Event component - Displays an event activity
+ * 
+ * @param {Object} props
+ * @param {string} props.eventUri - The URI of the event
+ * @param {Object} props.activity - The activity data
+ * @param {boolean} props.clickOnContent - Whether the content is clickable
+ */
 const Event = ({ eventUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
@@ -52,132 +60,121 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
     return format(new Date(date), "d MMMM yyyy HH:mm", { locale: dateLocale });
   }, [dateLocale]);
 
-  // Custom content renderer
-  const renderContent = (content, preview) => {
-    return (
-      <Box sx={{ mt: 2, mb: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <AccessTimeIcon sx={{ mr: 1, color: 'grey.600' }} />
-          <Typography>{formatEventDate(event?.startTime)}</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <LocationOnIcon sx={{ mr: 1, color: 'grey.600' }} />
-          <Typography>{event?.location?.name}</Typography>
-        </Box>
-        {event?.url && (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <OpenInNewIcon sx={{ mr: 1, color: 'grey.600' }} />
-            <MuiLink 
-              href={event.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ 
-                color: 'primary.main',
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' }
-              }}
-            >
-              {translate('app.action.event_url')}
-            </MuiLink>
-          </Box>
-        )}
-        
-        {hashtags.length > 0 && (
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
-            <TagIcon sx={{ color: 'grey.500' }} />
-            {hashtags.map(tag => (
-              <Typography
-                key={tag}
-                sx={{
-                  bgcolor: 'grey.100',
-                  px: 1,
-                  borderRadius: 1,
-                  fontSize: '0.9rem'
-                }}
-              >
-                {tag}
-              </Typography>
-            ))}
-          </Box>
-        )}
-        
-        <Typography 
-          sx={{ color: 'black' }} 
-          dangerouslySetInnerHTML={{ __html: content }} 
-        />
-      </Box>
-    );
-  };
-
-  // Render cover image and title
-  const renderMedia = () => {
-    return (
-      <Box
-        sx={{
-          position: 'relative',
-          height: 200,
-          width: '100%',
-          mt: 2,
-          bgcolor: 'grey.800',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 1,
-          overflow: 'hidden',
-          cursor: 'pointer'
-        }}
-        onClick={() => setModalOpen(true)}
-      >
-        {coverImage && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url(${coverImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              }
-            }}
-          />
-        )}
-        <Typography variant="h5" sx={{ 
-          position: 'relative',
-          zIndex: 1,
-          color: 'white',
-          textAlign: 'center',
-          p: 2,
-          textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
-        }}>
-          {event?.name}
-        </Typography>
-      </Box>
-    );
-  };
-
   return (
     <>
       <BaseActivityBlock
         object={event}
         activity={activity}
-        clickOnContent={clickOnContent}
-        renderContent={renderContent}
-        renderMedia={renderMedia}
         objectUri={eventUri}
         actorUri={actorUri}
-        published={published}
-      />
+      >
+        {/* Render cover image and title */}
+        <Box
+          sx={{
+            position: 'relative',
+            height: 200,
+            width: '100%',
+            mt: 2,
+            bgcolor: 'grey.800',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 1,
+            overflow: 'hidden',
+            cursor: 'pointer'
+          }}
+          onClick={() => setModalOpen(true)}
+        >
+          {coverImage && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url(${coverImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                }
+              }}
+            />
+          )}
+          <Typography variant="h5" sx={{ 
+            position: 'relative',
+            zIndex: 1,
+            color: 'white',
+            textAlign: 'center',
+            p: 2,
+            textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+          }}>
+            {event?.name}
+          </Typography>
+        </Box>
 
+        {/* Render event details */}
+        <Box sx={{ mt: 2, mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <AccessTimeIcon sx={{ mr: 1, color: 'grey.600' }} />
+            <Typography>{formatEventDate(event?.startTime)}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <LocationOnIcon sx={{ mr: 1, color: 'grey.600' }} />
+            <Typography>{event?.location?.name}</Typography>
+          </Box>
+          {event?.url && (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <OpenInNewIcon sx={{ mr: 1, color: 'grey.600' }} />
+              <MuiLink 
+                href={event.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ 
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                  '&:hover': { textDecoration: 'underline' }
+                }}
+              >
+                {translate('app.action.event_url')}
+              </MuiLink>
+            </Box>
+          )}
+          
+          {hashtags.length > 0 && (
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+              <TagIcon sx={{ color: 'grey.500' }} />
+              {hashtags.map(tag => (
+                <Typography
+                  key={tag}
+                  sx={{
+                    bgcolor: 'grey.100',
+                    px: 1,
+                    borderRadius: 1,
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  {tag}
+                </Typography>
+              ))}
+            </Box>
+          )}
+          
+          <Typography 
+            sx={{ color: 'black' }} 
+            dangerouslySetInnerHTML={{ __html: processedContent }} 
+          />
+        </Box>
+      </BaseActivityBlock>
+
+      {/* Modal for full event details */}
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -334,4 +331,4 @@ Event.defaultProps = {
   clickOnContent: true
 };
 
-export default Event;
+export default Event; 

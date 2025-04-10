@@ -9,6 +9,14 @@ import { arrayOf } from '../../../utils';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
+/**
+ * Video component - Displays a video activity
+ * 
+ * @param {Object} props
+ * @param {string} props.videoUri - The URI of the video
+ * @param {Object} props.activity - The activity data
+ * @param {boolean} props.clickOnContent - Whether the content is clickable
+ */
 const Video = ({ videoUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
@@ -33,6 +41,9 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
   const { processedContent, contentPreview, hasMoreContent } = useContentProcessing(video, activity, {
     previewLength: 100
   });
+  console.log('Video processedContent', processedContent);
+  console.log('Video contentPreview', contentPreview);
+  console.log('Video hasMoreContent', hasMoreContent);
 
   const thumbnails = useMemo(() => {
     return arrayOf(video?.icon || []);
@@ -151,15 +162,53 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
     }
   };
 
-  // Custom content renderer with expand/collapse
-  const renderContent = (content, preview) => {
-    return (
+  return (
+    <BaseActivityBlock
+      object={video}
+      activity={activity}
+      objectUri={videoUri}
+      actorUri={actorUri}
+    >
+      {/* Render video player */}
+      {videoSources.hlsSource || videoSources.directSources.length > 0 ? (
+        <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
+          <Typography variant="h6" sx={{ color: 'black', mb: 2 }}>{video?.name}</Typography>
+          <video 
+            ref={videoRef}
+            controls 
+            style={{ width: '100%' }}
+            poster={thumbnails?.[0]?.url}
+            preload="metadata"
+          >
+            {/* We don't need source elements with HLS.js */}
+            {video?.subtitleLanguage?.map(subtitle => (
+              <track 
+                key={subtitle.identifier}
+                kind="subtitles"
+                src={subtitle.url}
+                srcLang={subtitle.identifier}
+                label={subtitle.name}
+              />
+            ))}
+            {translate('app.message.video_not_supported')}
+          </video>
+        </Box>
+      ) : null}
+
+      {/* Render video metadata */}
+      {video?.views !== undefined && (
+        <Typography variant="body2" sx={{ color: 'gray', mb: 1 }}>
+          {video.views} views • {video.duration?.replace('PT', '').replace('S', 's')}
+        </Typography>
+      )}
+
+      {/* Render content with expand/collapse */}
       <Box sx={{ mt: 2, mb: 2 }}>
         {expanded ? (
           <>
             <Typography 
               sx={{ color: 'black' }} 
-              dangerouslySetInnerHTML={{ __html: content }} 
+              dangerouslySetInnerHTML={{ __html: processedContent }} 
             />
             <Button 
               onClick={() => setExpanded(false)}
@@ -173,7 +222,7 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
         ) : (
           <>
             <Typography sx={{ color: 'black' }}>
-              {preview}
+              {contentPreview}
             </Typography>
             {hasMoreContent && (
               <Button 
@@ -188,61 +237,6 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
           </>
         )}
       </Box>
-    );
-  };
-
-  // Render video player
-  const renderMedia = () => {
-    if (!videoSources.hlsSource && videoSources.directSources.length === 0) return null;
-    
-    return (
-      <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
-        <video 
-          ref={videoRef}
-          controls 
-          style={{ width: '100%' }}
-          poster={thumbnails?.[0]?.url}
-          preload="metadata"
-        >
-          {/* We don't need source elements with HLS.js */}
-          {video?.subtitleLanguage?.map(subtitle => (
-            <track 
-              key={subtitle.identifier}
-              kind="subtitles"
-              src={subtitle.url}
-              srcLang={subtitle.identifier}
-              label={subtitle.name}
-            />
-          ))}
-          {translate('app.message.video_not_supported')}
-        </video>
-      </Box>
-    );
-  };
-
-  // Render video metadata
-  const renderMetadata = () => {
-    if (video?.views === undefined) return null;
-    
-    return (
-      <Typography variant="body2" sx={{ color: 'gray', mb: 1 }}>
-        {video.views} views • {video.duration?.replace('PT', '').replace('S', 's')}
-      </Typography>
-    );
-  };
-
-  return (
-    <BaseActivityBlock
-      object={video}
-      activity={activity}
-      clickOnContent={clickOnContent}
-      renderContent={renderContent}
-      renderMedia={renderMedia}
-      objectUri={videoUri}
-      actorUri={actorUri}
-      published={published}
-    >
-      {renderMetadata()}
     </BaseActivityBlock>
   );
 };

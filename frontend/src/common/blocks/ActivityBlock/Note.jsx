@@ -1,13 +1,23 @@
+import { useMemo } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Link, useGetOne } from 'react-admin';
+import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import BaseActivityBlock from './BaseActivityBlock';
 import useContentProcessing from '../../../hooks/useContentProcessing';
 import { arrayOf } from '../../../utils';
 
+/**
+ * Note component - Displays a note activity
+ * 
+ * @param {Object} props
+ * @param {string} props.noteUri - The URI of the note
+ * @param {Object} props.activity - The activity data
+ * @param {boolean} props.clickOnContent - Whether the content is clickable
+ */
 const Note = ({ noteUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
-
+  const translate = useTranslate();
+  
   const { data: note } = useGetOne(
     "Note",
     {
@@ -15,15 +25,18 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
     }
   );
   
-  const actorUri = note?.attributedTo;
-  const published = note?.published;
+  const noteObject = note || activity.object;
+  const actorUri = noteObject?.attributedTo;
+  const published = noteObject?.published;
   
-  // Process content
-  const { processedContent } = useContentProcessing(note, activity);
+  // Process content using our custom hook
+  const { processedContent, contentPreview, hasMoreContent } = useContentProcessing(noteObject, activity);
   
   // Get images from attachments
-  const images = arrayOf(note?.attachment || note?.icon || []);
-
+  const images = useMemo(() => {
+    return arrayOf(noteObject?.attachment || noteObject?.icon || []);
+  }, [noteObject]);
+  
   // Catch links to actors with react-router
   const onContentClick = e => {
     const link = e.target.closest('a')?.getAttribute('href');
@@ -32,51 +45,43 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
       navigate(link);
     }
   };
-
-  // Custom content renderer
-  const renderContent = (content, preview) => {
-    if (clickOnContent) {
-      return (
-        <Link to={`/activity/${encodeURIComponent(activity?.id || note?.id)}`} onClick={onContentClick}>
-          <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
-        </Link>
-      );
-    } else {
-      return (
-        <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
-      );
-    }
-  };
-
-  // Render images if any
-  const renderMedia = () => {
-    if (images.length === 0) return null;
-    
-    return (
-      <Box sx={{ mt: 2, mb: 2 }}>
-        {images.map((image, index) => (
-          <img 
-            key={index} 
-            src={image?.url} 
-            style={{ width: "100%", marginTop: 10 }} 
-            alt=""
-          />
-        ))}
-      </Box>
-    );
-  };
-
+  
   return (
     <BaseActivityBlock
-      object={note}
+      object={noteObject}
       activity={activity}
-      clickOnContent={clickOnContent}
-      renderContent={renderContent}
-      renderMedia={renderMedia}
       objectUri={noteUri}
       actorUri={actorUri}
-      published={published}
-    />
+    >    
+      {/* Render content */}
+      {clickOnContent ? (
+        <Link to={`/activity/${encodeURIComponent(activity?.id || noteObject?.id)}`} onClick={onContentClick}>
+          <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: processedContent }} />
+        </Link>
+      ) : (
+        <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: processedContent }} />
+      )}
+      {/* Render images if available */}
+      {images.length > 0 && (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+          {images.map((image, index) => (
+            <Box
+              key={index}
+              component="img"
+              src={image.url}
+              alt={image.name || 'Image'}
+              sx={{
+                maxWidth: '100%',
+                maxHeight: 300,
+                borderRadius: 1,
+                objectFit: 'contain'
+              }}
+            />
+          ))}
+        </Box>
+      )}
+
+    </BaseActivityBlock>
   );
 };
 
