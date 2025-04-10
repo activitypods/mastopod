@@ -27,7 +27,6 @@ const ActorPage = () => {
   }, [webfinger, username, setActorUri]);
 
   const actor = useActor(actorUri);
-  console.log('actor', actor);
 
   if (!actor.name) return null;
 

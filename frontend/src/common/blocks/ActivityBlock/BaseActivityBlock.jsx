@@ -52,52 +52,45 @@ const BaseActivityBlock = ({ object, activity, objectUri, actorUri, children }) 
   );
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <>
       {/* Author information */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      <Box pl={8} sx={{ position: 'relative' }}>
         <Link to={`/actor/${actor?.username}`}>
           <Avatar
             src={actor?.image}
             alt={actor?.name}
             sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
               width: 50,
-              height: 50,
-              mr: 2
+              height: 50
             }}
           />
-        </Link>
-        <Box sx={{ flex: 1 }}>
-          <Link to={`/actor/${actor?.username}`}>
-            <Typography
-              sx={{
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                color: 'black',
-                pr: 8
-              }}
-            >
-              <strong>{actor?.name}</strong>{' '}
-              <Typography component="span" sx={{ color: 'grey' }}>
-                <em>{actor?.username}</em>
-              </Typography>
+          <Typography
+            sx={{
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              color: 'black',
+              pr: 8
+            }}
+          >
+            <strong>{actor?.name}</strong>{' '}
+            <Typography component="span" sx={{ color: 'grey' }}>
+              <em>{actor?.username}</em>
             </Typography>
-          </Link>
-          {object?.published && (
-            <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-              <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
-            </Box>
-          )}
-        </Box>
-      </Box>
-
-      {/* Content area - rendered by child components */}
-      <Box sx={{ pl: 0 }}>
+          </Typography>
+        </Link>
+        {object?.published && (
+          <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
+            <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
+          </Box>
+        )}
         {children}
       </Box>
-
       {/* Action buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+      <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={objectUri} numReplies={numReplies} />
         <BoostButton activity={activity} object={object} numBoosts={numShares} shares={shares} />
         <LikeButton activity={activity} object={object} numlikes={numLikes} />
@@ -105,7 +98,7 @@ const BaseActivityBlock = ({ object, activity, objectUri, actorUri, children }) 
           <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>
       </Box>
-    </Box>
+    </>
   );
 };
 

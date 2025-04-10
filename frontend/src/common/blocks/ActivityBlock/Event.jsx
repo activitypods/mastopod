@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Box, Typography, Modal, IconButton } from '@mui/material';
-import { useGetOne, useTranslate, useLocaleState } from 'react-admin';
+import { useGetOne, useTranslate, useLocaleState, Link } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import BaseActivityBlock from './BaseActivityBlock';
 import useContentProcessing from '../../../hooks/useContentProcessing';
@@ -14,6 +14,9 @@ import TagIcon from '@mui/icons-material/Tag';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Link as MuiLink } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import Button from '@mui/material/Button';
 
 /**
  * Event component - Displays an event activity
@@ -30,16 +33,18 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
   const [locale] = useLocaleState();
   // put the dateLocale in the state and update it when the locale changes
   const [dateLocale, setDateLocale] = useState(locale === 'fr' ? fr : enGB);
+  const [expanded, setExpanded] = useState(false);
   useEffect(() => {
     setDateLocale(locale === 'fr' ? fr : enGB);
   }, [locale]);
   
   const event = activity.object;
   const actorUri = event?.attributedTo;
-  const published = event?.published;
   
   // Process content using our custom hook
-  const { processedContent } = useContentProcessing(event, activity);
+  const { processedContent, contentPreview, hasMoreContent } = useContentProcessing(event, activity, {
+    previewLength: 200
+  });
 
   // Get cover image from attachments
   const coverImage = useMemo(() => {
@@ -59,6 +64,15 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
   const formatEventDate = useCallback((date) => {
     return format(new Date(date), "d MMMM yyyy HH:mm", { locale: dateLocale });
   }, [dateLocale]);
+
+  // Catch links to actors with react-router
+  const onContentClick = e => {
+    const link = e.target.closest('a')?.getAttribute('href');
+    if (link?.startsWith('/actor/')) {
+      e.preventDefault();
+      navigate(link);
+    }
+  };
 
   return (
     <>
@@ -166,11 +180,58 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
               ))}
             </Box>
           )}
+          {expanded ? (
+          <>
+            {clickOnContent ? (
+              <Link to={`/activity/${encodeURIComponent(activity?.id || noteObject?.id)}`} onClick={onContentClick}>
+                <Typography 
+                  sx={{ color: 'black' }} 
+                  dangerouslySetInnerHTML={{ __html: processedContent }} 
+                />
+              </Link>
+            ) : (
+              <Typography 
+                sx={{ color: 'black' }} 
+                dangerouslySetInnerHTML={{ __html: processedContent }} 
+              />
+            )}
+            <Button 
+              onClick={() => setExpanded(false)}
+              size="small"
+              sx={{ mt: 1, textTransform: 'none' }}
+              endIcon={<ExpandLessIcon />}
+            >
+              {translate('app.action.show_less')}
+            </Button>
+          </>
+        ) : (
+          <>
+            {clickOnContent ? (
+              <Link to={`/activity/${encodeURIComponent(activity?.id || noteObject?.id)}`} onClick={onContentClick}>
+                <Typography 
+                  sx={{ color: 'black' }} 
+                  dangerouslySetInnerHTML={{ __html: processedContent }} 
+                />
+              </Link>
+            ) : (
+              <Typography 
+                sx={{ color: 'black' }} 
+                dangerouslySetInnerHTML={{ __html: processedContent }} 
+              />
+            )}
+            {hasMoreContent && (
+              <Button 
+                onClick={() => setExpanded(true)}
+                size="small"
+                sx={{ mt: 1, textTransform: 'none' }}
+                endIcon={<ExpandMoreIcon />}
+              >
+                {translate('app.action.show_more')}
+              </Button>
+            )}
+          </>
+        )}
           
-          <Typography 
-            sx={{ color: 'black' }} 
-            dangerouslySetInnerHTML={{ __html: processedContent }} 
-          />
         </Box>
       </BaseActivityBlock>
 

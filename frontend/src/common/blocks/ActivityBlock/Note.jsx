@@ -27,10 +27,9 @@ const Note = ({ noteUri, activity, clickOnContent }) => {
   
   const noteObject = note || activity.object;
   const actorUri = noteObject?.attributedTo;
-  const published = noteObject?.published;
   
   // Process content using our custom hook
-  const { processedContent, contentPreview, hasMoreContent } = useContentProcessing(noteObject, activity);
+  const { processedContent } = useContentProcessing(noteObject, activity);
   
   // Get images from attachments
   const images = useMemo(() => {

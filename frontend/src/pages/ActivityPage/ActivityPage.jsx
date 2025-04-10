@@ -22,9 +22,8 @@ const ActivityPage = () => {
   const { data: object } = useGetOne(
     activity?.object?.type,
     { id: activity?.object?.id || activity?.object?.current || activity?.object },
-    { staleTime: Infinity }
+    { staleTime: Infinity, enabled: !!activity?.object?.type }
   );
-
   const actor = useActor(activity?.actor || activity?.attributedTo);
 
   if (!activity) return null;

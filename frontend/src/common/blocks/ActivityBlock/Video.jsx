@@ -34,16 +34,11 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
   const actorUri = Array.isArray(video?.attributedTo) 
     ? video?.attributedTo.find(a => a.type === 'Person')?.id 
     : video?.attributedTo;
-
-  const published = video?.published;
   
   // Process content
   const { processedContent, contentPreview, hasMoreContent } = useContentProcessing(video, activity, {
     previewLength: 100
   });
-  console.log('Video processedContent', processedContent);
-  console.log('Video contentPreview', contentPreview);
-  console.log('Video hasMoreContent', hasMoreContent);
 
   const thumbnails = useMemo(() => {
     return arrayOf(video?.icon || []);
@@ -206,10 +201,20 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
       <Box sx={{ mt: 2, mb: 2 }}>
         {expanded ? (
           <>
-            <Typography 
-              sx={{ color: 'black' }} 
-              dangerouslySetInnerHTML={{ __html: processedContent }} 
-            />
+            {clickOnContent ? (
+              <Link to={`/activity/${encodeURIComponent(activity?.id || noteObject?.id)}`} onClick={onContentClick}>
+                <Typography 
+                  sx={{ color: 'black' }} 
+                  dangerouslySetInnerHTML={{ __html: processedContent }} 
+                />
+              </Link>
+            ) : (
+              <Typography 
+                sx={{ color: 'black' }} 
+                dangerouslySetInnerHTML={{ __html: processedContent }} 
+              />
+            )}
+            
             <Button 
               onClick={() => setExpanded(false)}
               size="small"
@@ -221,9 +226,18 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
           </>
         ) : (
           <>
-            <Typography sx={{ color: 'black' }}>
-              {contentPreview}
-            </Typography>
+            {clickOnContent ? (
+              <Link to={`/activity/${encodeURIComponent(activity?.id || noteObject?.id)}`} onClick={onContentClick}>
+                <Typography sx={{ color: 'black' }}>
+                  {contentPreview}
+                </Typography>
+              </Link>
+            ) : (
+              <Typography sx={{ color: 'black' }}>
+                {contentPreview}
+              </Typography>
+            )}
+            
             {hasMoreContent && (
               <Button 
                 onClick={() => setExpanded(true)}
