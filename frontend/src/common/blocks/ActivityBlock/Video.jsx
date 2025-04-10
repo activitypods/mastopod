@@ -1,21 +1,13 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
-import isObject from 'isobject';
-import { Box, Avatar, Typography, MenuItem, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import Hls from 'hls.js';
-import LikeButton from '../../buttons/LikeButton';
-import BoostButton from '../../buttons/BoostButton';
-import ReplyButton from '../../buttons/ReplyButton';
-import RelativeDate from '../../RelativeDate';
-import useActor from '../../../hooks/useActor';
+import BaseActivityBlock from './BaseActivityBlock';
+import useContentProcessing from '../../../hooks/useContentProcessing';
 import { arrayOf } from '../../../utils';
-import MoreButton from '../../buttons/MoreButton';
-import { useCollection } from '@semapps/activitypub-components';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-
-const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
 const Video = ({ videoUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
@@ -35,73 +27,12 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
     ? video?.attributedTo.find(a => a.type === 'Person')?.id 
     : video?.attributedTo;
 
-  const actor = useActor(actorUri);
-
-  //Mastodon collection URI is nested
-  const repliesUri = video?.replies?.id || video?.replies || video?.comments; 
-  const likesUri = video?.likes?.id || video?.likes;
-  const sharesUri = video?.shares?.id || video?.shares;
-
-  const { totalItems: numReplies } = useCollection(
-    repliesUri,
-    { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
-  );
-
-  const { totalItems: numLikes } = useCollection(
-    likesUri,
-    { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
-  );
-  const { totalItems: numShares, items: shares} = useCollection(
-    sharesUri,
-    { dereferenceItems: false, liveUpdates: true, enabled: !!sharesUri}
-  );
+  const published = video?.published;
   
-  const { fullContent, previewContent } = useMemo(() => {
-    let content = video?.content || video?.contentMap || video?.name;
-
-    if (!content) {
-      return { fullContent: null, previewContent: null };
-    }
-
-    // If we have a contentMap, take first value
-    if (isObject(content)) {
-      content = Object.values(content)?.[0];
-    }
-
-    //Handle carriage return
-    content = content?.replaceAll('\n', '<br>')
-
-    // Find all mentions
-    const mentions = arrayOf(video?.tag || activity?.tag).filter(tag => tag.type === 'Mention');
-
-    if (mentions.length > 0) {
-      // Replace mentions to local actor links
-      content = content.replaceAll(mentionRegex, (match, actorUri, actorName) => {
-        const mention = actorName.includes('@')
-          ? mentions.find(mention => mention.name.startsWith(`@${actorName}`))
-          : mentions.find(mention => mention.name.startsWith(`@${actorName}@`));
-        if (mention) {
-          return match.replace(actorUri, `/actor/${mention.name}`);
-        } else {
-          return match;
-        }
-      });
-    }
-
-    // Create a stripped version for preview
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
-    const plainText = tempDiv.textContent || tempDiv.innerText;
-    
-    // Get a preview with first 100 characters
-    const preview = plainText.length > 100 ? plainText.substring(0, 100) + '...' : plainText;
-
-    return { 
-      fullContent: content,
-      previewContent: preview,
-      hasMoreContent: plainText.length > 100 
-    };
-  }, [video, activity]);
+  // Process content
+  const { processedContent, contentPreview, hasMoreContent } = useContentProcessing(video, activity, {
+    previewLength: 100
+  });
 
   const thumbnails = useMemo(() => {
     return arrayOf(video?.icon || []);
@@ -220,122 +151,99 @@ const Video = ({ videoUri, activity, clickOnContent }) => {
     }
   };
 
-  return (
-    <>
-      <Box pl={8} sx={{ position: 'relative' }}>
-        <Link to={`/actor/${actor?.username}`}>
-          <Avatar
-            src={actor?.image}
-            alt={actor?.name}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: 50,
-              height: 50
-            }}
-          />
-          <Typography
-            sx={{
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              color: 'black',
-              pr: 8
-            }}
-          >
-            <strong>{actor?.name}</strong>{' '}
-            <Typography component="span" sx={{ color: 'grey' }}>
-              <em>{actor?.username}</em>
-            </Typography>
-          </Typography>
-        </Link>
-
-        {video?.published && (
-          <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-            <RelativeDate date={video?.published} sx={{ fontSize: 13, color: 'grey' }} />
-          </Box>
-        )}
-        
-        {/* Display video player FIRST */}
-        {videoSources.hlsSource || videoSources.directSources.length > 0 ? (
-          <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
-            <video 
-              ref={videoRef}
-              controls 
-              style={{ width: '100%' }}
-              poster={thumbnails?.[0]?.url}
-              preload="metadata"
+  // Custom content renderer with expand/collapse
+  const renderContent = (content, preview) => {
+    return (
+      <Box sx={{ mt: 2, mb: 2 }}>
+        {expanded ? (
+          <>
+            <Typography 
+              sx={{ color: 'black' }} 
+              dangerouslySetInnerHTML={{ __html: content }} 
+            />
+            <Button 
+              onClick={() => setExpanded(false)}
+              size="small"
+              sx={{ mt: 1, textTransform: 'none' }}
+              endIcon={<ExpandLessIcon />}
             >
-              {/* We don't need source elements with HLS.js */}
-              {video?.subtitleLanguage?.map(subtitle => (
-                <track 
-                  key={subtitle.identifier}
-                  kind="subtitles"
-                  src={subtitle.url}
-                  srcLang={subtitle.identifier}
-                  label={subtitle.name}
-                />
-              ))}
-              Your browser does not support the video tag.
-            </video>
-          </Box>
-        ) : null}
-        
-        {/* Show video metadata */}
-        {video?.views !== undefined && (
-          <Typography variant="body2" sx={{ color: 'gray', mb: 1 }}>
-            {video.views} views • {video.duration?.replace('PT', '').replace('S', 's')}
-          </Typography>
-        )}
-        
-        {/* Content area with expand/collapse */}
-        <Box sx={{ mt: 2, mb: 2 }}>
-          {expanded ? (
-            <>
-              <Typography 
-                sx={{ color: 'black' }} 
-                dangerouslySetInnerHTML={{ __html: fullContent }} 
-              />
+              {translate('app.action.show_less')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Typography sx={{ color: 'black' }}>
+              {preview}
+            </Typography>
+            {hasMoreContent && (
               <Button 
-                onClick={() => setExpanded(false)}
+                onClick={() => setExpanded(true)}
                 size="small"
                 sx={{ mt: 1, textTransform: 'none' }}
-                endIcon={<ExpandLessIcon />}
+                endIcon={<ExpandMoreIcon />}
               >
-                {translate('app.action.show_less')}
+                {translate('app.action.show_more')}
               </Button>
-            </>
-          ) : (
-            <>
-              <Typography sx={{ color: 'black' }}>
-                {previewContent}
-              </Typography>
-              {previewContent?.endsWith('...') && (
-                <Button 
-                  onClick={() => setExpanded(true)}
-                  size="small"
-                  sx={{ mt: 1, textTransform: 'none' }}
-                  endIcon={<ExpandMoreIcon />}
-                >
-                  {translate('app.action.show_more')}
-                </Button>
-              )}
-            </>
-          )}
-        </Box>
+            )}
+          </>
+        )}
       </Box>
-      
-      {/* Existing action buttons */}
-      <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        <ReplyButton objectUri={video?.id || activity?.id} numReplies={numReplies} />
-        <BoostButton activity={activity} object={video} numBoosts={numShares} shares={shares}/>
-        <LikeButton activity={activity} object={video} numlikes={numLikes}/>
-        <MoreButton>
-          <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
-        </MoreButton>
+    );
+  };
+
+  // Render video player
+  const renderMedia = () => {
+    if (!videoSources.hlsSource && videoSources.directSources.length === 0) return null;
+    
+    return (
+      <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
+        <video 
+          ref={videoRef}
+          controls 
+          style={{ width: '100%' }}
+          poster={thumbnails?.[0]?.url}
+          preload="metadata"
+        >
+          {/* We don't need source elements with HLS.js */}
+          {video?.subtitleLanguage?.map(subtitle => (
+            <track 
+              key={subtitle.identifier}
+              kind="subtitles"
+              src={subtitle.url}
+              srcLang={subtitle.identifier}
+              label={subtitle.name}
+            />
+          ))}
+          {translate('app.message.video_not_supported')}
+        </video>
       </Box>
-    </>
+    );
+  };
+
+  // Render video metadata
+  const renderMetadata = () => {
+    if (video?.views === undefined) return null;
+    
+    return (
+      <Typography variant="body2" sx={{ color: 'gray', mb: 1 }}>
+        {video.views} views • {video.duration?.replace('PT', '').replace('S', 's')}
+      </Typography>
+    );
+  };
+
+  return (
+    <BaseActivityBlock
+      object={video}
+      activity={activity}
+      clickOnContent={clickOnContent}
+      renderContent={renderContent}
+      renderMedia={renderMedia}
+      objectUri={videoUri}
+      actorUri={actorUri}
+      published={published}
+    >
+      {renderMetadata()}
+    </BaseActivityBlock>
   );
 };
 

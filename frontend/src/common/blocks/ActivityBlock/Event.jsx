@@ -1,16 +1,10 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import isObject from 'isobject';
-import { Box, Avatar, Typography, MenuItem, Modal, IconButton } from '@mui/material';
-import { Link, useGetOne, useTranslate, useLocaleState } from 'react-admin';
+import { Box, Typography, Modal, IconButton } from '@mui/material';
+import { useGetOne, useTranslate, useLocaleState } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
-import LikeButton from '../../buttons/LikeButton';
-import BoostButton from '../../buttons/BoostButton';
-import ReplyButton from '../../buttons/ReplyButton';
-import RelativeDate from '../../RelativeDate';
-import useActor from '../../../hooks/useActor';
+import BaseActivityBlock from './BaseActivityBlock';
+import useContentProcessing from '../../../hooks/useContentProcessing';
 import { arrayOf } from '../../../utils';
-import MoreButton from '../../buttons/MoreButton';
-import { useCollection } from '@semapps/activitypub-components';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { enGB } from 'date-fns/locale';
@@ -20,8 +14,6 @@ import TagIcon from '@mui/icons-material/Tag';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Link as MuiLink } from '@mui/material';
-
-const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
 const Event = ({ eventUri, activity, clickOnContent }) => {
   const navigate = useNavigate();
@@ -33,87 +25,16 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
   useEffect(() => {
     setDateLocale(locale === 'fr' ? fr : enGB);
   }, [locale]);
-  // const { data: event } = useGetOne(
-  //   "Event",
-  //   {
-  //     id: eventUri,
-  //   }
-  // );
+  
   const event = activity.object;
   const actorUri = event?.attributedTo;
-  const actor = useActor(actorUri);
-
-  //Mastodon collection URI is nested
-  const repliesUri = event?.replies?.id || event?.replies; 
-  const likesUri = event?.likes?.id || event?.likes;
-  const sharesUri = event?.shares?.id || event?.shares;
-
-  const { totalItems: numReplies } = useCollection(
-    repliesUri,
-    { dereferenceItems: false, liveUpdates: true, enabled: !!repliesUri}
-  );
-
-  const { totalItems: numLikes } = useCollection(
-    likesUri,
-    { dereferenceItems: false, liveUpdates: true, enabled: !!likesUri}
-  );
-  const { totalItems: numShares, items: shares} = useCollection(
-    sharesUri,
-    { dereferenceItems: false, liveUpdates: true, enabled: !!sharesUri}
-  );
+  const published = event?.published;
   
-  const content = useMemo(() => {
-    let content = event?.content || event?.contentMap;
-
-    if (!content) {
-      return null;
-    }
-
-    // If we have a contentMap, take first value
-    if (isObject(content)) {
-      content = Object.values(content)?.[0];
-    }
-
-    //Handle carriage return
-    content = content?.replaceAll('\n', '<br>')
-
-    // Find all mentions
-    const mentions = arrayOf(event.tag || activity?.tag).filter(tag => tag.type === 'Mention');
-
-    if (mentions.length > 0) {
-      // Replace mentions to local actor links
-      content = content.replaceAll(mentionRegex, (match, actorUri, actorName) => {
-        const mention = actorName.includes('@')
-          ? mentions.find(mention => mention.name.startsWith(`@${actorName}`))
-          : mentions.find(mention => mention.name.startsWith(`@${actorName}@`));
-        if (mention) {
-          return match.replace(actorUri, `/actor/${mention.name}`);
-        } else {
-          return match;
-        }
-      });
-    }
-
-    return content;
-  }, [event, activity]);
-
-  const images = useMemo(() => {
-    return arrayOf(event?.attachment || event?.icon || []);
-  }, [event]);
-
-  // Catch links to actors with react-router
-  const onContentClick = e => {
-    const link = e.target.closest('a')?.getAttribute('href');
-    if (link?.startsWith('/actor/')) {
-      e.preventDefault();
-      navigate(link);
-    }
-  };
+  // Process content using our custom hook
+  const { processedContent } = useContentProcessing(event, activity);
 
   // Get cover image from attachments
   const coverImage = useMemo(() => {
-    console.log(`attachments of ${event?.startTime}`, event?.attachment);
-    console.log('event', event);
     const imageAttachment = arrayOf(event?.attachment).find(
       att => 
         (typeof att.mediaType === 'string' && att.mediaType.startsWith('image/')) ||
@@ -131,122 +52,36 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
     return format(new Date(date), "d MMMM yyyy HH:mm", { locale: dateLocale });
   }, [dateLocale]);
 
-  return (
-    <>
-      <Box pl={8} sx={{ position: 'relative' }}>
-        <Link to={`/actor/${actor?.username}`}>
-          <Avatar
-            src={actor?.image}
-            alt={actor?.name}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: 50,
-              height: 50
-            }}
-          />
-          <Typography
-            sx={{
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              color: 'black',
-              pr: 8
-            }}
-          >
-            <strong>{actor?.name}</strong>{' '}
-            <Typography component="span" sx={{ color: 'grey' }}>
-              <em>{actor?.username}</em>
-            </Typography>
-          </Typography>
-        </Link>
-
-        {event?.published && (
-          <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-            <RelativeDate date={event?.published} sx={{ fontSize: 13, color: 'grey' }} />
+  // Custom content renderer
+  const renderContent = (content, preview) => {
+    return (
+      <Box sx={{ mt: 2, mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <AccessTimeIcon sx={{ mr: 1, color: 'grey.600' }} />
+          <Typography>{formatEventDate(event?.startTime)}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <LocationOnIcon sx={{ mr: 1, color: 'grey.600' }} />
+          <Typography>{event?.location?.name}</Typography>
+        </Box>
+        {event?.url && (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <OpenInNewIcon sx={{ mr: 1, color: 'grey.600' }} />
+            <MuiLink 
+              href={event.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ 
+                color: 'primary.main',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' }
+              }}
+            >
+              {translate('app.action.event_url')}
+            </MuiLink>
           </Box>
         )}
-
-        <Box
-          sx={{
-            position: 'relative',
-            height: 200,
-            width: '100%',
-            mt: 2,
-            bgcolor: 'grey.800',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 1,
-            overflow: 'hidden',
-            cursor: 'pointer'
-          }}
-          onClick={() => setModalOpen(true)}
-        >
-          {coverImage && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundImage: `url(${coverImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                }
-              }}
-            />
-          )}
-          <Typography variant="h5" sx={{ 
-            position: 'relative',
-            zIndex: 1,
-            color: 'white',
-            textAlign: 'center',
-            p: 2,
-            textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
-          }}>
-            {event?.name}
-          </Typography>
-        </Box>
-
-        <Box sx={{ mt: 2, mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <AccessTimeIcon sx={{ mr: 1, color: 'grey.600' }} />
-            <Typography>{formatEventDate(event?.startTime)}</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <LocationOnIcon sx={{ mr: 1, color: 'grey.600' }} />
-            <Typography>{event?.location?.name}</Typography>
-          </Box>
-          {event?.url && (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <OpenInNewIcon sx={{ mr: 1, color: 'grey.600' }} />
-              <MuiLink 
-                href={event.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{ 
-                  color: 'primary.main',
-                  textDecoration: 'none',
-                  '&:hover': { textDecoration: 'underline' }
-                }}
-              >
-                {translate('app.action.event_url')}
-              </MuiLink>
-            </Box>
-          )}
-        </Box>
-
+        
         {hashtags.length > 0 && (
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
             <TagIcon sx={{ color: 'grey.500' }} />
@@ -265,19 +100,84 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
             ))}
           </Box>
         )}
+        
+        <Typography 
+          sx={{ color: 'black' }} 
+          dangerouslySetInnerHTML={{ __html: content }} 
+        />
       </Box>
+    );
+  };
 
-      {/* Social buttons */}
-      <Box pl={8} pt={2} display="flex" justifyContent="space-between">
-        <ReplyButton objectUri={event?.id || activity.id} numReplies={numReplies} />
-        <BoostButton activity={activity} object={event} numBoosts={numShares} shares={shares}/>
-        <LikeButton activity={activity} object={event} numlikes={numLikes}/>
-        <MoreButton>
-          <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
-        </MoreButton>
+  // Render cover image and title
+  const renderMedia = () => {
+    return (
+      <Box
+        sx={{
+          position: 'relative',
+          height: 200,
+          width: '100%',
+          mt: 2,
+          bgcolor: 'grey.800',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 1,
+          overflow: 'hidden',
+          cursor: 'pointer'
+        }}
+        onClick={() => setModalOpen(true)}
+      >
+        {coverImage && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `url(${coverImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              }
+            }}
+          />
+        )}
+        <Typography variant="h5" sx={{ 
+          position: 'relative',
+          zIndex: 1,
+          color: 'white',
+          textAlign: 'center',
+          p: 2,
+          textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+        }}>
+          {event?.name}
+        </Typography>
       </Box>
+    );
+  };
 
-      {/* Modal */}
+  return (
+    <>
+      <BaseActivityBlock
+        object={event}
+        activity={activity}
+        clickOnContent={clickOnContent}
+        renderContent={renderContent}
+        renderMedia={renderMedia}
+        objectUri={eventUri}
+        actorUri={actorUri}
+        published={published}
+      />
+
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -421,7 +321,7 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
                 fontSize: '1.1rem',
                 lineHeight: 1.7
               }}
-              dangerouslySetInnerHTML={{ __html: event?.content }} 
+              dangerouslySetInnerHTML={{ __html: processedContent }} 
             />
           </Box>
         </Box>
