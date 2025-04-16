@@ -26,7 +26,6 @@ import { MenuItem } from '@mui/material';
  * @param {React.ReactNode} props.children - The content to render inside the block
  */
 const BaseActivityBlock = ({ object, activity, objectUri, actorUri, children }) => {
-  const navigate = useNavigate();
   const translate = useTranslate();
   const actor = useActor(actorUri);
 

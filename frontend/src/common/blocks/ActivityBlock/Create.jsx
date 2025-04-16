@@ -1,4 +1,3 @@
-import { OBJECT_TYPES } from '@semapps/activitypub-components';
 import { Card, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
 import isObject from "isobject";
@@ -40,8 +39,10 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
 
   const objectUri = createdObject.current || createdObject.id;
 
+  // Get the relevant component depending on the object type
   const config = getComponentForObject(objectUri, createdObject);
 
+  // If no component is found, no render is possible
   if (!config) {
     return null;
   }

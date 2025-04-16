@@ -332,7 +332,7 @@ const Event = ({ eventUri, activity, clickOnContent }) => {
             }}
           >
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Informations</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>{translate('app.action.event_details')}</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                   <LocationOnIcon sx={{ mr: 2 }} />

@@ -16,6 +16,7 @@ export default {
       sendDirectMessage: 'Envoyer un message direct',
       message: 'Message',
       event_url: 'Voir sur le site d\'origine',
+      event_details: 'Informations',
       event_start_date: 'Du',
       event_end_date: 'Au',
       read_more: 'Lire la suite',
