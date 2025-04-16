@@ -12,9 +12,9 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 /**
  * Video component - Displays a video activity
  * 
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.videoUri - The URI of the video
- * @param {Object} props.activity - The activity data
+ * @param {object} props.activity - The activity data
  * @param {boolean} props.clickOnContent - Whether the content is clickable
  */
 const Video = ({ videoUri, activity, clickOnContent }) => {

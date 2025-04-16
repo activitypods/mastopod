@@ -6,10 +6,10 @@ const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(
 
 /**
  * Custom hook for processing content with mentions and creating previews
- * @param {Object} object - The object containing content
- * @param {Object} activity - The activity object
- * @param {Object} options - Options for content processing
- * @returns {Object} - Processed content and preview
+ * @param {object} object - The object containing content
+ * @param {object} activity - The activity object
+ * @param {object} options - Options for content processing
+ * @returns {object} - Processed content and preview
  */
 const useContentProcessing = (object, activity, options = {}) => {
   const { 

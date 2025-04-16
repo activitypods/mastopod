@@ -9,9 +9,9 @@ import { arrayOf } from '../../../utils';
 /**
  * Note component - Displays a note activity
  * 
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.noteUri - The URI of the note
- * @param {Object} props.activity - The activity data
+ * @param {object} props.activity - The activity data
  * @param {boolean} props.clickOnContent - Whether the content is clickable
  */
 const Note = ({ noteUri, activity, clickOnContent }) => {

@@ -18,9 +18,9 @@ import { MenuItem } from '@mui/material';
  * - Action buttons (reply, like, boost)
  * - A container for the specific content of each activity type
  * 
- * @param {Object} props
- * @param {Object} props.object - The activity object
- * @param {Object} props.activity - The activity data
+ * @param {object} props
+ * @param {object} props.object - The activity object
+ * @param {object} props.activity - The activity data
  * @param {string} props.objectUri - The URI of the object
  * @param {string} props.actorUri - The URI of the actor
  * @param {React.ReactNode} props.children - The content to render inside the block

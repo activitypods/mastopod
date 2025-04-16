@@ -10,9 +10,9 @@ import CloseIcon from '@mui/icons-material/Close';
 /**
  * Article component - Displays an article activity
  * 
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.articleUri - The URI of the article
- * @param {Object} props.activity - The activity data
+ * @param {object} props.activity - The activity data
  * @param {boolean} props.clickOnContent - Whether the content is clickable
  */
 const Article = ({ articleUri, activity, clickOnContent }) => {

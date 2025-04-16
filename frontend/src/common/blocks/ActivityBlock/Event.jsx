@@ -21,9 +21,9 @@ import Button from '@mui/material/Button';
 /**
  * Event component - Displays an event activity
  * 
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.eventUri - The URI of the event
- * @param {Object} props.activity - The activity data
+ * @param {object} props.activity - The activity data
  * @param {boolean} props.clickOnContent - Whether the content is clickable
  */
 const Event = ({ eventUri, activity, clickOnContent }) => {
