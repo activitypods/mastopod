@@ -24,19 +24,30 @@ const Announce = ({ activity }) => {
       `Could not load object ${activity.object}. Error message: ${error.message}`
     );
   }
-  const objectUri = boostedObject.type === ACTIVITY_TYPES.CREATE 
-    ? boostedObject.object.current || boostedObject.object?.id 
-    : boostedObject?.current || boostedObject?.id;
-  
-  const { Component, props: specificProps } = getComponentForObject(objectUri, boostedObject);
 
+  let objectUri;
+  let boostedActivity;
+  // If the boosted object is a Create activity
+  if (boostedObject.type === ACTIVITY_TYPES.CREATE) {
+    //Then we need to get the object from its object property
+    objectUri = boostedObject.object.current || boostedObject.object?.id;
+    //and the boosted activity is the Create activity
+    boostedActivity = boostedObject;
+  } else {
+    //otherwise, the object is the boosted object itself
+    objectUri = boostedObject?.current || boostedObject?.id;
+    //and the boosted activity is the activity itself
+    boostedActivity = activity;
+  }
+    
+  const { Component, props: specificProps } = getComponentForObject(objectUri, boostedObject);
 
   return (
     <Card sx={{ p: 2 }}>
       <BoostBanner activity={activity} />
       <Component
         {...specificProps}
-        activity={boostedObject.type === ACTIVITY_TYPES.CREATE ? boostedObject : activity}
+        activity={boostedActivity}
       />
     </Card>
   );

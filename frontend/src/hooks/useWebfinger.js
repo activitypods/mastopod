@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { fetchUtils } from 'react-admin';
 import { useDataProvider } from 'react-admin';
 const useWebfinger = () => {
   const dataProvider = useDataProvider();

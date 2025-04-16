@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography, Modal, IconButton } from '@mui/material';
 import { Link, useGetOne, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
@@ -29,8 +29,8 @@ const Article = ({ articleUri, activity, clickOnContent }) => {
 
   const articleObject = article || activity.object;
 
-  let actorUri = arrayOf(articleObject?.attributedTo)[0];
-  actorUri = actorUri.id || actorUri;
+  const actorUri = arrayOf(articleObject?.attributedTo)
+                    .map(actorOrUri => actorOrUri?.id || actorOrUri)[0];
 
   // Process content
   const { processedContent, contentPreview } = useContentProcessing(articleObject, activity, {
