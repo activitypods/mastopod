@@ -1,8 +1,7 @@
 import { Card, LinearProgress } from "@mui/material";
 import { useGetOne } from "react-admin";
-import Note from "./Note";
 import isObject from "isobject";
-
+import { getComponentForObject } from "../../../utils";
 const Create = ({ activity, showReplies, clickOnContent }) => {
   let {
     data: createdObject,
@@ -38,10 +37,22 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
     return null;
   }
 
+  const objectUri = createdObject.current || createdObject.id;
+
+  // Get the relevant component depending on the object type
+  const config = getComponentForObject(objectUri, createdObject);
+
+  // If no component is found, no render is possible
+  if (!config) {
+    return null;
+  }
+
+  const { Component, props: specificProps } = config;
+
   return (
     <Card sx={{ p: 2 }}>
-      <Note
-        noteUri={createdObject.current || createdObject.id}
+      <Component
+        {...specificProps}
         activity={activity}
         clickOnContent={clickOnContent}
       />

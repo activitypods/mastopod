@@ -14,7 +14,14 @@ export default {
       boost: 'Booster',
       like: 'Soutenir',
       sendDirectMessage: 'Envoyer un message direct',
-      message: 'Message'
+      message: 'Message',
+      event_url: 'Voir sur le site d\'origine',
+      event_details: 'Informations',
+      event_start_date: 'Du',
+      event_end_date: 'Au',
+      read_more: 'Lire la suite',
+      show_more: 'Afficher plus',
+      show_less: 'Afficher moins',
     },
     page: {
       my_inbox: 'Boîte de réception',
@@ -39,7 +46,8 @@ export default {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
       actor_boosted: '%{actor} a boosté',
-      no_result: 'Aucun résultat'
+      no_result: 'Aucun résultat',
+      video_not_supported: 'Votre navigateur ne supporte pas le tag vidéo.'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',

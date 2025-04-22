@@ -1069,7 +1069,7 @@
   dependencies:
     xmlchars "^2.2.0"
 
-"@semapps/activitypub-components@1.1.0", "@semapps/activitypub-components@file:../../semapps-activitypub-components-v1.1.0.tgz":
+"@semapps/activitypub-components@1.1.0":
   version "1.1.0"
   resolved "file:../../semapps-activitypub-components-v1.1.0.tgz#85592c869f434e7e627155dd896db6fc5dcf87fb"
   dependencies:
@@ -2829,6 +2829,11 @@ history@^5.1.0:
   integrity sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==
   dependencies:
     "@babel/runtime" "^7.7.6"
+
+hls.js@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.6.0.tgz#ec0118f1dcd0fce536e52c27f674cdf944055b30"
+  integrity sha512-AlW8ymcDKZuKtzXCUmEy4nOcHRkebnShH6t6hC2+QJQP0WXlTUSSO9Kp22uSEYdCgpwkXEJsfOhqxrgO2tDctQ==
 
 hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
   version "3.3.2"

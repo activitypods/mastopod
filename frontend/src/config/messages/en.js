@@ -14,7 +14,14 @@ export default {
       boost: 'Boost',
       like: 'Like',
       sendDirectMessage: 'Send a direct message',
-      message: 'Message'
+      message: 'Message',
+      event_url: 'See on the original site',
+      event_details: 'Details',
+      event_start_date: 'From',
+      event_end_date: 'To',
+      read_more: 'Read more',
+      show_more: 'Show more',
+      show_less: 'Show less',
     },
     page: {
       my_inbox: 'My inbox',
@@ -39,7 +46,8 @@ export default {
       early_dev_warning:
         'This application is in early development. Use it for tests only, and please report issues you find on',
       actor_boosted: '%{actor} boosted',
-      no_result: 'No result'
+      no_result: 'No result',
+      video_not_supported: 'Your browser does not support the video tag.'
     },
     notification: {
       activity_send_error: 'Error while posting the activity: %{error}',
