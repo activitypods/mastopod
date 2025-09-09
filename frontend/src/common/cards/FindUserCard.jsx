@@ -1,8 +1,8 @@
 import { Form, SearchInput, useRedirect, useTranslate } from 'react-admin';
 import { Box, Card, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   title: {
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FindUserCard = ({ stripCard }) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const redirect = useRedirect();
   const translate = useTranslate();
 

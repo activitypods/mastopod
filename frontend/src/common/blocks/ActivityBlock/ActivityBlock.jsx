@@ -2,7 +2,7 @@ import { ACTIVITY_TYPES, OBJECT_TYPES } from '@semapps/activitypub-components';
 import Create from './Create';
 import Announce from './Announce';
 
-const ActivityBlock = ({ activity, showReplies, clickOnContent }) => {
+const ActivityBlock = ({ activity, showReplies = true, clickOnContent = true }) => {
   switch (activity.type) {
     case ACTIVITY_TYPES.ANNOUNCE:
       return <Announce activity={activity} />;
@@ -20,11 +20,6 @@ const ActivityBlock = ({ activity, showReplies, clickOnContent }) => {
       // );
       return null;
   }
-};
-
-ActivityBlock.defaultProps = {
-  showReplies: true,
-  clickOnContent: true
 };
 
 export default ActivityBlock;

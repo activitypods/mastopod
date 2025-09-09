@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Box, Button, Typography, ThemeProvider, Alert } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import { useGetIdentity, useTranslate, Link, useRedirect, LocalesMenuButton } from 'react-admin';
 import theme from '../config/theme';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const HomePage = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const redirect = useRedirect();
   const { data: identity, isLoading } = useGetIdentity();
   const translate = useTranslate();

@@ -1,10 +1,10 @@
 import { Box, Container, Avatar, Typography } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from 'tss-react/mui';
 import FollowButton from "../../common/buttons/FollowButton";
 import useActorContext from "../../hooks/useActorContext";
 import SendDirectMessageButton from '../../common/buttons/SendDirectMessageButton.jsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: "white",
     paddingTop: 25,
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Hero = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const actor = useActorContext();
 
   return (

@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { AppBar as MuiAppBar, Toolbar, Container, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import { UserMenu } from '@activitypods/react';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   appBar: {
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AppBar = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <MuiAppBar position="static" sx={{ flexGrow: 1 }} elevation={0} className={classes.appBar}>
       <Container maxWidth="md">
