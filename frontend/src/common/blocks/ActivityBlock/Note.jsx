@@ -13,7 +13,7 @@ import MoreButton from '../../buttons/MoreButton';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
-const Note = ({ object, activity, clickOnContent }) => {
+const Note = ({ object, activity, clickOnContent = true }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
   const actorUri = object?.attributedTo;
@@ -29,7 +29,7 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
 
     //Handle carriage return
-    content = content?.replaceAll('\n', '<br>')
+    content = content?.replaceAll('\n', '<br>');
 
     // Find all mentions
     const mentions = arrayOf(object.tag || activity?.tag).filter(tag => tag.type === 'Mention');
@@ -107,7 +107,8 @@ const Note = ({ object, activity, clickOnContent }) => {
         ) : (
           <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
         )}
-        {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
+        {images &&
+          images.map(image => <img src={image?.url} key={image?.url} style={{ width: '100%', marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={object.id || activity.id} />
@@ -119,10 +120,6 @@ const Note = ({ object, activity, clickOnContent }) => {
       </Box>
     </>
   );
-};
-
-Note.defaultProps = {
-  clickOnContent: true
 };
 
 export default Note;

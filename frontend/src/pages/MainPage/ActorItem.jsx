@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import useActor from "../../hooks/useActor";
+import { useCallback, useState } from 'react';
+import useActor from '../../hooks/useActor';
 import {
   Avatar,
   Box,
@@ -8,14 +8,14 @@ import {
   ListItemButton,
   ListItemText,
   Skeleton,
-  IconButton,
-} from "@mui/material";
-import { Link } from "react-router-dom";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { ACTIVITY_TYPES, useOutbox } from "@semapps/activitypub-components";
-import { useNotify } from "react-admin";
+  IconButton
+} from '@mui/material';
+import { Link } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ACTIVITY_TYPES, useOutbox } from '@semapps/activitypub-components';
+import { useNotify } from 'react-admin';
 
-const ActorItem = ({ actorUri, unfollowButton }) => {
+const ActorItem = ({ actorUri, unfollowButton = false }) => {
   const actor = useActor(actorUri);
   const outbox = useOutbox();
   const notify = useNotify();
@@ -29,16 +29,16 @@ const ActorItem = ({ actorUri, unfollowButton }) => {
         object: {
           type: ACTIVITY_TYPES.FOLLOW,
           object: actorUri,
-          actor: outbox.owner,
+          actor: outbox.owner
         },
-        to: actorUri,
+        to: actorUri
       });
       setVisible(false);
-      notify("app.notification.actor_unfollowed", { type: "success" });
+      notify('app.notification.actor_unfollowed', { type: 'success' });
     } catch (e) {
-      notify("app.notification.activity_send_error", {
-        type: "error",
-        messageArgs: { error: e.message },
+      notify('app.notification.activity_send_error', {
+        type: 'error',
+        messageArgs: { error: e.message }
       });
     }
   }, [outbox, actorUri, notify, setVisible]);
@@ -65,7 +65,7 @@ const ActorItem = ({ actorUri, unfollowButton }) => {
           </ListItemAvatar>
         )}
         {actor.isLoading ? (
-          <Box p={1} sx={{ width: "100%" }}>
+          <Box p={1} sx={{ width: '100%' }}>
             <Skeleton variant="text" />
             <Skeleton variant="text" />
           </Box>
@@ -75,10 +75,6 @@ const ActorItem = ({ actorUri, unfollowButton }) => {
       </ListItemButton>
     </ListItem>
   );
-};
-
-ActorItem.defaultProps = {
-  unfollowButton: false,
 };
 
 export default ActorItem;

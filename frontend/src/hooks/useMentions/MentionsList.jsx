@@ -1,8 +1,8 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import {useTranslate} from 'react-admin';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   items: {
     background: '#fff',
     borderRadius: '0.5rem',
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 export default forwardRef((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const classes = useStyles();
+  const { classes } = useStyles();
   const translate = useTranslate();
 
   const selectItem = index => {

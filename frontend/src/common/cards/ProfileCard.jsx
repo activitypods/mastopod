@@ -1,10 +1,10 @@
 import { Box, Card, Typography, Avatar, Skeleton } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import useActorContext from '../../hooks/useActorContext';
 import FollowButton from '../buttons/FollowButton';
 import EditProfileButton from '../buttons/EditProfileButton';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   title: {
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProfileCard = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const actor = useActorContext();
 
   return (

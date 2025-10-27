@@ -1,6 +1,6 @@
 import { Admin, Resource, CustomRoutes } from 'react-admin';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LoginPage, RedirectPage } from '@activitypods/react';
 
 import dataProvider from './config/dataProvider';
@@ -29,7 +29,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-      cacheTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
+      gcTime: 30 * 60 * 1000, // Cache unused data for 30 minutes.
       retry: 3
     },
     mutations: {
@@ -57,39 +57,41 @@ const MyLoginPage = props => (
 );
 
 export const App = () => (
-  <BrowserRouter>
-    <Admin
-      dataProvider={dataProvider}
-      authProvider={authProvider}
-      i18nProvider={i18nProvider}
-      queryClient={queryClient}
-      layout={Layout}
-      loginPage={MyLoginPage}
-      theme={theme}
-      disableTelemetry
-    >
-      <CustomRoutes noLayout>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/r" element={<RedirectPage />} />
-      </CustomRoutes>
-      <CustomRoutes>
-        <Route element={<MainPage />}>
-          <Route path="inbox" element={<Inbox />} />
-          <Route path="outbox" element={<Outbox />} />
-          <Route path="followers" element={<Followers />} />
-          <Route path="following" element={<Following />} />
-        </Route>
-        <Route path="/activity/:activityUri" element={<ActivityPage />} />
-        <Route path="/actor/:username" element={<ActorPage />}>
-          <Route index element={<ActorPosts />} />
-          <Route path="replies" element={<ActorPostsAndReplies />} />
-          <Route path="followers" element={<ActorFollowers />} />
-          <Route path="following" element={<ActorFollowing />} />
-        </Route>
-      </CustomRoutes>
-      <Resource name="Note" />
-      <Resource name="Actor" />
-      <Resource name="Profile" />
-    </Admin>
-  </BrowserRouter>
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <Admin
+        dataProvider={dataProvider}
+        authProvider={authProvider}
+        i18nProvider={i18nProvider}
+        queryClient={queryClient}
+        layout={Layout}
+        loginPage={MyLoginPage}
+        theme={theme}
+        disableTelemetry
+      >
+        <CustomRoutes noLayout>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/r" element={<RedirectPage />} />
+        </CustomRoutes>
+        <CustomRoutes>
+          <Route element={<MainPage />}>
+            <Route path="inbox" element={<Inbox />} />
+            <Route path="outbox" element={<Outbox />} />
+            <Route path="followers" element={<Followers />} />
+            <Route path="following" element={<Following />} />
+          </Route>
+          <Route path="/activity/:activityUri" element={<ActivityPage />} />
+          <Route path="/actor/:username" element={<ActorPage />}>
+            <Route index element={<ActorPosts />} />
+            <Route path="replies" element={<ActorPostsAndReplies />} />
+            <Route path="followers" element={<ActorFollowers />} />
+            <Route path="following" element={<ActorFollowing />} />
+          </Route>
+        </CustomRoutes>
+        <Resource name="Note" />
+        <Resource name="Actor" />
+        <Resource name="Profile" />
+      </Admin>
+    </BrowserRouter>
+  </QueryClientProvider>
 );
