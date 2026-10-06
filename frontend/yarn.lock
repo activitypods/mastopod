@@ -7,14 +7,14 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@activitypods/react@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.1.0.tgz#2024f2fbd99fab059a50010e4a71804008f6d2b1"
-  integrity sha512-ygFKN0ik2h5fRkcB4FpG9SNjBljoq412gBstYHLvRf8SdW62iQ4bzTWqH/SQklYWlUlSNFpGYyE8Sr1AMuiZ6Q==
+"@activitypods/react@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.2.0.tgz#d135f25a7134af4837d1d4cea371038875eb1f18"
+  integrity sha512-HrOkj9L35/SjUOnZkY7eWUIk4znO0jSzxjXfBPPuqr3qyGxfIpuOHoIEsIRXfZjYp/E6dyZ4S0nkuQvoQYfVjg==
   dependencies:
-    "@semapps/activitypub-components" "1.1.0"
-    "@semapps/semantic-data-provider" "1.1.0"
-    http-link-header "^1.1.1"
+    "@semapps/activitypub-components" "1.1.2"
+    "@semapps/semantic-data-provider" "1.1.2"
+    http-link-header "^1.1.2"
     jwt-decode "^3.0.0"
     url-join "^4.0.1"
 
@@ -1069,16 +1069,17 @@
   dependencies:
     xmlchars "^2.2.0"
 
-"@semapps/activitypub-components@1.1.0":
-  version "1.1.0"
-  resolved "file:../../semapps-activitypub-components-v1.1.0.tgz#85592c869f434e7e627155dd896db6fc5dcf87fb"
+"@semapps/activitypub-components@1.1.2", "@semapps/activitypub-components@1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@semapps/activitypub-components/-/activitypub-components-1.1.7.tgz#08e37150229d56cb843b3e6f4bead38e3d5f59a4"
+  integrity sha512-dUkWFNXScIh3/Yntj3vVOTTQGXdiuiLRVdtPyi4Tmimw7E9PegQFfsg9VtfGRKGnlF7ymCj2jGm70cY52cfkuQ==
   dependencies:
     "@rdfjs/dataset" "^2.0.2"
     "@rdfjs/parser-jsonld" "^2.1.3"
     "@rdfjs/parser-n3" "^2.1.0"
-    "@semapps/auth-provider" "1.1.0"
-    "@semapps/field-components" "1.1.0"
-    "@semapps/semantic-data-provider" "1.1.0"
+    "@semapps/auth-provider" "1.1.7"
+    "@semapps/field-components" "1.1.7"
+    "@semapps/semantic-data-provider" "1.1.7"
     "@tiptap/core" "^2.0.0-beta.95"
     "@tiptap/extension-mention" "^2.0.0-beta.95"
     "@tiptap/extension-placeholder" "^2.0.0-beta.95"
@@ -1092,12 +1093,12 @@
     readable-web-to-node-stream "^5.0.0"
     tippy.js "^6.3.7"
 
-"@semapps/auth-provider@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@semapps/auth-provider/-/auth-provider-1.1.0.tgz#89891b4f725a493fd4506f0ecbbc2866f859e2b8"
-  integrity sha512-VRct3MRNSbV9D7NROMPFW2vvhS2WSHq1V3+qwUHvyodLctBbxWGhGEerNVY5L8+TiLYmKTc5q7mKY0gqbkMUmw==
+"@semapps/auth-provider@1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@semapps/auth-provider/-/auth-provider-1.1.7.tgz#5764bb5baabb7c443c359091126b5caf4012611b"
+  integrity sha512-CJpgJJ67pzEwpInRplOJqx+xzldXBOscXMK7t7Hh2irfQ6atebiA+pK9QpW8f4VWp/Qr1+YwLvRdv1ePJY5wxg==
   dependencies:
-    "@semapps/semantic-data-provider" "1.1.0"
+    "@semapps/semantic-data-provider" "1.1.7"
     classnames "^2.3.2"
     jwt-decode "^3.0.0"
     lodash "^4.17.21"
@@ -1106,19 +1107,19 @@
     speakingurl "^14.0.1"
     url-join "^4.0.1"
 
-"@semapps/field-components@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@semapps/field-components/-/field-components-1.1.0.tgz#7cd814b80e53cd3858c022cbd4b94e602e36ee0b"
-  integrity sha512-LHllTCZH6apvkFfyT7FqmNGzuB7xH28mel+t3XQGJQUJZBnM2d2PDXhC7RmGPcMS0jspmNog0GnQa2viuM3ntQ==
+"@semapps/field-components@1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@semapps/field-components/-/field-components-1.1.7.tgz#0007cc1ad8d845cbfe978f5e5f49d458c9c237a8"
+  integrity sha512-j/2jupEpuRCcZp1xn6AzzO7JN5NevlSsck43wltiOYSqPE4nsh6v0oeqX7dJrzRsFJh3mmt3RGwnHoM4jPYWxg==
   dependencies:
-    "@semapps/semantic-data-provider" "1.1.0"
+    "@semapps/semantic-data-provider" "1.1.7"
     lodash.debounce "^4.0.8"
     react-icons "^4.4.0"
 
-"@semapps/semantic-data-provider@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-1.1.0.tgz#964648d6e36ebd0ec2e75d51154278ec33ab17b6"
-  integrity sha512-ZDxhZDmIg15zwNA8tPHmSMGmoAz5AMb5JMme+20eBWLsrrDKg4R3XlfFFdmnjkJkupt/YMQm0hwe1attbUaPNw==
+"@semapps/semantic-data-provider@1.1.2", "@semapps/semantic-data-provider@1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-1.1.7.tgz#36e30ee5b756a64e5f84e19aa938d94878a8efcd"
+  integrity sha512-h6tL/AonsiH3wnjT41CrGjbT4MVVpGfMHJ4Tlken1d15rG4EaOOogUvkgJ1KS3Uzqs5iAJ5dzcy5nm4L92T5yg==
   dependencies:
     "@rdfjs/data-model" "^1.3.4"
     change-case "^5.4.4"
@@ -2847,10 +2848,15 @@ hotscript@^1.0.12:
   resolved "https://registry.yarnpkg.com/hotscript/-/hotscript-1.0.13.tgz#6eb5de757e9b33444ffc22555e98dbc17fa31fb4"
   integrity sha512-C++tTF1GqkGYecL+2S1wJTfoH6APGAsbb7PAWQ3iVIwgG/EFseAfEVOKFgAFq4yK3+6j1EjUD4UQ9dRJHX/sSQ==
 
-http-link-header@1.1.3, http-link-header@^1.0.2, http-link-header@^1.1.1:
+http-link-header@1.1.3, http-link-header@^1.0.2:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/http-link-header/-/http-link-header-1.1.3.tgz#b367b7a0ad1cf14027953f31aa1df40bb433da2a"
   integrity sha512-3cZ0SRL8fb9MUlU3mKM61FcQvPfXx2dBrZW3Vbg5CXa8jFlK8OaEpePenLe1oEXQduhz8b0QjsqfS59QP4AJDQ==
+
+http-link-header@^1.1.2:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/http-link-header/-/http-link-header-1.1.4.tgz#9c0a6519e8b40c1aaab6f3eb4f2c679d3be2fad9"
+  integrity sha512-xT3GPW6/ZbGuw4UvwHqErSCEjNUlwbQJuZn9/q5U4WEKfp2kENVCAlousG1zLxHeaQ/ffOHUNpWamvkbBW0eNw==
 
 hyphenate-style-name@^1.0.3:
   version "1.0.4"

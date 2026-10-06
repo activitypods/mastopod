@@ -7,19 +7,22 @@
     "unlink-packages": "yarn unlink @activitypods/app @semapps/activitypub @semapps/auth @semapps/backup @semapps/core @semapps/crypto @semapps/importer @semapps/inference @semapps/jsonld @semapps/ldp @semapps/middlewares @semapps/migration @semapps/mime-types @semapps/ontologies @semapps/sync @semapps/nodeinfo @semapps/notifications @semapps/solid @semapps/sparql-endpoint @semapps/triplestore @semapps/void @semapps/webacl @semapps/webfinger @semapps/webhooks @semapps/webid"
   },
   "dependencies": {
-    "@activitypods/app": "2.1.0",
-    "@semapps/auth": "1.1.0",
-    "@semapps/core": "1.1.0",
-    "@semapps/crypto": "1.1.0",
-    "@semapps/ontologies": "1.1.0",
-    "@semapps/solid": "1.1.0",
-    "@semapps/triplestore": "1.1.0",
+    "@activitypods/app": "2.3.2",
+    "@semapps/auth": "1.2.4",
+    "@semapps/core": "1.2.4",
+    "@semapps/crypto": "1.2.4",
+    "@semapps/nodeinfo": "1.2.4",
+    "@semapps/ontologies": "1.2.4",
+    "@semapps/solid": "1.2.4",
+    "@semapps/triplestore": "1.2.4",
+    "@semapps/webacl": "1.2.4",
     "dotenv-flow": "^3.2.0",
     "ioredis": "^4.17.3",
-    "url-join": "^4.0.1",
-    "moleculer-repl": "^0.6.6"
+    "moleculer": "^0.14.35",
+    "moleculer-repl": "^0.6.6",
+    "url-join": "^4.0.1"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   }
 }

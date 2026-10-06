@@ -23,11 +23,14 @@ module.exports = {
   },
   actions: {
     async getUsersCount(ctx) {
-      const appRegistrations = await ctx.call('app-registrations.list');
+      // Count the URIs directly as 'system': the nodeinfo route is public, so listing the container
+      // would read it as 'anon' and the WAC permissions would hide every registration.
+      const containerUri = await ctx.call('app-registrations.getContainerUri');
+      const registrationsUris = await ctx.call('ldp.container.getUris', { containerUri });
       return {
-        total: appRegistrations['ldp:contains']?.length || 0,
-        activeHalfYear: appRegistrations['ldp:contains']?.length || 0,
-        activeMonth: appRegistrations['ldp:contains']?.length || 0
+        total: registrationsUris.length,
+        activeHalfYear: registrationsUris.length,
+        activeMonth: registrationsUris.length
       };
     }
   }

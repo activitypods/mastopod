@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 RUN node -v
 RUN npm -v
@@ -15,7 +15,18 @@ ADD docker/ecosystem.config.js /app/backend
 # See https://making.close.com/posts/reduce-docker-image-size
 ADD backend/package.json /app/backend
 ADD backend/yarn.lock /app/backend
-RUN yarn install && yarn cache clean
+# `sharp`, pulled in transitively, downloads a prebuilt libvips binary from the
+# GitHub releases during its install script. That download times out often enough
+# to break the build, so give the install a few attempts.
+RUN set -eu; \
+    attempt=1; \
+    until yarn install --frozen-lockfile; do \
+      attempt=$((attempt + 1)); \
+      if [ "$attempt" -gt 3 ]; then echo "yarn install failed after 3 attempts"; exit 1; fi; \
+      echo "yarn install failed, retrying ($attempt/3) in 15s"; \
+      sleep 15; \
+    done; \
+    yarn cache clean
 
 ADD backend /app/backend
 
