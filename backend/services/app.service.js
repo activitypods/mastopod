@@ -27,32 +27,37 @@ module.exports = {
       required: [
         {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Note'),
-          accessMode: ['acl:Read', 'acl:Write']
+          accessMode: ['acl:Read', 'acl:Write'],
+          preferredScope: 'interop:AllFromRegistry'
         },
         {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Video'),
-          accessMode: ['acl:Read']
+          accessMode: ['acl:Read'],
+          preferredScope: 'interop:AllFromRegistry'
         },
         {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Article'),
-          accessMode: ['acl:Read']
+          accessMode: ['acl:Read'],
+          preferredScope: 'interop:AllFromRegistry'
         },
         {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Event'),
-          accessMode: ['acl:Read']
+          accessMode: ['acl:Read'],
+          preferredScope: 'interop:AllFromRegistry'
         },
         {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/as/Profile'),
-          accessMode: 'acl:Read'
+          accessMode: 'acl:Read',
+          preferredScope: 'interop:AllFromRegistry'
         },
         {
           shapeTreeUri: urlJoin(CONFIG.SHAPE_REPOSITORY_URL, 'shapetrees/File'),
-          accessMode: ['acl:Read', 'acl:Write']
+          accessMode: ['acl:Read', 'acl:Write'],
+          preferredScope: 'interop:AllFromRegistry'
         },
         'apods:ReadInbox',
         'apods:ReadOutbox',
-        'apods:PostOutbox',
-        'apods:QuerySparqlEndpoint'
+        'apods:PostOutbox'
       ],
       optional: []
     },
