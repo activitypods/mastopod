@@ -1,6 +1,6 @@
 services:
   fuseki:
-    image: semapps/jena-fuseki-webacl
+    image: semapps/jena-fuseki-webacl:v1.0.1
     volumes:
       - ./data/fuseki:/fuseki:z
     ports:
@@ -11,7 +11,7 @@ services:
       ADMIN_PASSWORD: admin
 
   activitypods-backend:
-    image: activitypods/backend
+    image: activitypods/backend:${ACTIVITYPODS_VERSION:-v2.3.0}
     depends_on:
       - fuseki
       - redis
@@ -31,7 +31,7 @@ services:
     network_mode: "host"
 
   activitypods-frontend:
-    image: activitypods/frontend
+    image: activitypods/frontend:${ACTIVITYPODS_VERSION:-v2.3.0}
     depends_on:
       - activitypods-backend
     restart: always

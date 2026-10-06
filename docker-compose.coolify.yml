@@ -1,0 +1,92 @@
+# Docker Compose definition used by Coolify to build and run this app straight from
+# the git repository: one stack for the branch it follows and, if enabled, one stack
+# per open pull request (preview deployment). The images are built on the Coolify
+# server from the Dockerfiles in /docker, nothing is pulled from a registry.
+#
+# Before `docker compose build` and `up`, Coolify writes a .env file next to this
+# file with the variables defined in its UI plus generated ones. The ones used here:
+#   SERVICE_FQDN_BACKEND / SERVICE_FQDN_FRONTEND  host of each service, as set in the
+#                                                 Domains field (the PR host for a preview)
+#   SERVICE_NAME_BACKEND / SERVICE_NAME_MASTOPOD_REDIS  service names, suffixed with
+#                                                 "-pr-<n>" in a preview (Coolify renames
+#                                                 the services)
+# A value starting with `${` becomes an editable variable in Coolify (with its default);
+# the other `${...}` references are only interpolated by docker compose.
+#
+# Fuseki is the one shared with the other apps (shared-infra, in the "infra" project):
+# the backend joins the "coolify" network to reach it. Each stack gets its own
+# datasets, so previews never touch each other's data. Redis runs inside the stack
+# (on the stack's private network only, under a name that cannot be confused with
+# the shared one), so each preview also gets its own cache and job queue.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.dockerfile
+    restart: always
+    depends_on:
+      - mastopod-redis
+    expose:
+      - '3000'
+    # Coolify adds the stack's own network to every service; only the backend
+    # also needs the shared one, where Fuseki lives.
+    networks:
+      - coolify
+    environment:
+      SEMAPPS_APP_NAME: ${APP_NAME:-Mastopod}
+      SEMAPPS_APP_DESCRIPTION: ${APP_DESCRIPTION:-A Mastodon-compatible app that saves all data in a Pod}
+      SEMAPPS_APP_LANG: ${APP_LANG:-en}
+      SEMAPPS_HOME_URL: https://${SERVICE_FQDN_BACKEND}/api/
+      SEMAPPS_FRONT_URL: https://${SERVICE_FQDN_FRONTEND}/
+      SEMAPPS_PORT: '3000'
+      SEMAPPS_SHAPE_REPOSITORY_URL: ${SHAPE_REPOSITORY_URL:-https://shapes.activitypods.org/}
+      SEMAPPS_SPARQL_ENDPOINT: ${SPARQL_ENDPOINT}
+      SEMAPPS_JENA_USER: ${JENA_USER:-admin}
+      SEMAPPS_JENA_PASSWORD: ${JENA_PASSWORD}
+      # One pair of datasets per stack, e.g. mastopod-backend-pr-12 /
+      # settings-mastopod-backend-pr-12. MAIN_DATASET / SETTINGS_DATASET override the
+      # pattern (used by the production scope to keep pre-existing datasets, e.g.
+      # mastopod / settings-mastopod); previews leave them empty.
+      SEMAPPS_MAIN_DATASET: ${MAIN_DATASET:-${DATASET_PREFIX:-mastopod}-${SERVICE_NAME_BACKEND}}
+      SEMAPPS_AUTH_ACCOUNTS_DATASET_NAME: ${SETTINGS_DATASET:-settings-${DATASET_PREFIX:-mastopod}-${SERVICE_NAME_BACKEND}}
+      SEMAPPS_REDIS_CACHE_URL: redis://${SERVICE_NAME_MASTOPOD_REDIS}:6379/0
+      SEMAPPS_QUEUE_SERVICE_URL: redis://${SERVICE_NAME_MASTOPOD_REDIS}:6379/1
+    volumes:
+      - backend-logs:/app/backend/logs
+      # Keys generated on first start; losing them invalidates every issued token
+      - backend-jwt:/app/backend/jwt
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.dockerfile
+      # Inlined by Vite at build time, hence the domain must be known here (see the
+      # generated SERVICE_FQDN_* above) rather than when the container starts.
+      args:
+        VITE_APP_NAME: ${APP_NAME:-Mastopod}
+        VITE_BACKEND_URL: https://${SERVICE_FQDN_BACKEND}/api/
+        VITE_BACKEND_CLIENT_ID: https://${SERVICE_FQDN_BACKEND}/api/app
+        # Set to restrict the login page to a single Pod provider
+        VITE_POD_PROVIDER_BASE_URL: ${POD_PROVIDER_BASE_URL:-}
+    restart: always
+    depends_on:
+      - backend
+    expose:
+      - '4000'
+
+  mastopod-redis:
+    image: redis:7-alpine
+    restart: always
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - redis-data:/data
+
+volumes:
+  backend-logs:
+  backend-jwt:
+  redis-data:
+
+networks:
+  coolify:
+    external: true

@@ -32,6 +32,12 @@ Built on the [ActivityPods](https://activitypods.org) framework.
 
 `make attach-backend-prod` Attaches to the [moleculer](https://moleculer.services/) repl of the activitypods backend.
 
+### With Coolify
+
+[`docker-compose.coolify.yml`](./docker-compose.coolify.yml) lets [Coolify](https://coolify.io) build and run the app straight from this repository (build pack _Docker Compose_). The backend reaches a Fuseki shared with other apps through the external `coolify` network, and each stack gets its own Redis. The variables to set in Coolify (`SPARQL_ENDPOINT`, `JENA_PASSWORD`, `POD_PROVIDER_BASE_URL`...) are listed at the top of the file. Set `MAIN_DATASET` and `SETTINGS_DATASET` to keep existing datasets (e.g. `mastopod` / `settings-mastopod`).
+
+The frontend URLs are inlined by Vite at build time, so the domains must be set in Coolify before the first deployment.
+
 ## Funding
 
 This project is funded through the [NGI0 Entrust Fund](https://nlnet.nl/entrust), a fund
