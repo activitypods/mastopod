@@ -20,9 +20,13 @@ const Announce = ({ activity }) => {
       </Card>
     );
   } else if (error) {
+    // E.g. a resource shared through an Announce whose type this app has no access to
     console.log(
       `Could not load object ${activity.object}. Error message: ${error.message}`
     );
+    return null;
+  } else if (!boostedObject) {
+    return null;
   }
 
   let objectUri;
@@ -30,7 +34,7 @@ const Announce = ({ activity }) => {
   // If the boosted object is a Create activity
   if (boostedObject.type === ACTIVITY_TYPES.CREATE) {
     //Then we need to get the object from its object property
-    objectUri = boostedObject.object.current || boostedObject.object?.id;
+    objectUri = boostedObject.object?.current || boostedObject.object?.id;
     //and the boosted activity is the Create activity
     boostedActivity = boostedObject;
   } else {
@@ -40,7 +44,15 @@ const Announce = ({ activity }) => {
     boostedActivity = activity;
   }
     
-  const { Component, props: specificProps } = getComponentForObject(objectUri, boostedObject);
+  // Get the relevant component depending on the object type
+  const config = getComponentForObject(objectUri, boostedObject);
+
+  // If no component is found, no render is possible
+  if (!config) {
+    return null;
+  }
+
+  const { Component, props: specificProps } = config;
 
   return (
     <Card sx={{ p: 2 }}>
