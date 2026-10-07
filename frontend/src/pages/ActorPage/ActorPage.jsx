@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import StickyBox from "react-sticky-box";
 import { Box, Container, Grid, Hidden } from "@mui/material";
-import { useWebfinger } from "@semapps/activitypub-components";
+import useWebfinger from "../../hooks/useWebfinger";
 import useActor from "../../hooks/useActor";
 import ActorContext from "../../contexts/ActorContext";
 import ProfileCard from "../../common/cards/ProfileCard";

@@ -13,7 +13,7 @@ const Inbox = () => {
     fetchNextPage,
     isFetchingNextPage,
     isLoading
-  } = useCollection('inbox', { liveUpdates: true, dereferenceItems: true });
+  } = useCollection('inbox', { liveUpdates: true, dereferenceItems: true, shaclShapeUri: '/shapes/DisplayableActivityShape.ttl' });
   return (
     <>
       <PostBlock />

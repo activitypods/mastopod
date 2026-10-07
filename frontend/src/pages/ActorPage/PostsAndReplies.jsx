@@ -10,7 +10,7 @@ const PostsAndReplies = () => {
     fetchNextPage,
     isFetchingNextPage,
     isLoading
-  } = useCollection(actor?.outbox, { dereferenceItems: true });
+  } = useCollection(actor?.outbox, { dereferenceItems: true, shaclShapeUri: '/shapes/DisplayableActivityShape.ttl' });
   return (
     <>
       {activities?.map(activity => (

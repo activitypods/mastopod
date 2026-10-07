@@ -12,7 +12,7 @@ const LoadMore = ({ fetchNextPage, isLoading }) => {
 
   useEffect(() => {
     if (isVisible && !isLoading) fetchNextPage();
-  }, [isVisible, fetchNextPage]);
+  }, [isVisible, isLoading, fetchNextPage]);
 
   return (
     <div ref={ref}>

@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Box } from '@mui/material';
 import { useNotify, useTranslate } from 'react-admin';
 import { useOutbox, useCollection, ACTIVITY_TYPES } from '@semapps/activitypub-components';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 
-const LikeButton = ({ activity, object, ...rest }) => {
+const LikeButton = ({ activity, object, numlikes, ...rest }) => {
   const outbox = useOutbox();
   const notify = useNotify();
   const translate = useTranslate();
@@ -46,9 +46,16 @@ const LikeButton = ({ activity, object, ...rest }) => {
 
   return (
     <Tooltip title={translate('app.action.like')}>
-      <IconButton aria-label={translate('app.action.like')} onClick={isLiked ? undoLike : like} {...rest}>
-        {isLiked ? <StarIcon /> : <StarBorderIcon />}
-      </IconButton>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton aria-label={translate('app.action.like')} onClick={isLiked ? undoLike : like} {...rest}>
+          {isLiked ? <StarIcon /> : <StarBorderIcon />}
+        </IconButton>
+        {numlikes > 0 && (
+          <Box sx={{ ml: -1, fontSize: '0.875rem', color: 'text.secondary' }}>
+            {numlikes}
+          </Box>
+        )}
+      </Box>
     </Tooltip>
   );
 };

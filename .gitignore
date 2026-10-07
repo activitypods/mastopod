@@ -27,6 +27,7 @@ yalc.lock
 .idea
 
 /data
+/data.*
 /logs
 
 .env.local
