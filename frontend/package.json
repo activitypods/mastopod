@@ -12,13 +12,13 @@
     "format": "prettier --write ./src",
     "link-semapps-packages": "yalc link @semapps/activitypub-components @semapps/auth-provider @semapps/date-components @semapps/field-components @semapps/geo-components @semapps/input-components @semapps/list-components @semapps/markdown-components @semapps/semantic-data-provider",
     "unlink-semapps-packages": "yalc remove --all && rm -rf node_modules/@semapps && yarn install --force",
-    "link-activitypods-packages": "yalc link @activitypods/react",
+    "link-activitypods-packages": "yalc link @activitypods/react-admin",
     "unlink-activitypods-packages": "yalc remove --all && rm -rf node_modules/@activitypods && yarn install --force",
     "link-packages": "yarn run link-semapps-packages && yarn run link-activitypods-packages",
     "unlink-packages": "yalc remove --all && rm -rf node_modules/@semapps && rm -rf node_modules/@activitypods && yarn install --force"
   },
   "dependencies": {
-    "@activitypods/react": "2.2.0",
+    "@activitypods/react-admin": "2.2.0",
     "@mui/styles": "^5.14.13",
     "@semapps/activitypub-components": "1.1.7",
     "@semapps/auth-provider": "1.1.7",

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AppBar as MuiAppBar, Toolbar, Container, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { UserMenu } from '@activitypods/react';
+import { UserMenu } from '@activitypods/react-admin';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
