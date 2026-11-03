@@ -7,13 +7,13 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@activitypods/react@2.2.0":
+"@activitypods/react-admin@2.2.0":
   version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@activitypods/react/-/react-2.2.0.tgz#d135f25a7134af4837d1d4cea371038875eb1f18"
-  integrity sha512-HrOkj9L35/SjUOnZkY7eWUIk4znO0jSzxjXfBPPuqr3qyGxfIpuOHoIEsIRXfZjYp/E6dyZ4S0nkuQvoQYfVjg==
+  resolved "https://registry.yarnpkg.com/@activitypods/react-admin/-/react-admin-2.2.0.tgz#d59861e6a75b7fe25bbc0f19e2cd46802e5efab4"
+  integrity sha512-p1mOkJCgqDTDA2vr+dlAaUK0+4Aw50p+yQduteRBrwHQU//UFAvkU+4PyiXvVlKiGh/FWakhitzyvMUlPW2Ouw==
   dependencies:
-    "@semapps/activitypub-components" "1.1.2"
-    "@semapps/semantic-data-provider" "1.1.2"
+    "@semapps/activitypub-components" "1.2.0"
+    "@semapps/semantic-data-provider" "1.2.0"
     http-link-header "^1.1.2"
     jwt-decode "^3.0.0"
     url-join "^4.0.1"
@@ -1069,7 +1069,7 @@
   dependencies:
     xmlchars "^2.2.0"
 
-"@semapps/activitypub-components@1.1.2", "@semapps/activitypub-components@1.1.7":
+"@semapps/activitypub-components@1.1.7", "@semapps/activitypub-components@1.2.0":
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/@semapps/activitypub-components/-/activitypub-components-1.1.7.tgz#08e37150229d56cb843b3e6f4bead38e3d5f59a4"
   integrity sha512-dUkWFNXScIh3/Yntj3vVOTTQGXdiuiLRVdtPyi4Tmimw7E9PegQFfsg9VtfGRKGnlF7ymCj2jGm70cY52cfkuQ==
@@ -1116,7 +1116,7 @@
     lodash.debounce "^4.0.8"
     react-icons "^4.4.0"
 
-"@semapps/semantic-data-provider@1.1.2", "@semapps/semantic-data-provider@1.1.7":
+"@semapps/semantic-data-provider@1.1.7", "@semapps/semantic-data-provider@1.2.0":
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/@semapps/semantic-data-provider/-/semantic-data-provider-1.1.7.tgz#36e30ee5b756a64e5f84e19aa938d94878a8efcd"
   integrity sha512-h6tL/AonsiH3wnjT41CrGjbT4MVVpGfMHJ4Tlken1d15rG4EaOOogUvkgJ1KS3Uzqs5iAJ5dzcy5nm4L92T5yg==
