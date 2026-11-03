@@ -3,7 +3,7 @@ import polyglotI18nProvider from 'ra-i18n-polyglot';
 import raEnglishMessages from 'ra-language-english';
 import raFrenchMessages from 'ra-language-french';
 import { frenchMessages as authFrenchMessages, englishMessages as authEnglishMessages } from '@semapps/auth-provider';
-import { frenchMessages as apodsFrenchMessages, englishMessages as apodsEnglishMessages } from '@activitypods/react';
+import { frenchMessages as apodsFrenchMessages, englishMessages as apodsEnglishMessages } from '@activitypods/react-admin';
 import frAppMessages from './messages/fr';
 import enAppMessages from './messages/en';
 
